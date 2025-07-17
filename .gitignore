@@ -188,24 +188,21 @@ Temporary Items
 
 
  
-Project-Katana/Library/
-Project-Katana/Library/PackageCache/
-Project-Katana/Temp/
-Project-Katana/Logs/
-Project-Katana/Artifacts/
-Project-Katana/Library/Bee/
-Project-Katana/Library/artifacts/
-Project-Katana/UserSettings/Layouts/default-2022.dwlt
-Project-Katana/Build
-Project-Katana/Assets/Plugins/FMOD/Cache
-Project-Katana/fmod_editor.log
-Project-Katana/UserSettings
+Project-Hex/Library/
+Project-Hex/Library/PackageCache/
+Project-Hex/Temp/
+Project-Hex/Logs/
+Project-Hex/Artifacts/
+Project-Hex/Library/Bee/
+Project-Hex/Library/artifacts/
+Project-Hex/UserSettings/Layouts/default-2022.dwlt
+Project-Hex/Build
+Project-Hex/Assets/Plugins/FMOD/Cache
+Project-Hex/fmod_editor.log
+Project-Hex/UserSettings
 
-Project-Katana/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudio.bundle/Contents/Info.plist
-Project-Katana/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudioL.bundle/Contents/Info.plist
-Project-Katana/Assets/Plugins/FMOD/platforms/mac/lib/resonanceaudio.bundle/Contents/Info.plist
+Project-Hex/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudio.bundle/Contents/Info.plist
+Project-Hex/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudioL.bundle/Contents/Info.plist
+Project-Hex/Assets/Plugins/FMOD/platforms/mac/lib/resonanceaudio.bundle/Contents/Info.plist
 
-Project-Katana/Assets/Photon/Quantum/Assemblies/PhotonDeterministic.*
-Project-Katana/Assets/Photon/Quantum/Assemblies/quantum.core.*
-Project-Katana/Assets/Photon/Quantum/Assemblies/quantum.code.*
-#quantum.code/Core/CodeGen.cs
+

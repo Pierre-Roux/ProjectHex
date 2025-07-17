@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbab093c2a16fd4682c0e8475f723aa, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: 
+  Name: Player
+  CoreHealth: 10
+  StartingShield: 10
+  CoreImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
+  deckData:
+  - {fileID: 11400000, guid: 7550458e563058d46a7d516ab2aa505d, type: 2}
+  - {fileID: 11400000, guid: 907c1988ec6c11147a0b93126e8b6237, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 2f80c6e8095577947b2b5db9d10c8679, type: 2}
+  - {fileID: 11400000, guid: 953629cf3547bc744802d966e725a754, type: 2}
+  - {fileID: 11400000, guid: 953629cf3547bc744802d966e725a754, type: 2}
+  - {fileID: 11400000, guid: b0ac02ba5a1c57e4d8efb2a5b33d705f, type: 2}
+  - {fileID: 11400000, guid: 79761f27aed5f6746b4e6e60ba7c8196, type: 2}
+  - {fileID: 11400000, guid: bcbb95177d6358f4fabaa6622e60ac0f, type: 2}

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
+  m_Name: SpikeBALL
+  m_EditorClassIdentifier: 
+  PermanentImage: {fileID: 21300000, guid: 6e62f4595d41c4a40b3f894d584f89a0, type: 3}
+  PermanentLife: 5
+  StartingShield: 20
+  IsCore: 0
+  <PossibleIntent>k__BackingField:
+  - rid: 1273757063170490369
+  - rid: 1273757063170490368
+  references:
+    version: 2
+    RefIds:
+    - rid: 1273757063170490368
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 1
+        Events: 8
+        Intent_Title: return 1 when damaged
+        Actionner: {fileID: 0}
+        damageAmount: 1
+        targetMode: 9
+        targetNumber: 0
+    - rid: 1273757063170490369
+      type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 1
+        Events: 8
+        Intent_Title: 
+        Actionner: {fileID: 0}
+        amount: 5
+        targetMode: 8
+        targetNumber: 0

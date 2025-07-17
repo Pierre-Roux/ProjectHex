@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
+  m_Name: Shield Target
+  m_EditorClassIdentifier: 
+  <Title>k__BackingField: Shield
+  <Description>k__BackingField: Shield 3 target
+  <cost>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
+  <life>k__BackingField: 0
+  <StartingShield>k__BackingField: 0
+  <damage>k__BackingField: 0
+  <Durability>k__BackingField: 0
+  <PermanentImage>k__BackingField: {fileID: 0}
+  <IsSpell>k__BackingField: 1
+  <Effects>k__BackingField:
+  - rid: 1273756971758780419
+  references:
+    version: 2
+    RefIds:
+    - rid: 1273756971758780419
+      type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 2
+        Events: 0
+        Intent_Title: 
+        Actionner: {fileID: 0}
+        amount: 3
+        targetMode: 12
+        targetNumber: 1

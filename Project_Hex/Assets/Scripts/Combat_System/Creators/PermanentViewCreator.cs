@@ -1,0 +1,42 @@
+using DG.Tweening;
+using UnityEngine;
+
+public class PermanentViewCreator : Singleton<PermanentViewCreator>
+{
+    [SerializeField] private PermanentView PermanentViewPrefab;
+    [SerializeField] public ZoneView WeaponZone;
+    [SerializeField] public ZoneView ShieldZone;
+    [SerializeField] public ZoneView SupportZone;
+
+    public PermanentView CreatePermanentViewCreator(Card cardReference, PermanentType type)
+    {
+        GameObject Parent = null;
+        switch (type)
+        {
+            case PermanentType.Weapon:
+                Parent = WeaponZone.gameObject;
+                break;
+            case PermanentType.Shield:
+                Parent = ShieldZone.gameObject;
+                break;
+            case PermanentType.Support:
+                Parent = SupportZone.gameObject;
+                break;
+            default:
+                Debug.Log("No Type For permanent " + cardReference.Title);
+                break;
+        }
+        if (Parent == null) return null;
+        PermanentView PermanentView = Instantiate(PermanentViewPrefab, Vector3.zero, Quaternion.identity, Parent.transform);
+        PermanentView.transform.localScale = Vector3.zero;
+        PermanentView.transform.DOScale(PermanentViewPrefab.transform.localScale, 0.15f);
+        PermanentView.Setup(cardReference);
+        PermanentView.gameObject.name = cardReference.Title + " " + CombatSystem.Instance.Player_Permanents.Count;
+
+        WeaponZone.RepositionChildrenPermanentView();
+        ShieldZone.RepositionChildrenPermanentView();
+        SupportZone.RepositionChildrenPermanentViewCenterOut();
+
+        return PermanentView;
+    }
+}

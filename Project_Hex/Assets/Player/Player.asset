@@ -18,8 +18,12 @@ MonoBehaviour:
   CoreImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
   deckData:
   - {fileID: 11400000, guid: 907c1988ec6c11147a0b93126e8b6237, type: 2}
-  - {fileID: 11400000, guid: 7550458e563058d46a7d516ab2aa505d, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 6a1cfdbff6ba64941acacbf16450696c, type: 2}
+  - {fileID: 11400000, guid: 6b59db6bf76a0274f8ff84a27a750dc5, type: 2}
   - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
   - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
   - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
   - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 7fd7c62351d1dda46a238cf0ad36036c, type: 2}
+  - {fileID: 11400000, guid: 7fd7c62351d1dda46a238cf0ad36036c, type: 2}

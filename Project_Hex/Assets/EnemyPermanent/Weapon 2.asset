@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PermanentImage: {fileID: 21300000, guid: bb7b6ce2f1a61144083daba5680fbcfe, type: 3}
   PermanentLife: 10
-  StartingShield: 0
   IsCore: 0
   permanentType: 1
   <PossibleIntent>k__BackingField:
@@ -26,9 +25,9 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 1
-        Events: 0
+        Events: 1
         Intent_Title: Deal 1 To All Player
         Actionner: {fileID: 0}
         damageAmount: 1
-        targetMode: 9
+        targetMode: 15
         targetNumber: 0

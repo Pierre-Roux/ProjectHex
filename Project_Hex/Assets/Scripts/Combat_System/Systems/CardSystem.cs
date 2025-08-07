@@ -23,6 +23,7 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        
 
     }
 
@@ -124,7 +125,7 @@ public class CardSystem : Singleton<CardSystem>
     private IEnumerator PlayCardPerformer(PlayCardGA playCardGA)
     {
         // Si on joue une carte toute les event OnPlay ce joue (il faudrait faire des OnPlaySpell, OnPlayPermanent ect...)
-        TriggerEventGA triggerEventGA = new(Events.OnPlay);
+        TriggerEventGA triggerEventGA = new(Events.OnPlayCard);
         ActionSystem.Instance.AddReaction(triggerEventGA);
         hand.Remove(playCardGA.Card);
         CardView cardView = handView.RemoveCard(playCardGA.Card);
@@ -171,7 +172,6 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.Instance.AddReaction(drawCardsGA);
         TriggerEventGA triggerEventGA = new(Events.StartTurn);
         ActionSystem.Instance.AddReaction(triggerEventGA);
-        CombatSystem.Instance.CurrentTurn++;
     }
 
     public void UpdatePiles()

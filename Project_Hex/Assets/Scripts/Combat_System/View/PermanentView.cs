@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PermanentView : MonoBehaviour
 {
@@ -18,6 +19,13 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public Vector3 InitialPosition { get; set; }
     [HideInInspector] public PermanentType permanentType;
 
+    [HideInInspector] public List<PermanentView> PlayerShielder;
+    [HideInInspector] public List<EnemySlotView> EnemyShielder ;
+    [HideInInspector] public List<PermanentView> PlayerShielded;
+    [HideInInspector] public List<EnemySlotView> EnemyShielded ;
+    [SerializeField] public GameObject ShieldVisual ;
+    [HideInInspector] public bool Targetable;
+
     public void Setup(Card cardReference)
     {
         IsCore = false;
@@ -26,6 +34,8 @@ public class PermanentView : MonoBehaviour
         MaxLife = cardReference.data.life;
         currentLife = MaxLife;
         permanentType = cardReference.data.permanentType;
+        ShieldVisual.SetActive(false);
+        Targetable = true;
         UpdateLifeText();
 
         Durability = cardReference.Durability;
@@ -45,6 +55,8 @@ public class PermanentView : MonoBehaviour
         permanentType = PermanentType.none;
         MaxLife = CoreData.CoreHealth;
         currentLife = MaxLife;
+        ShieldVisual.SetActive(false);
+        Targetable = true;
         UpdateLifeText();
     }
 
@@ -85,6 +97,55 @@ public class PermanentView : MonoBehaviour
         }
         transform.DOShakePosition(0.1f, 0.1f);
         UpdateLifeText();
+    }
+
+    public void TakeShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
+    {
+        if (playerShielder != null)
+        {
+            if (!PlayerShielder.Contains(playerShielder))
+            {
+                PlayerShielder.Add(playerShielder);
+                playerShielder.GetComponent<PermanentView>().PlayerShielded.Add(this);
+            }
+        }
+
+        if (enemyShielder != null)
+        {
+            if (!EnemyShielder.Contains(enemyShielder))
+            {
+                EnemyShielder.Add(enemyShielder);
+                enemyShielder.GetComponent<EnemySlotView>().PlayerShielded.Add(this);
+            }
+        }
+        UpdateShield();
+    }
+
+    public void RemoveShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
+    {
+        if (playerShielder != null)
+        {
+            PlayerShielder.Remove(playerShielder);
+        }
+        if (enemyShielder != null)
+        {
+            EnemyShielder.Remove(enemyShielder);
+        }
+        UpdateShield();        
+    }
+
+    public void UpdateShield()
+    {
+        if (PlayerShielder.Count != 0 || EnemyShielder.Count != 0)
+        {
+            ShieldVisual.SetActive(true);
+            Targetable = false;
+        }
+        else
+        {
+            ShieldVisual.SetActive(false);
+            Targetable = true;  
+        }
     }
 
     public void ActiveSelectEffect()

@@ -7,6 +7,7 @@ public class CardViewHover : Singleton<CardViewHover>
     public void Show(Card card, Vector3 position)
     {
         if (!CombatSystem.Instance.Interactable) return;
+        if (ActionSystem.Instance.IsPerforming) return;
         cardViewToHover.gameObject.SetActive(true);
         cardViewToHover.Setup(card);
         cardViewToHover.transform.position = position;

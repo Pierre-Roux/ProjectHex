@@ -11,6 +11,9 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.AttachPerformer<DoEffectGA>(PerformEffectPerformer);
         ActionSystem.AttachPerformer<DealDamageGA>(DealDamagePerformer);
         ActionSystem.AttachPerformer<HealGA>(DealHealPerformer); 
+        ActionSystem.AttachPerformer<ShieldGA>(DealShieldPerformer); 
+        ActionSystem.AttachPerformer<LoseShieldGA>(LoseShieldPerformer); 
+        
     }
 
     void OnDisable()
@@ -18,6 +21,8 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<DoEffectGA>();
         ActionSystem.DetachPerformer<DealDamageGA>();
         ActionSystem.DetachPerformer<HealGA>();
+        ActionSystem.DetachPerformer<ShieldGA>();
+        ActionSystem.DetachPerformer<LoseShieldGA>();
     }
 
     private IEnumerator AddPerformerToEvent()
@@ -71,6 +76,58 @@ public class EffectSystem : Singleton<EffectSystem>
             {
                 target.TakeHeal(healGA.Amount);
                 yield return new WaitForSeconds(0.15f);
+            }
+        }
+    }
+
+    private IEnumerator DealShieldPerformer(ShieldGA shieldGA)
+    {
+        if (shieldGA.Targets_Player != null)
+        {
+            foreach (var target in shieldGA.Targets_Player)
+            {
+                target.TakeShield(shieldGA.Actionner.GetComponent<PermanentView>(),null);
+                yield return new WaitForSeconds(0.15f);
+            }
+        }
+
+        if (shieldGA.Targets_Enemy != null)
+        {
+            foreach (var target in shieldGA.Targets_Enemy)
+            {
+                target.TakeShield(null,shieldGA.Actionner.GetComponent<EnemySlotView>());
+                yield return new WaitForSeconds(0.15f);
+            }
+        }
+    }
+
+    private IEnumerator LoseShieldPerformer(LoseShieldGA loseShieldGA)
+    {
+        if (loseShieldGA.PermanentView != null)
+        {
+            foreach (PermanentView perm in loseShieldGA.PermanentView.PlayerShielded)
+            {
+                perm.RemoveShield(loseShieldGA.PermanentView,null);
+                yield return new WaitForSeconds(0.10f);
+            }
+            foreach (EnemySlotView perm in loseShieldGA.PermanentView.EnemyShielded)
+            {
+                perm.RemoveShield(loseShieldGA.PermanentView,null);
+                yield return new WaitForSeconds(0.10f);
+            }
+        }
+
+        if (loseShieldGA.EnemySlotView != null)
+        {
+            foreach (PermanentView perm in loseShieldGA.EnemySlotView.PlayerShielded)
+            {
+                perm.RemoveShield(null,loseShieldGA.EnemySlotView);
+                yield return new WaitForSeconds(0.10f);
+            }
+            foreach (EnemySlotView perm in loseShieldGA.EnemySlotView.EnemyShielded)
+            {
+                perm.RemoveShield(null,loseShieldGA.EnemySlotView);
+                yield return new WaitForSeconds(0.10f);
             }
         }
     }

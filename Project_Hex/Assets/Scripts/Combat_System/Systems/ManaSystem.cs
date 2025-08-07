@@ -13,6 +13,7 @@ public class ManaSystem : Singleton<ManaSystem>
         ActionSystem.AttachPerformer<SpendManaGA>(SpendManaPerformer);
         ActionSystem.AttachPerformer<ReffilManaGA>(RefillManaPerformer);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        
     }
 
     public void OnDisable()

@@ -3,9 +3,10 @@ public enum Events
     Instant,
 
     // General Event
+    EnemyTurn,
     StartTurn,
     EndTurn,
-    OnPlay,
+    OnPlayCard,
     OnDiscard,
     OnDraw,
 

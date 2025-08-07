@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PermanentImage: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
   PermanentLife: 10
-  StartingShield: 0
   IsCore: 0
   permanentType: 1
   <PossibleIntent>k__BackingField:
   - rid: 1273757063170490374
+  - rid: 2382742974966530050
+  RDMSequence: 0
+  <IntentSequence>k__BackingField:
+  - A
+  - B
+  LoopingSequence: 1
   references:
     version: 2
     RefIds:
@@ -26,9 +31,21 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 1
-        Events: 0
+        Events: 1
         Intent_Title: Deal 2 dmg to rdm
+        number: A
         Actionner: {fileID: 0}
         damageAmount: 2
         targetMode: 1
+        targetNumber: 0
+    - rid: 2382742974966530050
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 1
+        Events: 1
+        Intent_Title: Deal 3 to LowHP
+        number: B
+        Actionner: {fileID: 0}
+        damageAmount: 3
+        targetMode: 3
         targetNumber: 0

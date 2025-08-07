@@ -27,6 +27,14 @@ public class PermanentViewCreator : Singleton<PermanentViewCreator>
                 break;
         }
         if (Parent == null) return null;
+
+        int childCount = Parent.transform.childCount;
+        if (childCount >= 9)
+        {
+            //Debug.Log($"[EnemySlotViewCreator] Cannot add {data.name} to {type} zone — already {childCount} slots (limit = 9)");
+            return null;
+        }
+
         PermanentView PermanentView = Instantiate(PermanentViewPrefab, Vector3.zero, Quaternion.identity, Parent.transform);
         PermanentView.transform.localScale = Vector3.zero;
         PermanentView.transform.DOScale(PermanentViewPrefab.transform.localScale, 0.15f);

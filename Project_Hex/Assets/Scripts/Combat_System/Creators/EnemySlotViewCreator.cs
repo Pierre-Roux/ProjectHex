@@ -8,7 +8,7 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
     [HideInInspector] public EnemyZoneView WeaponZone;
     [HideInInspector] public EnemyZoneView ShieldZone;
     [HideInInspector] public EnemyZoneView SupportZone;
-    public EnemySlotView CreateEnemySlotViewCreator(EnemyPermanentData data, PermanentType type)
+    public EnemySlotView CreateEnemySlotViewCreator(EnemyPermanentData data, PermanentType type, bool setup = false, EnemyView enemyView = null)
     {
         GameObject Parent = null;
         switch (type)
@@ -27,6 +27,14 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
                 break;
         }
         if (Parent == null) return null;
+
+        int childCount = Parent.transform.childCount;
+        if (childCount >= 9)
+        {
+            //Debug.Log($"[EnemySlotViewCreator] Cannot add {data.name} to {type} zone — already {childCount} slots (limit = 9)");
+            return null;
+        }
+
         EnemySlotView enemySlotView = Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity, Parent.transform);
         enemySlotView.PermanentData = data;
         enemySlotView.setup();
@@ -37,6 +45,31 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
         WeaponZone.RepositionChildrenEnemySlotView();
         ShieldZone.RepositionChildrenEnemySlotView();
         SupportZone.RepositionChildrenEnemySlotViewCenterOut();
+
+        if (setup == true)
+        {
+            foreach (Effect effect in enemySlotView.PossibleIntent)
+            {
+                if (effect.Events == Events.Instant)
+                {
+                    effect.Actionner = enemySlotView.gameObject;
+                    enemyView.SetupActions.Add(effect.GetGameAction());
+                }
+            }
+        }
+        else
+        {
+            foreach (Effect effect in enemySlotView.PossibleIntent)
+            {
+                if (effect.Events == Events.Instant)
+                {
+                    effect.Actionner = enemySlotView.gameObject;
+                    ActionSystem.Instance.AddReaction(effect.GetGameAction());
+                }
+            }
+        }
+
+
 
         return enemySlotView;
     }

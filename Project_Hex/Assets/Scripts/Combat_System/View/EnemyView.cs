@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using SerializeReferenceEditor;
 
 public class EnemyView : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class EnemyView : MonoBehaviour
     [SerializeField] public EnemyZoneView ShieldZone;
     [SerializeField] public EnemyZoneView SupportZone;
     [SerializeField] public EnemySlotView CoreSlot;
+    [HideInInspector] public List<GameAction> SetupActions = new();
+
+    [field : SerializeReference, SR] public List<IntentConstruct> IntentConstructs { get; private set; }
+    [SerializeField] public List<string> ConstructSequence = new();
+    [SerializeField] public bool LoopingSequence;
+    [HideInInspector] public int sequenceIndex = 0;
 
     public void Setup()
     {
@@ -19,7 +26,7 @@ public class EnemyView : MonoBehaviour
 
         foreach (EnemyPermanentData enemy in EnemyPreset)
         {
-            EnemySlotViewCreator.Instance.CreateEnemySlotViewCreator(enemy, enemy.permanentType);
+            EnemySlotViewCreator.Instance.CreateEnemySlotViewCreator(enemy, enemy.permanentType, true, this);
         }
     }
 }

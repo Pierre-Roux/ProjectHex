@@ -8,18 +8,23 @@ public class PlayerSystem : Singleton<PlayerSystem>
     {
         ActionSystem.AttachPerformer<AttackEnemyGA>(AttackEnemyPerformer);
         ActionSystem.AttachPerformer<HealPlayerGA>(HealPlayerPerformer);
+        ActionSystem.AttachPerformer<ShieldPlayerGA>(ShieldPlayerPerformer);
 
         ActionSystem.SubscribeReaction<AttackEnemyGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<HealPlayerGA>(BeforeHealPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<ShieldPlayerGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
+        
     }
 
     void OnDisable()
     {
         ActionSystem.DetachPerformer<AttackEnemyGA>();
         ActionSystem.DetachPerformer<HealPlayerGA>();
+        ActionSystem.DetachPerformer<ShieldPlayerGA>();
 
         ActionSystem.UnsubscribeReaction<AttackEnemyGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<HealPlayerGA>(BeforeHealPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<ShieldPlayerGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
     }
 
     private IEnumerator AttackEnemyPerformer(AttackEnemyGA attackEnemyGA)
@@ -75,6 +80,40 @@ public class PlayerSystem : Singleton<PlayerSystem>
         }
     }
 
+    private IEnumerator ShieldPlayerPerformer(ShieldPlayerGA shieldPlayerGA)
+    {
+        if (shieldPlayerGA.Actionner != null)
+        {
+            PermanentView Attacker = shieldPlayerGA.Actionner.GetComponent<PermanentView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y + 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+            if (shieldPlayerGA.TargetMode == TargetMode.Manual)
+            {
+
+            }
+            else
+            {
+                var (playerTargets, enemyTargets) = TargetSystem.GetTargets(shieldPlayerGA.TargetMode, shieldPlayerGA.Actionner);
+
+                if (playerTargets != null && playerTargets.Count > 0)
+                {
+                    ShieldGA shieldGA = new ShieldGA(playerTargets, null);
+                    shieldGA.Actionner = shieldPlayerGA.Actionner;
+                    ActionSystem.Instance.AddReaction(shieldGA);
+                }
+                    
+                if (enemyTargets != null && enemyTargets.Count > 0)
+                {
+                    ShieldGA shieldGA = new ShieldGA(null, enemyTargets);
+                    shieldGA.Actionner = shieldPlayerGA.Actionner;
+                    ActionSystem.Instance.AddReaction(shieldGA);
+                }   
+            }
+        }
+    }
+
     private void BeforeAttackPreReaction(AttackEnemyGA attackEnemyGA)
     {
         PermanentView Attacker = attackEnemyGA.Actionner.GetComponent<PermanentView>();
@@ -84,6 +123,12 @@ public class PlayerSystem : Singleton<PlayerSystem>
     private void BeforeHealPreReaction(HealPlayerGA healPlayerGA)
     {
         PermanentView Attacker = healPlayerGA.Actionner.GetComponent<PermanentView>();
+        Attacker.SetPosition(Attacker.transform.position);
+    }
+
+    private void BeforeShieldPreReaction(ShieldPlayerGA shieldPlayerGA)
+    {
+        PermanentView Attacker = shieldPlayerGA.Actionner.GetComponent<PermanentView>();
         Attacker.SetPosition(Attacker.transform.position);
     }
 }

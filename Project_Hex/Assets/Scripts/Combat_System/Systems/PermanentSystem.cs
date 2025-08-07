@@ -10,6 +10,7 @@ public class PermanentSystem : Singleton<PermanentSystem>
     void OnEnable()
     {
         ActionSystem.AttachPerformer<SummonGA>(SummonPermanentPerformer);
+        
     }
 
     void OnDisable()
@@ -51,7 +52,7 @@ public class PermanentSystem : Singleton<PermanentSystem>
         }
 
         // Si on joue une carte toute les event OnPlay ce joue (il faudrait faire des OnPlaySpell, OnPlayPermanent ect...)
-        TriggerEventGA triggerEventGA = new(Events.OnPlay);
+        TriggerEventGA triggerEventGA = new(Events.OnPlayCard);
         ActionSystem.Instance.AddReaction(triggerEventGA);
     }
 

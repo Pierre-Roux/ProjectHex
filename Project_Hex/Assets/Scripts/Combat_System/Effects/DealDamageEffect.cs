@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class DealDamageEffect : Effect
 {
+    [Header("Effect Param")]
+
     [SerializeField] private int damageAmount;
     [SerializeField] private TargetMode targetMode;
+
+    [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
 
     public DealDamageEffect(){}
@@ -42,9 +46,9 @@ public class DealDamageEffect : Effect
         {
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
-                _AttackPlayerGA _AttackPlayerGA = new(damageAmount, targetMode);
-                _AttackPlayerGA.Actionner = Actionner;
-                return _AttackPlayerGA;
+                AttackPlayerGA AttackPlayerGA = new(damageAmount, targetMode);
+                AttackPlayerGA.Actionner = Actionner;
+                return AttackPlayerGA;
             }
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {

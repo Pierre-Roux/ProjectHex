@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DrawCardsEffect : Effect
 {
-
+    [Header("Effect Param")]
     [SerializeField] private int drawAmount;
 
     public override GameAction GetGameAction()

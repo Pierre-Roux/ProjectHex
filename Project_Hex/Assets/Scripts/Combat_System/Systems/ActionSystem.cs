@@ -17,12 +17,16 @@ public class ActionSystem : Singleton<ActionSystem>
 
     public void Perform(GameAction Action, System.Action OnperformFinished = null)
     {
+        if (Action != null)
+        {
+            Debug.Log("StartingFlowWith " + Action.GetType());
+        }
         if (IsPerforming) return;
         IsPerforming = true;
         StartCoroutine(Flow(Action, () =>
         {
             IsPerforming = false;
-            OnperformFinished?.Invoke();
+            //OnperformFinished?.Invoke();
         }));
     }
 
@@ -52,8 +56,6 @@ public class ActionSystem : Singleton<ActionSystem>
         string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
         Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
 
-        CombatSystem.Instance.Interactable = false;
-
         reactions = action.PreReactions;
         PerformSubscribers(action, preSubs);
         yield return PerformReactions();
@@ -67,7 +69,6 @@ public class ActionSystem : Singleton<ActionSystem>
         yield return PerformReactions();
 
         OnFlowFinished?.Invoke();
-        CombatSystem.Instance.Interactable = true;
     }
 
     private IEnumerator PerformPerformer(GameAction action)
@@ -82,12 +83,16 @@ public class ActionSystem : Singleton<ActionSystem>
     private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs)
     {
         Type type = action.GetType();
-        if (subs.ContainsKey(type))
+        if (!subs.ContainsKey(type))
         {
-            foreach (var sub in subs[type])
-            {
-                sub(action);
-            }
+            return;
+        }
+
+        List<Action<GameAction>> actionList = subs[type];
+
+        foreach (var sub in actionList)
+        {
+            sub(action);
         }
     }
 
@@ -115,6 +120,8 @@ public class ActionSystem : Singleton<ActionSystem>
 
     public static void SubscribeReaction<T>(Action<T> reaction, ReactionTiming timing) where T : GameAction
     {
+        //Debug.Log($"[Access] ActionSystem.Instance at {Time.time} from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod()}");
+
         Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
         void wrappedReaction(GameAction action) => reaction((T)action);
         if (subs.ContainsKey(typeof(T)))

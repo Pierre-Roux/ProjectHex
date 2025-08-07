@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class HealEffect : Effect
 {
+    [Header("Effect Param")]
     [SerializeField] private int amount;
     [SerializeField] private TargetMode targetMode;
+
+    [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
 
     public HealEffect(){}
@@ -45,9 +48,9 @@ public class HealEffect : Effect
             // SI ENEMY
             if (actionnerType == ActionnerType.ENEMY)
             {
-                _HealEnemyGA _healEnemyGA = new(amount, targetMode);
-                _healEnemyGA.Actionner = Actionner;
-                return _healEnemyGA;
+                HealEnemyGA healEnemyGA = new(amount, targetMode);
+                healEnemyGA.Actionner = Actionner;
+                return healEnemyGA;
             }
             // SI PLAYER
             else if (actionnerType == ActionnerType.PLAYER)

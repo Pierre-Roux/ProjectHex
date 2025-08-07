@@ -17,6 +17,7 @@ public class TargetSystem : Singleton<TargetSystem>
     public void OnEnable()
     {
         ActionSystem.AttachPerformer<StartManualTargetingGA>(GetTargetsManualPerformer);
+        
     }
 
     public void OnDisable()
@@ -87,22 +88,26 @@ public class TargetSystem : Singleton<TargetSystem>
                 break;
 
             case TargetMode.Random_Player:
-                if (playerPermanents.Count > 0)
+                var targetablePlayers = playerPermanents
+                    .Where(p => p.Targetable)
+                    .ToList();
+
+                if (targetablePlayers.Count > 0)
                 {
-                    var rnd = Random.Range(0, playerPermanents.Count);
-                    playerTargets.Add(playerPermanents[rnd]);
+                    var rnd = Random.Range(0, targetablePlayers.Count);
+                    playerTargets.Add(targetablePlayers[rnd]);
                 }
                 break;
 
             case TargetMode.Core_Player:
                 foreach (var perm in playerPermanents)
-                    if (perm.IsCore) playerTargets.Add(perm);
+                    if (perm.IsCore && perm.Targetable) playerTargets.Add(perm);
                 break;
 
             case TargetMode.HighHP_Player:
                 int maxTotal = playerPermanents.Max(p => p.currentLife);
                 var highestTargets = playerPermanents
-                    .Where(p => p.currentLife == maxTotal)
+                    .Where(p => p.currentLife == maxTotal && p.Targetable)
                     .ToList();
 
                 if (highestTargets.Count > 0)
@@ -115,7 +120,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.LowHP_Player:
                 int minTotal = playerPermanents.Min(p => p.currentLife);
                 var lowestTargets = playerPermanents
-                    .Where(p => p.currentLife == minTotal)
+                    .Where(p => p.currentLife == minTotal && p.Targetable)
                     .ToList();
 
                 if (lowestTargets.Count > 0)
@@ -126,22 +131,26 @@ public class TargetSystem : Singleton<TargetSystem>
                 break;
 
             case TargetMode.Random_Enemy:
-                if (playerPermanents.Count > 0)
+                var targetableEnemies = enemyPermanents
+                    .Where(p => p.Targetable)
+                    .ToList();
+
+                if (playerPermanents.Count > 0 && targetableEnemies.Count > 0)
                 {
-                    var rnd = Random.Range(0, enemyPermanents.Count);
-                    enemyTargets.Add(enemyPermanents[rnd]);
+                    var rnd = Random.Range(0, targetableEnemies.Count);
+                    enemyTargets.Add(targetableEnemies[rnd]);
                 }
                 break;
 
             case TargetMode.Core_Enemy:
                 foreach (var perm in enemyPermanents)
-                    if (perm.IsCore) enemyTargets.Add(perm);
+                    if (perm.IsCore && perm.Targetable) enemyTargets.Add(perm);
                 break;
 
             case TargetMode.HighHP_Enemy:
                 int maxTotal2 = enemyPermanents.Max(p => p.currentLife);
                 var highestTargets2 = enemyPermanents
-                    .Where(p => p.currentLife == maxTotal2)
+                    .Where(p => p.currentLife == maxTotal2 && p.Targetable)
                     .ToList();
 
                 if (highestTargets2.Count > 0)
@@ -154,7 +163,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.LowHP_Enemy:
                 int minTotal2 = enemyPermanents.Min(p => p.currentLife);
                 var lowestTargets2 = enemyPermanents
-                    .Where(p => p.currentLife == minTotal2)
+                    .Where(p => p.currentLife == minTotal2 && p.Targetable)
                     .ToList();
 
                 if (lowestTargets2.Count > 0)
@@ -165,20 +174,41 @@ public class TargetSystem : Singleton<TargetSystem>
                 break;
 
             case TargetMode.All_Player:
-                playerTargets.AddRange(playerPermanents);
+                foreach (var perm in playerPermanents)
+                {
+                    if(!perm.Targetable) continue;
+                    playerTargets.Add(perm);
+
+                }
                 break;
 
             case TargetMode.All_Enemy:
-                enemyTargets.AddRange(enemyPermanents);
+                foreach (var perm in enemyPermanents)
+                {
+                    if(!perm.Targetable) continue;
+                    enemyTargets.Add(perm);
+
+                }
                 break;
 
             case TargetMode.All_All:
-                playerTargets.AddRange(playerPermanents);
-                enemyTargets.AddRange(enemyPermanents);
+                foreach (var perm in playerPermanents)
+                {
+                    if(!perm.Targetable) continue;
+                    playerTargets.Add(perm);
+
+                }
+                foreach (var perm in enemyPermanents)
+                {
+                    if(!perm.Targetable) continue;
+                    enemyTargets.Add(perm);
+
+                }
                 break;
             case TargetMode.ALL_Player_Weapons:
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Weapon)
                     {
                         playerTargets.Add(perm);
@@ -188,6 +218,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.ALL_Player_Shields:
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Shield)
                     {
                         playerTargets.Add(perm);
@@ -197,6 +228,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.ALL_Player_Supports:
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Support)
                     {
                         playerTargets.Add(perm);
@@ -206,6 +238,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.ALL_Enemy_Weapons:
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Weapon)
                     {
                         enemyTargets.Add(perm);
@@ -215,6 +248,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.ALL_Enemy_Shields:
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Shield)
                     {
                         enemyTargets.Add(perm);
@@ -224,6 +258,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case TargetMode.ALL_Enemy_Supports:
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Support)
                     {
                         enemyTargets.Add(perm);
@@ -234,6 +269,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsP = new List<PermanentView>();
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Weapon)
                     {
                         TampontargetsP.Add(perm);
@@ -247,6 +283,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsP = new List<PermanentView>();
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Shield)
                     {
                         TampontargetsP.Add(perm);
@@ -260,6 +297,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsP = new List<PermanentView>();
                 foreach (var perm in playerPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Support)
                     {
                         TampontargetsP.Add(perm);
@@ -273,6 +311,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsE = new List<EnemySlotView>();
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Weapon)
                     {
                         TampontargetsE.Add(perm);
@@ -286,6 +325,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsE = new List<EnemySlotView>();
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Shield)
                     {
                         TampontargetsE.Add(perm);
@@ -299,6 +339,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 TampontargetsE = new List<EnemySlotView>();
                 foreach (var perm in enemyPermanents)
                 {
+                    if(!perm.Targetable) continue;
                     if (perm.permanentType == PermanentType.Support)
                     {
                         TampontargetsE.Add(perm);
@@ -347,43 +388,49 @@ public class TargetSystem : Singleton<TargetSystem>
                 Debug.DrawRay(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward * 10f, Color.red, 1f);
                 if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit, 10f, TargetingLayerMask) && raycastHit.collider != null && raycastHit.transform.TryGetComponent(out EnemySlotView enemyView))
                 {
-                    if (!enemySlots.Contains(enemyView))
+                    if (enemyView.Targetable)
                     {
-                        if (TargetingNumber > 0)
+                        if (!enemySlots.Contains(enemyView))
                         {
-                            enemySlots.Add(enemyView);
-                            enemyView.ActiveSelectEffect();
-                            TargetingNumber -= 1;
+                            if (TargetingNumber > 0)
+                            {
+                                enemySlots.Add(enemyView);
+                                enemyView.ActiveSelectEffect();
+                                TargetingNumber -= 1;
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (TargetingNumber < InitTargetingNumber)
+                        else
                         {
-                            enemySlots.Remove(enemyView);
-                            enemyView.RemoveSelectEffect();
-                            TargetingNumber += 1;
+                            if (TargetingNumber < InitTargetingNumber)
+                            {
+                                enemySlots.Remove(enemyView);
+                                enemyView.RemoveSelectEffect();
+                                TargetingNumber += 1;
+                            }
                         }
                     }
                 }
                 else if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit2, 10f, TargetingLayerMask) && raycastHit2.collider != null && raycastHit2.transform.TryGetComponent(out PermanentView permanentView))
                 {
-                    if (!permanents.Contains(permanentView))
+                    if (permanentView.Targetable)
                     {
-                        if (TargetingNumber > 0)
+                        if (!permanents.Contains(permanentView))
                         {
-                            permanents.Add(permanentView);
-                            permanentView.ActiveSelectEffect();
-                            TargetingNumber -= 1;
+                            if (TargetingNumber > 0)
+                            {
+                                permanents.Add(permanentView);
+                                permanentView.ActiveSelectEffect();
+                                TargetingNumber -= 1;
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (TargetingNumber < InitTargetingNumber)
+                        else
                         {
-                            permanents.Remove(permanentView);
-                            permanentView.RemoveSelectEffect();
-                            TargetingNumber += 1;
+                            if (TargetingNumber < InitTargetingNumber)
+                            {
+                                permanents.Remove(permanentView);
+                                permanentView.RemoveSelectEffect();
+                                TargetingNumber += 1;
+                            }
                         }
                     }
                 }

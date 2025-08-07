@@ -4,4 +4,10 @@ using UnityEngine;
 
 public class StartFightGA : GameAction
 {
+    public EnemyView enemyView;
+
+    public StartFightGA(EnemyView EnemyView)
+    {
+        enemyView = EnemyView;
+    }
 }

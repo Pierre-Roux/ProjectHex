@@ -12,6 +12,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
         ActionSystem.AttachPerformer<TriggerEventGA>(TriggerEvent);
         ActionSystem.AttachPerformer<TriggerPermanentEventGA>(TriggerPermanentEventPerformer);
         ActionSystem.AttachPerformer<TriggerEnemyEventGA>(TriggerEnemyEventPerformer);
+        
     }
 
     void OnDisable()
@@ -41,36 +42,39 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
     public IEnumerator TriggerEvent(TriggerEventGA triggerEventGA)
     {
+        List<Effect> effectsToRemove = new();
+
         if (effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var list))
-        {
-            foreach (var effect in list)
+        {            
+            foreach (var effect in new List<Effect>(list))
             {
-                if (triggerEventGA.card == null)
+                bool isCardMatch = triggerEventGA.card == null || triggerEventGA.card == effect.CardActionner;
+
+                if (isCardMatch)
                 {
                     GameAction ga = effect.GetGameAction();
                     if (ga != null)
                         ActionSystem.Instance.AddReaction(ga);
-                }
-                else
-                {
-                    if (triggerEventGA.card == effect.CardActionner)
+
+                    if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
                     {
-                        GameAction ga = effect.GetGameAction();
-                        if (ga != null)
-                            ActionSystem.Instance.AddReaction(ga);
+                        effect.Duration--;
+
+                        if (effect.Duration <= 0)
+                        {
+                            effectsToRemove.Add(effect);
+                        }
                     }
-                }  
+                }
             }
-
-            /*List<Effect> EffectToRemove = new List<Effect>();
-            EffectToRemove.Add(effect);
-            for (int i = 0; i < EffectToRemove.Count - 1; i++)
-            {
-                RemoveEffect(EffectToRemove[i]);
-            }*/
-
-            yield return null;
         }
+
+        foreach (var effect in effectsToRemove)
+        {
+            RemoveEffect(effect);
+        }        
+
+        yield return null;
     }
 
     public void ClearAllEvents()

@@ -32,26 +32,46 @@ public class CombatSystem : Singleton<CombatSystem>
     public List<EnemySlotView> Enemy_Permanents;
     public List<PermanentView> Player_Permanents;
 
+    private bool startFightSubscribed = false;
+
     public void OnEnable()
     {
-        ActionSystem.AttachPerformer<DiePermanentGA>(DiePermanentPerformer);
-        ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
-        ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
-        ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
-        ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+        if (!startFightSubscribed)
+        {
+            ActionSystem.AttachPerformer<DiePermanentGA>(DiePermanentPerformer);
+            ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
+            ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
+            ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
+            ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+
+            startFightSubscribed = true;
+            Debug.Log("Subscribe at " + Time.time);
+        }
     }
 
     public void OnDisable()
     {
-        ActionSystem.DetachPerformer<DiePermanentGA>();
-        ActionSystem.DetachPerformer<DieEnemySlotGA>();
-        ActionSystem.DetachPerformer<DestroyPermanentGA>();
-        ActionSystem.DetachPerformer<EndCombatGA>();
-        ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+        if (startFightSubscribed)
+        {
+            ActionSystem.DetachPerformer<DiePermanentGA>();
+            ActionSystem.DetachPerformer<DieEnemySlotGA>();
+            ActionSystem.DetachPerformer<DestroyPermanentGA>();
+            ActionSystem.DetachPerformer<EndCombatGA>();
+            ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+
+            startFightSubscribed = false;
+        }
     }
 
     private void Start()
     {
+        //StartCoroutine(DelayedStartup());
+        ClassicStartUp();
+    }
+
+    private IEnumerator DelayedStartup()
+    {
+        yield return null; // attend une frame
         ClassicStartUp();
     }
 
@@ -117,6 +137,8 @@ public class CombatSystem : Singleton<CombatSystem>
 
         GameEventSystem.Instance.ClearAllEvents();
 
+        Player_Permanents.Add(PlayerCore);
+
         // Choix aléatoire
         GameObject selectedEnemy = validEnemies[Random.Range(0, validEnemies.Count - 1)];
         GameObject SpawnedEnemy = Instantiate(selectedEnemy, EnemySpawn.position, EnemySpawn.rotation,EnemySpawn);
@@ -132,7 +154,7 @@ public class CombatSystem : Singleton<CombatSystem>
             if (enemySlotView.PossibleIntent == null) continue;
             foreach (Effect effect in enemySlotView.PossibleIntent)
             {
-                if (effect.Events != Events.Instant)
+                if (effect.Events != Events.EnemyTurn && effect.Events != Events.Instant)
                 {
                     Effect clonedEffect = effect.Clone();
                     clonedEffect.Actionner = enemySlotView.gameObject;
@@ -142,10 +164,10 @@ public class CombatSystem : Singleton<CombatSystem>
             }
         }
 
-        StartFightGA startFight = new();
-        ActionSystem.Instance.Perform(startFight);
-        
-        Player_Permanents.Add(PlayerCore);
+        StartFightGA startFight = new(enemyView);
+        Debug.Log("ActionSystem running ? " + ActionSystem.Instance.IsPerforming);
+        Debug.Log("startFightGA ? " + startFight.enemyView.name);
+        ActionSystem.Instance.Perform(startFight);        
 
         Interactable = true;
     }
@@ -160,6 +182,9 @@ public class CombatSystem : Singleton<CombatSystem>
             {
                 if (diePermanentGA.PermanentView != null)
                 {
+                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView,null);
+                    ActionSystem.Instance.AddReaction(loseShieldGA);
+
                     TriggerPermanentEventGA triggerPermanentEventGA = new(diePermanentGA.PermanentView, Events.OnDestroy);
                     ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
 
@@ -173,6 +198,9 @@ public class CombatSystem : Singleton<CombatSystem>
             {
                 if (diePermanentGA.PermanentView != null)
                 {
+                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView,null);
+                    ActionSystem.Instance.AddReaction(loseShieldGA);
+
                     diePermanentGA.CardReferenceArchive.Durability -= 1;
                     CardView newCardView = CardViewCreator.Instance.CreateCardView(diePermanentGA.CardReferenceArchive, diePermanentGA.PermanentView.transform.position, diePermanentGA.PermanentView.transform.rotation);
 
@@ -199,6 +227,9 @@ public class CombatSystem : Singleton<CombatSystem>
 
     public IEnumerator DieEnemySlotView(DieEnemySlotGA dieEnemySlotGA)
     {
+        LoseShieldGA loseShieldGA = new(null,dieEnemySlotGA.EnemySlotView);
+        ActionSystem.Instance.AddReaction(loseShieldGA);
+
         TriggerEnemyEventGA triggerEnemyEventGA = new(dieEnemySlotGA.EnemySlotView, Events.OnDeath);
         ActionSystem.Instance.AddReaction(triggerEnemyEventGA);
 
@@ -255,11 +286,15 @@ public class CombatSystem : Singleton<CombatSystem>
     private void StartFightPreReaction(StartFightGA startFightGA)
     {
         Debug.Log("---------- >>>  StartFightGA");
-        CurrentTurn = 0;
+        CurrentTurn = 1;
         ReffilManaGA reffilManaGA = new();
         ActionSystem.Instance.AddReaction(reffilManaGA);
         DrawCardsGA drawCardsGA = new(5);
         ActionSystem.Instance.AddReaction(drawCardsGA);
+        foreach (GameAction action in startFightGA.enemyView.SetupActions)
+        {
+            ActionSystem.Instance.AddReaction(action);
+        }
     }
 
 }

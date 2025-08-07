@@ -55,6 +55,7 @@ public class CardView : MonoBehaviour
 
     void OnMouseEnter()
     {
+        if (ActionSystem.Instance.IsPerforming) return;
         if (!CombatSystem.Instance.Interactable) return;
         if (isDragging) return;
         Wrapper.SetActive(false);
@@ -73,6 +74,7 @@ public class CardView : MonoBehaviour
     {
         if (!IsReward)
         {
+            if (ActionSystem.Instance.IsPerforming) return;
             if (!CombatSystem.Instance.Interactable) return;
             isDragging = true;
             OriginalPos = transform.position;

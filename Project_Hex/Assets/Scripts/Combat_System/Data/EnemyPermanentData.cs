@@ -8,6 +8,7 @@ public class EnemyPermanentData : ScriptableObject
     [field: SerializeField] public Sprite PermanentImage;
     [field: SerializeField] public int PermanentLife;
     [field: SerializeField] public bool IsCore;
+    [field: SerializeField] public bool UnShieldable;
     [field: SerializeField] public PermanentType permanentType;
     [field: SerializeReference, SR] public List<Effect> PossibleIntent { get; private set; }
     [field: SerializeField] public bool RDMSequence;

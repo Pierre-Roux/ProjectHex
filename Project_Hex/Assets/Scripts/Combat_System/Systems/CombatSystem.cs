@@ -42,10 +42,14 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
             ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
             ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
+
             ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+            ActionSystem.SubscribeReaction<PlayerTurnGA>(PlayerTurnPreReaction, ReactionTiming.PRE);
+
+            ActionSystem.SubscribeReaction<EndEnemyTurnGA>(EndEnemyTurnPostReaction, ReactionTiming.POST);
+            ActionSystem.SubscribeReaction<EndPlayerTurnGA>(EndPlayerTurnPostReaction, ReactionTiming.POST);
 
             startFightSubscribed = true;
-            Debug.Log("Subscribe at " + Time.time);
         }
     }
 
@@ -57,7 +61,12 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.DetachPerformer<DieEnemySlotGA>();
             ActionSystem.DetachPerformer<DestroyPermanentGA>();
             ActionSystem.DetachPerformer<EndCombatGA>();
+
             ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
+            ActionSystem.UnsubscribeReaction<PlayerTurnGA>(PlayerTurnPreReaction, ReactionTiming.PRE);
+
+            ActionSystem.UnsubscribeReaction<EndEnemyTurnGA>(EndEnemyTurnPostReaction, ReactionTiming.POST);
+            ActionSystem.UnsubscribeReaction<EndPlayerTurnGA>(EndPlayerTurnPostReaction, ReactionTiming.POST);
 
             startFightSubscribed = false;
         }
@@ -105,28 +114,28 @@ public class CombatSystem : Singleton<CombatSystem>
 
 
         // Détermine le Tier selon le Stage
-            if (stage < 2)
-                targetTier = 0;
-            else if (stage == 2)
-                targetTier = 1;
-            else if (stage < 5)
-                targetTier = 2;
-            else if (stage == 5)
-                targetTier = 3;
-            else if (stage < 8)
-                targetTier = 4;
-            else if (stage == 8)
-                targetTier = 5;
-            else
-                targetTier = 0;
+        if (stage < 2)
+            targetTier = 0;
+        else if (stage == 2)
+            targetTier = 1;
+        else if (stage < 5)
+            targetTier = 2;
+        else if (stage == 5)
+            targetTier = 3;
+        else if (stage < 8)
+            targetTier = 4;
+        else if (stage == 8)
+            targetTier = 5;
+        else
+            targetTier = 0;
 
         //if (DataBase.Instance.IsElite)
-            //targetTier++;
+        //targetTier++;
 
         // Filtrage
-            List<GameObject> validEnemies = EnemiesDataBase
-            .Where(e => e.GetComponent<EnemyView>().Tier == targetTier)
-            .ToList();
+        List<GameObject> validEnemies = EnemiesDataBase
+        .Where(e => e.GetComponent<EnemyView>().Tier == targetTier)
+        .ToList();
 
         // Si aucun ennemi trouvé pour ce Tier
         if (validEnemies.Count == 0)
@@ -141,7 +150,7 @@ public class CombatSystem : Singleton<CombatSystem>
 
         // Choix aléatoire
         GameObject selectedEnemy = validEnemies[Random.Range(0, validEnemies.Count - 1)];
-        GameObject SpawnedEnemy = Instantiate(selectedEnemy, EnemySpawn.position, EnemySpawn.rotation,EnemySpawn);
+        GameObject SpawnedEnemy = Instantiate(selectedEnemy, EnemySpawn.position, EnemySpawn.rotation, EnemySpawn);
         EnemyView enemyView = SpawnedEnemy.GetComponent<EnemyView>();
         currentEnemy = enemyView;
         EnemySystem.Instance.enemyView = enemyView;
@@ -165,9 +174,7 @@ public class CombatSystem : Singleton<CombatSystem>
         }
 
         StartFightGA startFight = new(enemyView);
-        Debug.Log("ActionSystem running ? " + ActionSystem.Instance.IsPerforming);
-        Debug.Log("startFightGA ? " + startFight.enemyView.name);
-        ActionSystem.Instance.Perform(startFight);        
+        ActionSystem.Instance.Perform(startFight);
 
         Interactable = true;
     }
@@ -182,7 +189,7 @@ public class CombatSystem : Singleton<CombatSystem>
             {
                 if (diePermanentGA.PermanentView != null)
                 {
-                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView,null);
+                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(loseShieldGA);
 
                     TriggerPermanentEventGA triggerPermanentEventGA = new(diePermanentGA.PermanentView, Events.OnDestroy);
@@ -198,7 +205,7 @@ public class CombatSystem : Singleton<CombatSystem>
             {
                 if (diePermanentGA.PermanentView != null)
                 {
-                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView,null);
+                    LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(loseShieldGA);
 
                     diePermanentGA.CardReferenceArchive.Durability -= 1;
@@ -227,7 +234,7 @@ public class CombatSystem : Singleton<CombatSystem>
 
     public IEnumerator DieEnemySlotView(DieEnemySlotGA dieEnemySlotGA)
     {
-        LoseShieldGA loseShieldGA = new(null,dieEnemySlotGA.EnemySlotView);
+        LoseShieldGA loseShieldGA = new(null, dieEnemySlotGA.EnemySlotView);
         ActionSystem.Instance.AddReaction(loseShieldGA);
 
         TriggerEnemyEventGA triggerEnemyEventGA = new(dieEnemySlotGA.EnemySlotView, Events.OnDeath);
@@ -285,17 +292,38 @@ public class CombatSystem : Singleton<CombatSystem>
     // REACTIONS
     private void StartFightPreReaction(StartFightGA startFightGA)
     {
-        Debug.Log("---------- >>>  StartFightGA");
-        CurrentTurn = 1;
-        ReffilManaGA reffilManaGA = new();
-        ActionSystem.Instance.AddReaction(reffilManaGA);
-        DrawCardsGA drawCardsGA = new(5);
-        ActionSystem.Instance.AddReaction(drawCardsGA);
+        CurrentTurn = 0;
         foreach (GameAction action in startFightGA.enemyView.SetupActions)
         {
             ActionSystem.Instance.AddReaction(action);
         }
+        DeckShuffleGA deckShuffleGA = new();
+        ActionSystem.Instance.AddReaction(deckShuffleGA);
+        PlayerTurnGA playerTurnGA = new();
+        ActionSystem.Instance.AddReaction(playerTurnGA);
+    }
+    private void PlayerTurnPreReaction(PlayerTurnGA playerTurnGA)
+    {
+        ReffilManaGA reffilManaGA = new();
+        ActionSystem.Instance.AddReaction(reffilManaGA);
+        DrawCardsGA drawCardsGA = new(5);
+        ActionSystem.Instance.AddReaction(drawCardsGA);
+        TriggerEventGA triggerEventGA = new(Events.StartTurn);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
     }
 
+    private void EndPlayerTurnPostReaction(EndPlayerTurnGA endPlayerTurnGA)
+    {
+        TriggerEventGA triggerEventGA = new(Events.EndTurn);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
+        EnemyTurnGA enemyTurnGA = new();
+        ActionSystem.Instance.AddReaction(enemyTurnGA);
+    }
+
+    private void EndEnemyTurnPostReaction(EndEnemyTurnGA endEnemyTurnGA)
+    {
+        PlayerTurnGA playerTurnGA = new();
+        ActionSystem.Instance.AddReaction(playerTurnGA);
+    }
 }
  

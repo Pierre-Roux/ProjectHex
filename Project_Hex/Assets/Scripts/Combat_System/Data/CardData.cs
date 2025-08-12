@@ -18,6 +18,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Durability { get; private set; }
     [field: SerializeField] public Sprite PermanentImage { get; private set; }
     [field: SerializeField] public PermanentType permanentType  { get; private set; }
+    [field: SerializeField] public bool UnShieldable;
 
     [field: Header("Spell")]
     [field: SerializeField] public bool IsSpell { get; private set; }

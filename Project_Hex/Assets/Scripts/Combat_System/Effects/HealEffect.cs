@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HealEffect : Effect
 {
@@ -13,7 +14,7 @@ public class HealEffect : Effect
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner)
+    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -22,6 +23,10 @@ public class HealEffect : Effect
         Events = Event;
         Actionner = actionner;
         CardActionner = cardActionner;
+        Intent_Title = intent_Title;
+        number = Number;
+        Duration = duration;
+        DurationType = durationType;
     }
 
     public override GameAction GetGameAction()
@@ -66,6 +71,6 @@ public class HealEffect : Effect
 
     public override Effect Clone()
     {
-        return new HealEffect(amount, targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner);
+        return new HealEffect(amount, targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner,Intent_Title,number,Duration,DurationType);
     }
 }

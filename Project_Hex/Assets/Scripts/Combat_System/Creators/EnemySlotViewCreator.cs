@@ -53,7 +53,8 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
                 if (effect.Events == Events.Instant)
                 {
                     effect.Actionner = enemySlotView.gameObject;
-                    enemyView.SetupActions.Add(effect.GetGameAction());
+                    var CloneEffect = effect.Clone();
+                    enemyView.SetupActions.Add(CloneEffect.GetGameAction());
                 }
             }
         }
@@ -64,7 +65,8 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
                 if (effect.Events == Events.Instant)
                 {
                     effect.Actionner = enemySlotView.gameObject;
-                    ActionSystem.Instance.AddReaction(effect.GetGameAction());
+                    var CloneEffect = effect.Clone();
+                    ActionSystem.Instance.AddReaction(CloneEffect.GetGameAction());
                 }
             }
         }

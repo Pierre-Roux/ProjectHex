@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -13,15 +14,19 @@ public class DealDamageEffect : Effect
 
     public DealDamageEffect(){}
 
-    public DealDamageEffect(int DamageAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner)
+    public DealDamageEffect(int DamageAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType)
     {
         damageAmount = DamageAmount;
         targetMode = TargetMode;
         targetNumber = TargetNumber;
         actionnerType = ActionnerType;
+        CardActionner = cardActionner;
         Events = Event;
         Actionner = actionner;
-        CardActionner = cardActionner;
+        Intent_Title = intent_Title;
+        number = Number;
+        Duration = duration;
+        DurationType = durationType;
     }
 
     public override GameAction GetGameAction()
@@ -52,7 +57,7 @@ public class DealDamageEffect : Effect
             }
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
-                Debug.Log("Starting An Attack From Player " + Actionner.name);
+                //Debug.Log("Starting An Attack From Player " + Actionner.name);
                 AttackEnemyGA attackEnemyGA = new(damageAmount, targetMode);
                 attackEnemyGA.Actionner = Actionner;
                 return attackEnemyGA;
@@ -68,6 +73,6 @@ public class DealDamageEffect : Effect
 
     public override Effect Clone()
     {
-        return new DealDamageEffect(damageAmount, targetMode, targetNumber, actionnerType, Events, Actionner,CardActionner);
+        return new DealDamageEffect(damageAmount, targetMode, targetNumber, actionnerType, Events, Actionner,CardActionner,Intent_Title,number,Duration,DurationType);
     }
 }

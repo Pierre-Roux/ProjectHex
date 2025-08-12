@@ -19,7 +19,7 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         if (Action != null)
         {
-            Debug.Log("StartingFlowWith " + Action.GetType());
+            //Debug.Log("StartingFlowWith " + Action.GetType());
         }
         if (IsPerforming) return;
         IsPerforming = true;
@@ -54,7 +54,7 @@ public class ActionSystem : Singleton<ActionSystem>
 
         // Vérifie l'Actionner pour aider à détecter les données corrompues
         string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
-        Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
+        //Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
 
         reactions = action.PreReactions;
         PerformSubscribers(action, preSubs);

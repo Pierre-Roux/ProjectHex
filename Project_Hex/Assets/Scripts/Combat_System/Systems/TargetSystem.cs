@@ -144,7 +144,12 @@ public class TargetSystem : Singleton<TargetSystem>
 
             case TargetMode.Core_Enemy:
                 foreach (var perm in enemyPermanents)
-                    if (perm.IsCore && perm.Targetable) enemyTargets.Add(perm);
+                {
+                    if (perm.IsCore && perm.Targetable)
+                    {
+                        enemyTargets.Add(perm);
+                    }   
+                }
                 break;
 
             case TargetMode.HighHP_Enemy:

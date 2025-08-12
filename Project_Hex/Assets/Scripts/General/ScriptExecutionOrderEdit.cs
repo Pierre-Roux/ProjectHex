@@ -6,7 +6,6 @@ public class ScriptExecutionOrderEdit : MonoBehaviour
 {
     void Awake()
     {
-        Debug.Log("Reset");
         ActionSystem.Instance.ResetActions();
     }
 

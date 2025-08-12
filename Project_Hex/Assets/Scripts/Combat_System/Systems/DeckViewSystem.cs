@@ -13,7 +13,10 @@ public class DeckViewSystem : Singleton<DeckViewSystem>
     {
         CleanDisplay();
         // Instantiate new
-        foreach (var card in CardsToDisplay)
+        var randomized = new List<Card>(CardsToDisplay);
+        randomized.Shuffle();
+
+        foreach (var card in randomized)
         {
             CardView cardView = CardViewCreator.Instance.CreateCardView(card, Vector3.zero, quaternion.identity, UIDeckViewPanelContent.transform);
             cardView.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;

@@ -20,7 +20,6 @@ public class EnemyView : MonoBehaviour
 
     public void Setup()
     {
-        Debug.Log("Starting Setup");
         CoreSlot.setup();
         CombatSystem.Instance.Enemy_Permanents.Add(CoreSlot);
 

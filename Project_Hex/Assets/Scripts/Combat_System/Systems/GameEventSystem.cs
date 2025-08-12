@@ -12,7 +12,9 @@ public class GameEventSystem : Singleton<GameEventSystem>
         ActionSystem.AttachPerformer<TriggerEventGA>(TriggerEvent);
         ActionSystem.AttachPerformer<TriggerPermanentEventGA>(TriggerPermanentEventPerformer);
         ActionSystem.AttachPerformer<TriggerEnemyEventGA>(TriggerEnemyEventPerformer);
-        
+
+        ActionSystem.SubscribeReaction<TriggerEventGA>(UpdateDurationReaction, ReactionTiming.POST);
+
     }
 
     void OnDisable()
@@ -20,6 +22,8 @@ public class GameEventSystem : Singleton<GameEventSystem>
         ActionSystem.DetachPerformer<TriggerEventGA>();
         ActionSystem.DetachPerformer<TriggerPermanentEventGA>();
         ActionSystem.DetachPerformer<TriggerEnemyEventGA>();
+
+        ActionSystem.UnsubscribeReaction<TriggerEventGA>(UpdateDurationReaction, ReactionTiming.POST);
     }
 
     public void SetEvents(Dictionary<Events, List<Effect>> effectsbyevent)
@@ -37,15 +41,15 @@ public class GameEventSystem : Singleton<GameEventSystem>
             list = new List<Effect>();
             effectsByEvent[effectToExecute.Events] = list;
         }
-        list.Add(effectToExecute);
+        list.Add(effectToExecute.Clone());
     }
 
     public IEnumerator TriggerEvent(TriggerEventGA triggerEventGA)
     {
-        List<Effect> effectsToRemove = new();
+        //List<Effect> effectsToRemove = new();
 
         if (effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var list))
-        {            
+        {
             foreach (var effect in new List<Effect>(list))
             {
                 bool isCardMatch = triggerEventGA.card == null || triggerEventGA.card == effect.CardActionner;
@@ -56,23 +60,22 @@ public class GameEventSystem : Singleton<GameEventSystem>
                     if (ga != null)
                         ActionSystem.Instance.AddReaction(ga);
 
-                    if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
+                    /*if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
                     {
                         effect.Duration--;
-
                         if (effect.Duration <= 0)
                         {
                             effectsToRemove.Add(effect);
                         }
-                    }
+                    }*/
                 }
             }
         }
 
-        foreach (var effect in effectsToRemove)
+        /*foreach (var effect in effectsToRemove)
         {
             RemoveEffect(effect);
-        }        
+        }*/
 
         yield return null;
     }
@@ -163,5 +166,55 @@ public class GameEventSystem : Singleton<GameEventSystem>
                 yield return null;
             }
         }
+    }
+
+    // REACTIONS
+    
+    private void UpdateDurationReaction(TriggerEventGA triggerEventGA)
+    {
+        /*List<Effect> effectsToRemove = new();
+        if(triggerEventGA.gameEvent == Events.StartTurn)Debug.Log("StartTurn");
+        if (effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var list))
+        {
+            foreach (var effect in new List<Effect>(list))
+            {
+                Debug.Log(effect + " found");
+                if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
+                {
+                    effect.Duration--;
+                    Debug.Log(effect + " Lost 1 duration : " + effect.Duration + " Left");
+                    if (effect.Duration <= 0)
+                    {
+                        effectsToRemove.Add(effect);
+                    }
+                }
+            }
+        }*/
+
+        List<Effect> effectsToRemove = new();
+
+        foreach (var kvp in effectsByEvent)
+        {
+            var eventType = kvp.Key;
+            var effectList = kvp.Value;
+            foreach (var effect in effectList)
+            {
+                if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
+                {
+                    effect.Duration--;
+                    Debug.Log(effect + " Lost 1 duration : " + effect.Duration + " Left");
+
+                    if (effect.Duration <= 0)
+                    {
+                        effectsToRemove.Add(effect);
+                    }
+                }
+            }
+        }
+
+        foreach (var effect in effectsToRemove)
+        {
+            RemoveEffect(effect);
+        }   
     }
 }

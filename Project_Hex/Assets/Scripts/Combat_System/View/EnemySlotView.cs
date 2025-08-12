@@ -6,16 +6,18 @@ using UnityEngine;
 
 public class EnemySlotView : MonoBehaviour
 {
-
-    [HideInInspector] public Effect IntentAction;
-    public List<Effect> PossibleIntent;
-    public EnemyPermanentData PermanentData;
+    [SerializeField] public List<Effect> PossibleIntent;
+    [SerializeField] public EnemyPermanentData PermanentData;
 
     [SerializeField] public TMP_Text LifeText;
     [SerializeField] public TMP_Text IntentText;
 
     [SerializeField] public SpriteRenderer spriteRenderer;
+    [SerializeField] public GameObject ShieldVisual ;
+    [SerializeField] public bool UnShieldable;
 
+
+    [HideInInspector] public Effect IntentAction;
     [HideInInspector] public int currentLife { get; set; }
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] public bool IsDead = false;
@@ -27,14 +29,16 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public List<EnemySlotView> EnemyShielder ;
     [HideInInspector] public List<PermanentView> PlayerShielded;
     [HideInInspector] public List<EnemySlotView> EnemyShielded ;
-    [SerializeField] public GameObject ShieldVisual ;
-    [HideInInspector] public bool Targetable;
+    
+    [HideInInspector] public bool Targetable = true;
+    [HideInInspector] public bool Shielded;
 
     [HideInInspector] public bool RDMSequence;
     [HideInInspector] public List<string> IntentSequence = new List<string>();
     [HideInInspector] public bool LoopingSequence;
 
     private int sequenceIndex = 0;
+    private bool CoreLog;
 
     public void setup()
     {
@@ -42,18 +46,21 @@ public class EnemySlotView : MonoBehaviour
         spriteRenderer.sprite = PermanentData.PermanentImage;
         currentLife = PermanentData.PermanentLife;
         IsCore = PermanentData.IsCore;
+        UnShieldable = PermanentData.UnShieldable;
         ShieldVisual.SetActive(false);
+        Targetable = true;
         RDMSequence = PermanentData.RDMSequence;
         IntentSequence = PermanentData.IntentSequence;
         LoopingSequence = PermanentData.LoopingSequence;
-        Targetable = true;
         if (IsCore)
         {
             permanentType = PermanentType.none;
+            CoreLog = true;
         }
         else
         {
             permanentType = PermanentData.permanentType;
+            CoreLog = false;
         }
         UpdateIntent();
         UpdateLifeText();
@@ -87,7 +94,6 @@ public class EnemySlotView : MonoBehaviour
         {
             if (IntentSequence.Count == 0)
             {
-                Debug.LogWarning($"{name} has no IntentSequence defined.");
                 return;
             }
 
@@ -128,6 +134,7 @@ public class EnemySlotView : MonoBehaviour
     {
         if (!IsDead)
         {
+            transform.DOShakePosition(0.2f, 0.5f);
             TriggerEnemyEventGA triggerEventGA = new(this, Events.OnDamaged);
             ActionSystem.Instance.AddReaction(triggerEventGA);
         }
@@ -142,7 +149,7 @@ public class EnemySlotView : MonoBehaviour
                 IsDead = true;
             }
         }
-        transform.DOShakePosition(0.2f, 0.5f);
+        
         UpdateLifeText();
     }
 
@@ -159,24 +166,29 @@ public class EnemySlotView : MonoBehaviour
 
     public void TakeShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
     {
-        if (playerShielder != null)
+        if (IsCore) Debug.Log("Tentative de shield");
+        if (!UnShieldable)
         {
-            if (!PlayerShielder.Contains(playerShielder))
+            if (playerShielder != null)
             {
-                PlayerShielder.Add(playerShielder);
-                playerShielder.GetComponent<PermanentView>().EnemyShielded.Add(this);
+                if (!PlayerShielder.Contains(playerShielder))
+                {
+                    PlayerShielder.Add(playerShielder);
+                    playerShielder.GetComponent<PermanentView>().EnemyShielded.Add(this);
+                }
             }
-        }
 
-        if (enemyShielder != null)
-        {
-            if (!EnemyShielder.Contains(enemyShielder))
+            if (enemyShielder != null)
             {
-                EnemyShielder.Add(enemyShielder);
-                enemyShielder.GetComponent<EnemySlotView>().EnemyShielded.Add(this);
+                if (!EnemyShielder.Contains(enemyShielder))
+                {
+                    if (IsCore) Debug.Log("un shield me shield");
+                    EnemyShielder.Add(enemyShielder);
+                    enemyShielder.GetComponent<EnemySlotView>().EnemyShielded.Add(this);
+                }
             }
+            UpdateShield();
         }
-        UpdateShield();
     }
 
     public void RemoveShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
@@ -188,21 +200,23 @@ public class EnemySlotView : MonoBehaviour
         if (enemyShielder != null)
         {
             EnemyShielder.Remove(enemyShielder);
+            if (IsCore) Debug.Log("un shield est tombé");
         }
         UpdateShield();        
     }
 
     public void UpdateShield()
     {
+        if (IsCore) Debug.Log("il reste " + EnemyShielder.Count + " Shielder côté enemy");
         if (PlayerShielder.Count != 0 || EnemyShielder.Count != 0)
         {
             ShieldVisual.SetActive(true);
-            Targetable = false;
+            Shielded = true;
         }
         else
         {
             ShieldVisual.SetActive(false);
-            Targetable = true;  
+            Shielded = false;
         }
     }
 

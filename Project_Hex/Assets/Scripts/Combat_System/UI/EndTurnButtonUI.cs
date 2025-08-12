@@ -8,8 +8,8 @@ public class EndTurnButtonUI : MonoBehaviour
     {
         if (!CombatSystem.Instance.Interactable) return;
         if (ActionSystem.Instance.IsPerforming) return;
-        EnemyTurnGA enemyTurnGA = new();
-        ActionSystem.Instance.Perform(enemyTurnGA);
+        EndPlayerTurnGA endPlayerTurnGA = new();
+        ActionSystem.Instance.Perform(endPlayerTurnGA);
     }
 
 }

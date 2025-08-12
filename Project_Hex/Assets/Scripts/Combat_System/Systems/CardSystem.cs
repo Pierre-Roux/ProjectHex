@@ -21,8 +21,8 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.AttachPerformer<DeckShuffleGA>(DeckShuffleGA);
+        ActionSystem.SubscribeReaction<EndPlayerTurnGA>(EndPlayerTurnPreReaction, ReactionTiming.PRE);
         
 
     }
@@ -32,8 +32,8 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.DetachPerformer<DeckShuffleGA>();
+        ActionSystem.UnsubscribeReaction<EndPlayerTurnGA>(EndPlayerTurnPreReaction, ReactionTiming.PRE);
 
     }
 
@@ -51,6 +51,12 @@ public class CardSystem : Singleton<CardSystem>
 
     // PERFORMERS
 
+    private IEnumerator DeckShuffleGA(DeckShuffleGA deckShuffleGA)
+    {
+        drawPile.Shuffle();
+        yield return null;
+    }
+
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
@@ -62,6 +68,7 @@ public class CardSystem : Singleton<CardSystem>
         if (notDrawAmount > 0)
         {
             RefillDeck();
+            drawPile.Shuffle();
             if (drawPile.Count < notDrawAmount)
             {
                 notDrawAmount = drawPile.Count;
@@ -158,19 +165,11 @@ public class CardSystem : Singleton<CardSystem>
 
     // REACTIONS
 
-    private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGA)
+    private void EndPlayerTurnPreReaction(EndPlayerTurnGA endPlayerTurnGA)
     {
         DiscardAllCardsGA discardAllCardsGA = new();
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
         TriggerEventGA triggerEventGA = new(Events.EndTurn);
-        ActionSystem.Instance.AddReaction(triggerEventGA);
-    }
-
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
-    {
-        DrawCardsGA drawCardsGA = new(5);
-        ActionSystem.Instance.AddReaction(drawCardsGA);
-        TriggerEventGA triggerEventGA = new(Events.StartTurn);
         ActionSystem.Instance.AddReaction(triggerEventGA);
     }
 

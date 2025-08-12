@@ -16,8 +16,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.SubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
-
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(PerformIntentConstruct, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<EndEnemyTurnGA>(PerformIntentConstruct, ReactionTiming.PRE);
         
     }
 
@@ -31,8 +30,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.UnsubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
-
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(PerformIntentConstruct, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<EndEnemyTurnGA>(PerformIntentConstruct, ReactionTiming.PRE);
     }
 
 
@@ -47,8 +45,10 @@ public class EnemySystem : Singleton<EnemySystem>
                 ActionSystem.Instance.AddReaction(enemySlotView.IntentAction.GetGameAction());
                 enemySlotView.UpdateIntent();
             }
-
         }
+
+        EndEnemyTurnGA endEnemyTurnGA = new();
+        ActionSystem.Instance.AddReaction(endEnemyTurnGA);
         yield return null;
     }
 
@@ -161,17 +161,15 @@ public class EnemySystem : Singleton<EnemySystem>
         Attacker.SetPosition(Attacker.transform.position);
     }
 
-    private void PerformIntentConstruct(EnemyTurnGA enemyTurnGA)
+    private void PerformIntentConstruct(EndEnemyTurnGA endEnemyTurnGA)
     {
         if (enemyView.IntentConstructs == null || enemyView.IntentConstructs.Count == 0)
         {
-            Debug.LogWarning("No intent constructs found.");
             return;
         }
 
         if (enemyView.ConstructSequence == null || enemyView.ConstructSequence.Count == 0)
         {
-            Debug.LogWarning("No construct sequence defined.");
             return;
         }
 
@@ -202,8 +200,6 @@ public class EnemySystem : Singleton<EnemySystem>
                 {
                     EnemySlotViewCreator.Instance.CreateEnemySlotViewCreator(data, data.permanentType, false, enemyView);
                 }
-
-                Debug.Log($"✅ Performed intent '{currentKey}'");
             }
         }
 

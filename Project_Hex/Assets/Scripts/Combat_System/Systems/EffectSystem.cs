@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EffectSystem : Singleton<EffectSystem>
 {
-    // Performers
+    public float AnimDelay = 0.25f;
 
     void OnEnable()
     {
@@ -25,10 +25,8 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<LoseShieldGA>();
     }
 
-    private IEnumerator AddPerformerToEvent()
-    {
-        yield return null;
-    }
+
+    // Performers
 
     private IEnumerator PerformEffectPerformer(DoEffectGA doEffectGA)
     {
@@ -44,8 +42,38 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in dealDamageGA.Targets_Player)
             {
-                target.TakeDamage(dealDamageGA.Amount);
-                yield return new WaitForSeconds(0.15f);
+                if (target.Shielded)
+                {
+                    if (target.PlayerShielder.Count != 0 && target.EnemyShielder.Count != 0)
+                    {
+                        var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
+                        var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
+                        if (Random.Range(0, 1) == 0)
+                        {
+                            newtargetP.TakeDamage(dealDamageGA.Amount);
+                        }
+                        else
+                        {
+                            newtargetE.TakeDamage(dealDamageGA.Amount);
+                        }
+                    }
+                    else if (target.EnemyShielder.Count != 0)
+                    {
+                        var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
+                        newtargetE.TakeDamage(dealDamageGA.Amount);
+                    }
+                    else if (target.PlayerShielder.Count != 0)
+                    {
+                        var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
+                        newtargetP.TakeDamage(dealDamageGA.Amount);
+                    }
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+                else
+                {
+                    target.TakeDamage(dealDamageGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
             }
         }
 
@@ -53,8 +81,38 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in dealDamageGA.Targets_Enemy)
             {
-                target.TakeDamage(dealDamageGA.Amount);
-                yield return new WaitForSeconds(0.15f);
+                if (target.Shielded)
+                {
+                    if (target.PlayerShielder.Count != 0 && target.EnemyShielder.Count != 0)
+                    {
+                        var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
+                        var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
+                        if (Random.Range(0, 1) == 0)
+                        {
+                            newtargetP.TakeDamage(dealDamageGA.Amount);
+                        }
+                        else
+                        {
+                            newtargetE.TakeDamage(dealDamageGA.Amount);
+                        }
+                    }
+                    else if (target.EnemyShielder.Count != 0)
+                    {
+                        var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
+                        newtargetE.TakeDamage(dealDamageGA.Amount);
+                    }
+                    else if (target.PlayerShielder.Count != 0)
+                    {
+                        var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
+                        newtargetP.TakeDamage(dealDamageGA.Amount);
+                    }
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+                else
+                {
+                    target.TakeDamage(dealDamageGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
             }
         }
     }
@@ -66,7 +124,7 @@ public class EffectSystem : Singleton<EffectSystem>
             foreach (var target in healGA.Targets_Player)
             {
                 target.TakeHeal(healGA.Amount);
-                yield return new WaitForSeconds(0.15f);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
 
@@ -75,7 +133,7 @@ public class EffectSystem : Singleton<EffectSystem>
             foreach (var target in healGA.Targets_Enemy)
             {
                 target.TakeHeal(healGA.Amount);
-                yield return new WaitForSeconds(0.15f);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
     }
@@ -86,8 +144,8 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in shieldGA.Targets_Player)
             {
-                target.TakeShield(shieldGA.Actionner.GetComponent<PermanentView>(),null);
-                yield return new WaitForSeconds(0.15f);
+                target.TakeShield(shieldGA.Actionner.GetComponent<PermanentView>(), null);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
 
@@ -96,7 +154,7 @@ public class EffectSystem : Singleton<EffectSystem>
             foreach (var target in shieldGA.Targets_Enemy)
             {
                 target.TakeShield(null,shieldGA.Actionner.GetComponent<EnemySlotView>());
-                yield return new WaitForSeconds(0.15f);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
     }
@@ -108,12 +166,12 @@ public class EffectSystem : Singleton<EffectSystem>
             foreach (PermanentView perm in loseShieldGA.PermanentView.PlayerShielded)
             {
                 perm.RemoveShield(loseShieldGA.PermanentView,null);
-                yield return new WaitForSeconds(0.10f);
+                yield return new WaitForSeconds(AnimDelay);
             }
             foreach (EnemySlotView perm in loseShieldGA.PermanentView.EnemyShielded)
             {
                 perm.RemoveShield(loseShieldGA.PermanentView,null);
-                yield return new WaitForSeconds(0.10f);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
 
@@ -122,12 +180,12 @@ public class EffectSystem : Singleton<EffectSystem>
             foreach (PermanentView perm in loseShieldGA.EnemySlotView.PlayerShielded)
             {
                 perm.RemoveShield(null,loseShieldGA.EnemySlotView);
-                yield return new WaitForSeconds(0.10f);
+                yield return new WaitForSeconds(AnimDelay);
             }
             foreach (EnemySlotView perm in loseShieldGA.EnemySlotView.EnemyShielded)
             {
                 perm.RemoveShield(null,loseShieldGA.EnemySlotView);
-                yield return new WaitForSeconds(0.10f);
+                yield return new WaitForSeconds(AnimDelay);
             }
         }
     }

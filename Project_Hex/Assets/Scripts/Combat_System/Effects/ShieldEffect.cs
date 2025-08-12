@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ShieldEffect : Effect
 {
@@ -12,7 +13,7 @@ public class ShieldEffect : Effect
 
     public ShieldEffect(){}
 
-    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner)
+    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType)
     {
         targetMode = TargetMode;
         targetNumber = TargetNumber;
@@ -20,11 +21,14 @@ public class ShieldEffect : Effect
         Events = Event;
         Actionner = actionner;
         CardActionner = cardActionner;
+        Intent_Title = intent_Title;
+        number = Number;
+        Duration = duration;
+        DurationType = durationType;
     }
 
     public override GameAction GetGameAction()
     {
-        Debug.Log("StartingShield");
         // SI CARTE
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
@@ -69,7 +73,7 @@ public class ShieldEffect : Effect
 
     public override Effect Clone()
     {
-        return new ShieldEffect(targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner);
+        return new ShieldEffect(targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner,Intent_Title,number,Duration,DurationType);
     }
 
 }

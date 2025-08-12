@@ -5,22 +5,19 @@ using UnityEngine;
 public class ManaSystem : Singleton<ManaSystem>
 {
     [SerializeField] private ManaUI manaUI;
-    public int MAX_MANA = 5;
+    public int MAX_MANA = 10;
     public int currentMana;
 
     public void OnEnable()
     {
         ActionSystem.AttachPerformer<SpendManaGA>(SpendManaPerformer);
         ActionSystem.AttachPerformer<ReffilManaGA>(RefillManaPerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
-        
     }
 
     public void OnDisable()
     {
         ActionSystem.DetachPerformer<SpendManaGA>();
         ActionSystem.DetachPerformer<ReffilManaGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
 
     public void SetManaMax(int Amount)
@@ -47,13 +44,5 @@ public class ManaSystem : Singleton<ManaSystem>
     public bool HasEnoughMana(int manacost)
     {
         return currentMana >= manacost;
-    }
-
-    // Reactions
-
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
-    {
-        ReffilManaGA reffilManaGA = new();
-        ActionSystem.Instance.AddReaction(reffilManaGA);
     }
 }

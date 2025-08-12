@@ -8,6 +8,8 @@ public class PermanentView : MonoBehaviour
 {
     [SerializeField] SpriteRenderer PermanentSpriteRenderer;
     [SerializeField] TMP_Text HealthText;
+    [SerializeField] public GameObject ShieldVisual;
+    [SerializeField] public bool UnShieldable;
 
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] private int MaxLife { get; set; }
@@ -20,22 +22,23 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public PermanentType permanentType;
 
     [HideInInspector] public List<PermanentView> PlayerShielder;
-    [HideInInspector] public List<EnemySlotView> EnemyShielder ;
+    [HideInInspector] public List<EnemySlotView> EnemyShielder;
     [HideInInspector] public List<PermanentView> PlayerShielded;
-    [HideInInspector] public List<EnemySlotView> EnemyShielded ;
-    [SerializeField] public GameObject ShieldVisual ;
-    [HideInInspector] public bool Targetable;
+    [HideInInspector] public List<EnemySlotView> EnemyShielded;
+    [HideInInspector] public bool Targetable = true;
+    [HideInInspector] public bool Shielded;
 
     public void Setup(Card cardReference)
     {
+        Targetable = true;
         IsCore = false;
         CardReferenceArchive = cardReference;
         PermanentSpriteRenderer.sprite = cardReference.data.PermanentImage;
         MaxLife = cardReference.data.life;
         currentLife = MaxLife;
         permanentType = cardReference.data.permanentType;
+        UnShieldable = cardReference.UnShieldable;
         ShieldVisual.SetActive(false);
-        Targetable = true;
         UpdateLifeText();
 
         Durability = cardReference.Durability;
@@ -50,13 +53,14 @@ public class PermanentView : MonoBehaviour
 
     public void SetupCore(PlayerData CoreData)
     {
+        Targetable = true;
         IsCore = true;
         PermanentSpriteRenderer.sprite = CoreData.CoreImage;
         permanentType = PermanentType.none;
         MaxLife = CoreData.CoreHealth;
         currentLife = MaxLife;
+        UnShieldable = false;
         ShieldVisual.SetActive(false);
-        Targetable = true;
         UpdateLifeText();
     }
 
@@ -69,10 +73,10 @@ public class PermanentView : MonoBehaviour
     {
         currentLife -= Amount;
         UpdateLifeText();
-        transform.DOShakePosition(0.2f, 0.5f);
-
+        
         if (!IsDead)
         {
+            transform.DOShakePosition(0.2f, 0.5f);
             TriggerPermanentEventGA triggerPermanentEventGA = new(this, Events.OnDamaged);
             ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
         }
@@ -101,24 +105,27 @@ public class PermanentView : MonoBehaviour
 
     public void TakeShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
     {
-        if (playerShielder != null)
+        if (!UnShieldable)
         {
-            if (!PlayerShielder.Contains(playerShielder))
-            {
-                PlayerShielder.Add(playerShielder);
-                playerShielder.GetComponent<PermanentView>().PlayerShielded.Add(this);
-            }
-        }
+            if (playerShielder != null)
+                {
+                    if (!PlayerShielder.Contains(playerShielder))
+                    {
+                        PlayerShielder.Add(playerShielder);
+                        playerShielder.GetComponent<PermanentView>().PlayerShielded.Add(this);
+                    }
+                }
 
-        if (enemyShielder != null)
-        {
-            if (!EnemyShielder.Contains(enemyShielder))
+            if (enemyShielder != null)
             {
-                EnemyShielder.Add(enemyShielder);
-                enemyShielder.GetComponent<EnemySlotView>().PlayerShielded.Add(this);
+                if (!EnemyShielder.Contains(enemyShielder))
+                {
+                    EnemyShielder.Add(enemyShielder);
+                    enemyShielder.GetComponent<EnemySlotView>().PlayerShielded.Add(this);
+                }
             }
+            UpdateShield();
         }
-        UpdateShield();
     }
 
     public void RemoveShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
@@ -139,12 +146,12 @@ public class PermanentView : MonoBehaviour
         if (PlayerShielder.Count != 0 || EnemyShielder.Count != 0)
         {
             ShieldVisual.SetActive(true);
-            Targetable = false;
+            Shielded = true;
         }
         else
         {
             ShieldVisual.SetActive(false);
-            Targetable = true;  
+            Shielded = false;  
         }
     }
 

@@ -10,6 +10,7 @@ public class Card
     public string Description => data.Description;
     public Sprite Image => data.Image;
     public PermanentType permanentType => data.permanentType;
+    public bool UnShieldable => data.UnShieldable;
 
     public bool IsSpell { get; private set; }
     public int cost { get; private set; }

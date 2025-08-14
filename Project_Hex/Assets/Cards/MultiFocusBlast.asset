@@ -16,11 +16,13 @@ MonoBehaviour:
   <Description>k__BackingField: Inflict 2 damage 3 target
   <cost>k__BackingField: 2
   <Image>k__BackingField: {fileID: 21300000, guid: bb7b6ce2f1a61144083daba5680fbcfe, type: 3}
+  <Money_Cost>k__BackingField: 50
   <life>k__BackingField: 0
   <damage>k__BackingField: 0
   <Durability>k__BackingField: 0
   <PermanentImage>k__BackingField: {fileID: 0}
   <permanentType>k__BackingField: 0
+  UnShieldable: 0
   <IsSpell>k__BackingField: 1
   <Effects>k__BackingField:
   - rid: 1273756882910052352
@@ -33,6 +35,9 @@ MonoBehaviour:
         actionnerType: 2
         Events: 0
         Intent_Title: None
+        number: 
+        Duration: 0
+        DurationType: 0
         Actionner: {fileID: 0}
         damageAmount: 2
         targetMode: 24

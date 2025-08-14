@@ -27,6 +27,9 @@ public class CombatSystem : Singleton<CombatSystem>
     [HideInInspector] public EnemyZoneView EnemyShieldZone;
     [HideInInspector] public EnemyZoneView EnemySupportZone;
 
+    [HideInInspector] public int MaxPermPlayer;
+    [HideInInspector] public int MaxPermEnemy;
+
     public EnemyView currentEnemy;
 
     public List<EnemySlotView> Enemy_Permanents;
@@ -74,13 +77,6 @@ public class CombatSystem : Singleton<CombatSystem>
 
     private void Start()
     {
-        //StartCoroutine(DelayedStartup());
-        ClassicStartUp();
-    }
-
-    private IEnumerator DelayedStartup()
-    {
-        yield return null; // attend une frame
         ClassicStartUp();
     }
 
@@ -97,6 +93,8 @@ public class CombatSystem : Singleton<CombatSystem>
 
         int stage = 0;
         int targetTier = 0;
+        MaxPermPlayer = 9;
+        MaxPermEnemy = 9;
 
         if (DataBase.Instance.CurrentStage <= 0)
         {

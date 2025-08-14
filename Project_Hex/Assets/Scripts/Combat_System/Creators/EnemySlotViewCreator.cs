@@ -29,7 +29,7 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
         if (Parent == null) return null;
 
         int childCount = Parent.transform.childCount;
-        if (childCount >= 9)
+        if (childCount >= CombatSystem.Instance.MaxPermEnemy)
         {
             //Debug.Log($"[EnemySlotViewCreator] Cannot add {data.name} to {type} zone — already {childCount} slots (limit = 9)");
             return null;

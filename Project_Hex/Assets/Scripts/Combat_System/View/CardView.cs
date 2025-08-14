@@ -18,6 +18,7 @@ public class CardView : MonoBehaviour
 
     public bool IsReward;
     public bool RewardTaken;
+    [HideInInspector] public ShopSlot shopSlot;
 
     public bool isDragging = false;
 
@@ -55,19 +56,25 @@ public class CardView : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (ActionSystem.Instance.IsPerforming) return;
-        if (!CombatSystem.Instance.Interactable) return;
-        if (isDragging) return;
-        Wrapper.SetActive(false);
-        Vector3 pos = new(transform.position.x, -2.5f, 0);
-        CardViewHover.Instance.Show(Card, pos);
+        if (!IsReward)
+        {
+            if (ActionSystem.Instance.IsPerforming) return;
+            if (!CombatSystem.Instance.Interactable) return;
+            if (isDragging) return;
+            Wrapper.SetActive(false);
+            Vector3 pos = new(transform.position.x, -2.5f, 0);
+            CardViewHover.Instance.Show(Card, pos);
+        }
     }
 
     void OnMouseExit()
     {
-        if (isDragging) return;
-        CardViewHover.Instance.Hide();
-        Wrapper.SetActive(true);
+        if (!IsReward)
+        {
+            if (isDragging) return;
+            CardViewHover.Instance.Hide();
+            Wrapper.SetActive(true);
+        }
     }
 
     void OnMouseDown()
@@ -106,9 +113,37 @@ public class CardView : MonoBehaviour
                 }
                 else
                 {
-                    isDragging = false;
-                    SummonGA summonGA = new(Card);
-                    ActionSystem.Instance.Perform(summonGA);
+                    GameObject Parent = null;
+                    switch (Card.permanentType)
+                    {
+                        case PermanentType.Weapon:
+                            Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
+                            break;
+                        case PermanentType.Shield:
+                            Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
+                            break;
+                        case PermanentType.Support:
+                            Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
+                            break;
+                        default:
+                            Debug.Log("No Type For Perm " + Card.data.name);
+                            break;
+                    }
+                    if (Parent != null)
+                    {
+                        int childCount = Parent.transform.childCount;
+                        if (childCount >= CombatSystem.Instance.MaxPermPlayer)
+                        {
+                            // LimitReached
+                            returnCardToHand();
+                        }
+                        else
+                        {
+                            isDragging = false;
+                            SummonGA summonGA = new(Card);
+                            ActionSystem.Instance.Perform(summonGA);
+                        }
+                    }
                 }
             }
             else

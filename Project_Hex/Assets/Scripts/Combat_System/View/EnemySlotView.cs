@@ -38,7 +38,6 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public bool LoopingSequence;
 
     private int sequenceIndex = 0;
-    private bool CoreLog;
 
     public void setup()
     {
@@ -55,12 +54,10 @@ public class EnemySlotView : MonoBehaviour
         if (IsCore)
         {
             permanentType = PermanentType.none;
-            CoreLog = true;
         }
         else
         {
             permanentType = PermanentData.permanentType;
-            CoreLog = false;
         }
         UpdateIntent();
         UpdateLifeText();
@@ -166,7 +163,6 @@ public class EnemySlotView : MonoBehaviour
 
     public void TakeShield(PermanentView playerShielder = null, EnemySlotView enemyShielder = null)
     {
-        if (IsCore) Debug.Log("Tentative de shield");
         if (!UnShieldable)
         {
             if (playerShielder != null)
@@ -182,7 +178,6 @@ public class EnemySlotView : MonoBehaviour
             {
                 if (!EnemyShielder.Contains(enemyShielder))
                 {
-                    if (IsCore) Debug.Log("un shield me shield");
                     EnemyShielder.Add(enemyShielder);
                     enemyShielder.GetComponent<EnemySlotView>().EnemyShielded.Add(this);
                 }
@@ -200,14 +195,12 @@ public class EnemySlotView : MonoBehaviour
         if (enemyShielder != null)
         {
             EnemyShielder.Remove(enemyShielder);
-            if (IsCore) Debug.Log("un shield est tombé");
         }
         UpdateShield();        
     }
 
     public void UpdateShield()
     {
-        if (IsCore) Debug.Log("il reste " + EnemyShielder.Count + " Shielder côté enemy");
         if (PlayerShielder.Count != 0 || EnemyShielder.Count != 0)
         {
             ShieldVisual.SetActive(true);

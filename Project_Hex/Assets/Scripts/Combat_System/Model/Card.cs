@@ -18,6 +18,7 @@ public class Card
     public int damage { get; private set; }
     public int Shield { get; private set; }
     public int Durability { get; set; }
+    public int Money_Cost => data.Money_Cost;
 
     public List<Effect> Effects => data.Effects;
 

@@ -16,6 +16,7 @@ MonoBehaviour:
   <Description>k__BackingField: Inflict 4 damage To RDM OnPlayCard For 3 cards
   <cost>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
+  <Money_Cost>k__BackingField: 50
   <life>k__BackingField: 0
   <damage>k__BackingField: 0
   <Durability>k__BackingField: 0

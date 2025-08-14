@@ -20,16 +20,25 @@ public class EventSelectorSystem : Singleton<EventSelectorSystem>
         int CurrentStage = DataBase.Instance.CurrentStage;
         foreach (Choice choice in choices)
         {
-            choice.isElite = new System.Random().Next(0, 2) == 0;
-            if (choice.isElite)
+            int Choicetype = new System.Random().Next(0, 2);
+            switch (Choicetype)
             {
-                choice.UpdateText("Stage " + CurrentStage + " Enemy", "ELITE");
-            }
-            else
-            {
-                choice.UpdateText("Stage " + CurrentStage + " Enemy", "");
-            }
+                case 0 :
+                    choice.UpdateText("Stage " + CurrentStage + " Enemy", "");
+                break;
 
+                case 1 :
+                    choice.UpdateText("Stage " + CurrentStage + " Enemy", "ELITE");
+                    choice.isElite = true;
+                break;
+
+                case 2 :
+                    choice.UpdateText("Stage " + CurrentStage + " Event", "");
+                break;
+
+                default:
+                break;
+            }
         }
     }
 

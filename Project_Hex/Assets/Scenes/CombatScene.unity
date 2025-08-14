@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1640,14 +1640,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PermanentSpriteRenderer: {fileID: 552204764}
   HealthText: {fileID: 381192146}
+  ShieldVisual: {fileID: 1204337628}
+  UnShieldable: 0
   IsDead: 0
   permanentType: 0
   PlayerShielder: []
   EnemyShielder: []
   PlayerShielded: []
   EnemyShielded: []
-  ShieldVisual: {fileID: 1204337628}
   Targetable: 0
+  Shielded: 0
 --- !u!65 &637965886
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2822,6 +2824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48eb869f6503d9439f6ca648dd13059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AnimDelay: 0.25
 --- !u!1 &839244691
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,7 +3164,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 50
+          m_IntArgument: 500
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5812,6 +5815,13 @@ MonoBehaviour:
   ShieldZone: {fileID: 0}
   SupportZone: {fileID: 0}
   CoreSlot: {fileID: 0}
+  <IntentConstructs>k__BackingField: []
+  ConstructSequence: []
+  LoopingSequence: 0
+  sequenceIndex: 0
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2047132300
 GameObject:
   m_ObjectHideFlags: 0
@@ -6147,7 +6157,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2125020665}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.00925926, y: 0.00925926, z: 0.00925926}
   m_ConstrainProportionsScale: 0
   m_Children:

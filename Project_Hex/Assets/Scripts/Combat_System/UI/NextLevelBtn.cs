@@ -9,6 +9,14 @@ public class NextLevelBtn : MonoBehaviour
     {
         DataBase.Instance.CurrentStage++;
         DataBase.Instance.CoreLife = CombatSystem.Instance.PlayerCore.currentLife;
-        SceneManager.LoadScene("TransitionScene");
+        if (DataBase.Instance.CurrentStage == 1 || DataBase.Instance.CurrentStage == 4)
+        {
+            SceneManager.LoadScene("ShopScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("TransitionScene");
+        }
+        
     }
 }

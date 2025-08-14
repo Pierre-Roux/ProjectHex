@@ -16,6 +16,7 @@ MonoBehaviour:
   <Description>k__BackingField: OnPlayCard deal 1 damage to all all
   <cost>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: c19246b2cd83c09409e2a3ca326c7582, type: 3}
+  <Money_Cost>k__BackingField: 100
   <life>k__BackingField: 0
   <damage>k__BackingField: 0
   <Durability>k__BackingField: 0

@@ -10,7 +10,6 @@ public class CardView : MonoBehaviour
     [SerializeField] public TMP_Text Title;
     [SerializeField] public TMP_Text Description;
     [SerializeField] public SpriteRenderer Image;
-    [SerializeField] public TMP_Text Damage;
     [SerializeField] public TMP_Text Life;
     [SerializeField] public TMP_Text Durability;
     [SerializeField] public GameObject Wrapper;
@@ -32,24 +31,28 @@ public class CardView : MonoBehaviour
         Card = card;
         Title.text = card.Title;
         name = Title.text;
-        Description.text = card.Description;
+        if (card.DecayCounter <= 0)
+        {
+            Description.text = card.Description;
+        }
+        else
+        {
+            Description.text = card.Description + "\n" + "Decay " + card.DecayCounter.ToString();
+        }
         cost.text = card.cost.ToString();
         Image.sprite = card.Image;
 
         if (!card.IsSpell)
         {
             Life.gameObject.SetActive(true);
-            Damage.gameObject.SetActive(true);
             Durability.gameObject.SetActive(true);
 
             Life.text = card.life.ToString();
-            Damage.text = card.damage.ToString();
-            Durability.text = card.Durability.ToString();
+            Durability.text = card.Durability.ToString() + "/" + card.MaxDurability.ToString();
         }
         else
         {
             Life.gameObject.SetActive(false);
-            Damage.gameObject.SetActive(false);
             Durability.gameObject.SetActive(false);
         }
     }

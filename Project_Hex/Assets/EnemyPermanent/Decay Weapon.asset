@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
+  m_Name: Decay Weapon
+  m_EditorClassIdentifier: 
+  PermanentImage: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
+  PermanentLife: 10
+  IsCore: 0
+  UnShieldable: 0
+  permanentType: 1
+  DecayCounter: 1
+  <PossibleIntent>k__BackingField:
+  - rid: 1273757063170490374
+  RDMSequence: 1
+  <IntentSequence>k__BackingField:
+  - A
+  - B
+  LoopingSequence: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1273757063170490374
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 1
+        Events: 1
+        Intent_Title: Deal 8 dmg to Core
+        number: A
+        Duration: 0
+        DurationType: 0
+        Actionner: {fileID: 0}
+        damageAmount: 8
+        targetMode: 4
+        targetNumber: 0

@@ -11,14 +11,16 @@ public class Card
     public Sprite Image => data.Image;
     public PermanentType permanentType => data.permanentType;
     public bool UnShieldable => data.UnShieldable;
+    
 
     public bool IsSpell { get; private set; }
     public int cost { get; private set; }
     public int life { get; private set; }
-    public int damage { get; private set; }
     public int Shield { get; private set; }
     public int Durability { get; set; }
-    public int Money_Cost => data.Money_Cost;
+    public int DecayCounter { get; set; }
+    public int MaxDurability { get; set; }
+    public int Money_Cost { get; set; }
 
     public List<Effect> Effects => data.Effects;
 
@@ -28,11 +30,13 @@ public class Card
         data = cardData;
         cost = cardData.cost;
         IsSpell = cardData.IsSpell;
+        Money_Cost = data.Money_Cost;
         if (!cardData.IsSpell)
         {
             life = cardData.life;
-            damage = cardData.damage;
             Durability = cardData.Durability;
+            DecayCounter = cardData.DecayCounter;
+            MaxDurability = cardData.MaxDurability;
         }
     }
 }

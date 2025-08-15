@@ -12,11 +12,11 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<AttackPlayerGA>(AttackPlayerPerformer);
         ActionSystem.AttachPerformer<HealEnemyGA>(HealEnemyPerformer);
         ActionSystem.AttachPerformer<ShieldEnemyGA>(ShieldEnemyPerformer);
+        ActionSystem.AttachPerformer<SpawnConstructGA>(PerformIntentConstructPerformer);
 
         ActionSystem.SubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<EndEnemyTurnGA>(PerformIntentConstruct, ReactionTiming.PRE);
         
     }
 
@@ -26,11 +26,11 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<AttackPlayerGA>();
         ActionSystem.DetachPerformer<HealEnemyGA>();
         ActionSystem.DetachPerformer<ShieldEnemyGA>();
+        ActionSystem.DetachPerformer<SpawnConstructGA>();
 
         ActionSystem.UnsubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<EndEnemyTurnGA>(PerformIntentConstruct, ReactionTiming.PRE);
     }
 
 
@@ -141,6 +141,57 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
+    private IEnumerator PerformIntentConstructPerformer(SpawnConstructGA spawnConstructGA)
+    {
+        if(!CombatSystem.Instance.Win)
+        {
+            if (enemyView.IntentConstructs != null || enemyView.IntentConstructs.Count != 0)
+            {
+                if (enemyView.ConstructSequence != null || enemyView.ConstructSequence.Count != 0)
+                {
+
+                    bool SequenceFinished = false;
+
+                    if (enemyView.sequenceIndex >= enemyView.ConstructSequence.Count)
+                    {
+                        if (enemyView.LoopingSequence)
+                        {
+                            enemyView.sequenceIndex = 0;
+                        }
+                        else
+                        {
+                            SequenceFinished = true;
+                        }
+                    }
+
+                    if (!SequenceFinished)
+                    {
+                        string currentKey = enemyView.ConstructSequence[enemyView.sequenceIndex];
+                        if (currentKey != "")
+                        {
+                            IntentConstruct selected = enemyView.IntentConstructs.Find(ic => ic.number == currentKey);
+
+                            if (selected == null)
+                            {
+                                Debug.LogWarning($"No IntentConstruct found for key '{currentKey}'");
+                            }
+                            else
+                            {
+                                foreach (EnemyPermanentData data in selected.EnemyData)
+                                {
+                                    EnemySlotViewCreator.Instance.CreateEnemySlotViewCreator(data, data.permanentType, false, enemyView);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        enemyView.sequenceIndex++;
+        yield return null;
+    }
+
     // REACTIONS
 
     private void BeforeAttackPreReaction(AttackPlayerGA attackPlayerGA)
@@ -159,51 +210,5 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         EnemySlotView Attacker = shieldEnemyGA.Actionner.GetComponent<EnemySlotView>();
         Attacker.SetPosition(Attacker.transform.position);
-    }
-
-    private void PerformIntentConstruct(EndEnemyTurnGA endEnemyTurnGA)
-    {
-        if (enemyView.IntentConstructs == null || enemyView.IntentConstructs.Count == 0)
-        {
-            return;
-        }
-
-        if (enemyView.ConstructSequence == null || enemyView.ConstructSequence.Count == 0)
-        {
-            return;
-        }
-
-        if (enemyView.sequenceIndex >= enemyView.ConstructSequence.Count)
-        {
-            if (enemyView.LoopingSequence)
-            {
-                enemyView.sequenceIndex = 0;
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        string currentKey = enemyView.ConstructSequence[enemyView.sequenceIndex];
-        if (currentKey != "")
-        {
-            IntentConstruct selected = enemyView.IntentConstructs.Find(ic => ic.number == currentKey);
-
-            if (selected == null)
-            {
-                Debug.LogWarning($"No IntentConstruct found for key '{currentKey}'");
-            }
-            else
-            {
-                foreach (EnemyPermanentData data in selected.EnemyData)
-                {
-                    EnemySlotViewCreator.Instance.CreateEnemySlotViewCreator(data, data.permanentType, false, enemyView);
-                }
-            }
-        }
-
-        enemyView.sequenceIndex++;
-        CombatSystem.Instance.CurrentTurn++;
     }
 }

@@ -22,6 +22,7 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
+    [HideInInspector] public int DecayCounter { get; set; }
 
     [HideInInspector] public PermanentType permanentType;
 
@@ -51,6 +52,7 @@ public class EnemySlotView : MonoBehaviour
         RDMSequence = PermanentData.RDMSequence;
         IntentSequence = PermanentData.IntentSequence;
         LoopingSequence = PermanentData.LoopingSequence;
+        DecayCounter = PermanentData.DecayCounter;
         if (IsCore)
         {
             permanentType = PermanentType.none;

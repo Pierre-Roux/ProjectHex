@@ -12,6 +12,7 @@ public class CombatSystem : Singleton<CombatSystem>
     [SerializeField] private List<GameObject> EnemiesDataBase;
 
     [HideInInspector] public bool Interactable;
+    [HideInInspector] public bool Win;
 
     [SerializeField] public int CurrentTurn;
 
@@ -83,6 +84,8 @@ public class CombatSystem : Singleton<CombatSystem>
     // Mise en place classique
     public void ClassicStartUp()
     {
+        Win = false;
+
         if (DataBase.Instance.DeckList.Count == 0)
         {
             DataBase.Instance.DeckList = new List<CardData>(Player.deckData);
@@ -183,7 +186,7 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         if (!diePermanentGA.IsCore)
         {
-            if (diePermanentGA.Durability <= 0)
+            if (diePermanentGA.Durability == 0)
             {
                 if (diePermanentGA.PermanentView != null)
                 {
@@ -197,6 +200,11 @@ public class CombatSystem : Singleton<CombatSystem>
 
                     DestroyPermanentGA destroyPermanentGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(destroyPermanentGA);
+
+                    if (diePermanentGA.PermanentView.MaxDurability > 0)
+                    {
+                        DataBase.Instance.DeckList.Remove(destroyPermanentGA.PermanentView.CardReferenceArchive.data);
+                    }
                 }
             }
             else
@@ -262,6 +270,8 @@ public class CombatSystem : Singleton<CombatSystem>
             CombatSystem.Instance.Enemy_Permanents.Remove(destroyPermanentGA.enemySlotView);
             Destroy(destroyPermanentGA.enemySlotView.gameObject);
 
+            yield return null;
+
             EnemyWeaponZone.RepositionChildrenEnemySlotView();
             EnemyShieldZone.RepositionChildrenEnemySlotView();
             EnemySupportZone.RepositionChildrenEnemySlotViewCenterOut();
@@ -273,6 +283,8 @@ public class CombatSystem : Singleton<CombatSystem>
             CombatSystem.Instance.Player_Permanents.Remove(destroyPermanentGA.PermanentView);
             Destroy(destroyPermanentGA.PermanentView.gameObject);
 
+            yield return null;
+
             PlayerWeaponZone.RepositionChildrenPermanentView();
             PlayerShieldZone.RepositionChildrenPermanentView();
             PlayerSupportZone.RepositionChildrenPermanentViewCenterOut();
@@ -283,6 +295,7 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         // Bloque l'interactivité du joeur 
         Interactable = false;
+        Win = true;
         EndGameVictoryPanel.SetActive(true);
         yield return null;
     }
@@ -314,12 +327,22 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         TriggerEventGA triggerEventGA = new(Events.EndTurn);
         ActionSystem.Instance.AddReaction(triggerEventGA);
+        DecountPlayerDecayGA decountPlayerDecayGA = new();
+        ActionSystem.Instance.AddReaction(decountPlayerDecayGA);
         EnemyTurnGA enemyTurnGA = new();
         ActionSystem.Instance.AddReaction(enemyTurnGA);
     }
 
     private void EndEnemyTurnPostReaction(EndEnemyTurnGA endEnemyTurnGA)
     {
+        TriggerEventGA triggerEventGA = new(Events.EndEnemyTurn);
+        DecountEnemyDecayGA decountEnemyDecayGA = new();
+        ActionSystem.Instance.AddReaction(decountEnemyDecayGA);
+        SpawnConstructGA spawnConstructGA = new();
+        ActionSystem.Instance.AddReaction(spawnConstructGA);
+
+        CurrentTurn++;
+
         PlayerTurnGA playerTurnGA = new();
         ActionSystem.Instance.AddReaction(playerTurnGA);
     }

@@ -4,6 +4,7 @@ public enum Events
 
     // General Event
     EnemyTurn,
+    EndEnemyTurn,
     StartTurn,
     EndTurn,
     OnPlayCard,

@@ -15,8 +15,9 @@ public class CardData : ScriptableObject
 
     [field: Header("Permanent")]
     [field: SerializeField] public int life { get; private set; }
-    [field: SerializeField] public int damage { get; private set; }
+    [field: SerializeField] public int DecayCounter { get; private set; }
     [field: SerializeField] public int Durability { get; private set; }
+    [field: SerializeField] public int MaxDurability { get; private set; }
     [field: SerializeField] public Sprite PermanentImage { get; private set; }
     [field: SerializeField] public PermanentType permanentType  { get; private set; }
     [field: SerializeField] public bool UnShieldable;

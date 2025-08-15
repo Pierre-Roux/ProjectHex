@@ -169,8 +169,6 @@ public class CardSystem : Singleton<CardSystem>
     {
         DiscardAllCardsGA discardAllCardsGA = new();
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
-        TriggerEventGA triggerEventGA = new(Events.EndTurn);
-        ActionSystem.Instance.AddReaction(triggerEventGA);
     }
 
     public void UpdatePiles()

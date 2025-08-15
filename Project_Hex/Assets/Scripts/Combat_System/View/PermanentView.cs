@@ -14,8 +14,9 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] private int MaxLife { get; set; }
     [HideInInspector] public int currentLife { get; set; }
-    [HideInInspector] public int damage { get; set; }
+    [HideInInspector] public int MaxDurability { get; set; }
     [HideInInspector] public int Durability { get; set; }
+    [HideInInspector] public int DecayCounter { get; set; }
     [HideInInspector] public Card CardReferenceArchive;
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
@@ -27,6 +28,7 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public List<EnemySlotView> EnemyShielded;
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
+    [HideInInspector] public bool isHollow;
 
     public void Setup(Card cardReference)
     {
@@ -38,12 +40,27 @@ public class PermanentView : MonoBehaviour
         currentLife = MaxLife;
         permanentType = cardReference.data.permanentType;
         UnShieldable = cardReference.UnShieldable;
+        DecayCounter = cardReference.DecayCounter;
         ShieldVisual.SetActive(false);
         UpdateLifeText();
 
+        MaxDurability = cardReference.MaxDurability;
         Durability = cardReference.Durability;
+        if (MaxDurability > 0)
+        {
+            if (Durability == 0)
+            {   
+                isHollow = true;
+            }
+        }
 
-        damage = cardReference.data.damage;
+        // affichage graphique du hollow
+        if (isHollow)
+        {
+            Color c = PermanentSpriteRenderer.color;
+            c.a = 0.5f;
+            PermanentSpriteRenderer.color = c;
+        }
     }
 
     public void SetPosition(Vector3 pos)

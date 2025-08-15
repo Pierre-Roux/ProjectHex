@@ -253,12 +253,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PermanentSpriteRenderer: {fileID: 5728508307362772071}
   HealthText: {fileID: 6262918214128263930}
+  ShieldVisual: {fileID: 8210921774048756653}
+  UnShieldable: 0
   IsDead: 0
   permanentType: 0
   PlayerShielder: []
   EnemyShielder: []
-  ShieldVisual: {fileID: 8210921774048756653}
+  PlayerShielded: []
+  EnemyShielded: []
   Targetable: 0
+  Shielded: 0
+  isHollow: 0
 --- !u!65 &5313502043812365378
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class ShopSlotSystem : Singleton<ShopSlotSystem>
 {
     [SerializeField] public List<ShopSlot> ShopSlots;
+    [SerializeField] public int PromoChance;
     [SerializeField] private LayerMask TargetingLayerMask;
     [SerializeField] public Transform PilePoint;
     [SerializeField] private GameObject CursorGameobject;
@@ -26,13 +27,39 @@ public class ShopSlotSystem : Singleton<ShopSlotSystem>
 
     public void SetupShop()
     {
-        Debug.Log("Setup");
-        foreach (ShopSlot ShopSlot in ShopSlots)
+        List<CardData> tempList = new List<CardData>(GlobalCardList);
+
+        foreach (ShopSlot shopSlot in ShopSlots)
         {
-            Card SelectedCard = new (GlobalCardList[Random.Range(0,GlobalCardList.Count)]);
-            CardView cardView = CardViewCreator.Instance.CreateCardViewRewardUI(SelectedCard,ShopSlot.CardParent.transform.position,ShopSlot.CardParent.transform.rotation, ShopSlot ,ShopSlot.CardParent.gameObject.transform);
-            cardView.shopSlot = ShopSlot;
-            ShopSlot.Cost.text = SelectedCard.Money_Cost.ToString();
+            if (tempList.Count == 0)
+            {
+                Debug.LogWarning("Pas assez de cartes dans GlobalCardList pour remplir tous les slots !");
+                break;
+            }
+
+            int randomIndex = Random.Range(0, tempList.Count);
+            Card selectedCard = new Card(tempList[randomIndex]);
+            // Retire la carte choisie de la liste temporaire pour éviter les doublons
+            tempList.RemoveAt(randomIndex);
+
+            CardView cardView = CardViewCreator.Instance.CreateCardViewRewardUI(
+                selectedCard,
+                shopSlot.CardParent.transform.position,
+                shopSlot.CardParent.transform.rotation,
+                shopSlot,
+                shopSlot.CardParent.transform
+            );
+
+            cardView.shopSlot = shopSlot;
+
+            int PromoNumber = Random.Range(0,PromoChance);
+            if(PromoNumber == 0)
+            {
+                selectedCard.Money_Cost = (selectedCard.Money_Cost/2);
+                shopSlot.Cost.color = new Color(0f, 0.8f, 0f, 1f);
+            }
+
+            shopSlot.Cost.text = selectedCard.Money_Cost.ToString();
         }
 
         CurrentMoney = DataBase.Instance.Money;

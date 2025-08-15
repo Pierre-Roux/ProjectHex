@@ -13,6 +13,8 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.AttachPerformer<HealGA>(DealHealPerformer); 
         ActionSystem.AttachPerformer<ShieldGA>(DealShieldPerformer); 
         ActionSystem.AttachPerformer<LoseShieldGA>(LoseShieldPerformer); 
+        ActionSystem.AttachPerformer<DecountPlayerDecayGA>(DecountDecayPlayerPerformer);
+        ActionSystem.AttachPerformer<DecountEnemyDecayGA>(DecountDecayEnemyPerformer);
         
     }
 
@@ -23,6 +25,8 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<HealGA>();
         ActionSystem.DetachPerformer<ShieldGA>();
         ActionSystem.DetachPerformer<LoseShieldGA>();
+        ActionSystem.DetachPerformer<DecountPlayerDecayGA>();
+        ActionSystem.DetachPerformer<DecountEnemyDecayGA>();
     }
 
 
@@ -188,5 +192,39 @@ public class EffectSystem : Singleton<EffectSystem>
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
+    }
+
+    private IEnumerator DecountDecayPlayerPerformer(DecountPlayerDecayGA decountPlayerDecayGA)
+    {
+        foreach (PermanentView permanentView in CombatSystem.Instance.Player_Permanents)
+        {
+            if (permanentView.DecayCounter > 0)
+            {
+                permanentView.DecayCounter--;
+                if (permanentView.DecayCounter == 0)
+                {
+                    DiePermanentGA diepermanentGA = new(permanentView.IsCore, permanentView.Durability, permanentView.CardReferenceArchive, permanentView);
+                    ActionSystem.Instance.AddReaction(diepermanentGA);
+                }
+            }
+        }
+        yield return null;
+    }
+
+    private IEnumerator DecountDecayEnemyPerformer(DecountEnemyDecayGA decountEnemyDecayGA)
+    { 
+        foreach (EnemySlotView EnemySlot in CombatSystem.Instance.Enemy_Permanents)
+        {
+            if (EnemySlot.DecayCounter > 0)
+            {
+                EnemySlot.DecayCounter--;
+                if (EnemySlot.DecayCounter == 0)
+                {
+                    DieEnemySlotGA dieEnemySlotGA = new(EnemySlot);
+                    ActionSystem.Instance.AddReaction(dieEnemySlotGA);
+                }
+            }           
+        }    
+        yield return null;
     }
 }

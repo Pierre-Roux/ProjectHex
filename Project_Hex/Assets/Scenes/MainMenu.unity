@@ -440,6 +440,7 @@ MonoBehaviour:
   CurrentStage: 0
   GlobalCardList:
   - {fileID: 11400000, guid: 91e8aa0ab1dcd10479e8620d35181d7d, type: 2}
+  - {fileID: 11400000, guid: 497155a975955db4cb757558b8eb6126, type: 2}
   - {fileID: 11400000, guid: 7550458e563058d46a7d516ab2aa505d, type: 2}
   - {fileID: 11400000, guid: 6b59db6bf76a0274f8ff84a27a750dc5, type: 2}
   - {fileID: 11400000, guid: 907c1988ec6c11147a0b93126e8b6237, type: 2}

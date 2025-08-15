@@ -2215,6 +2215,7 @@ MonoBehaviour:
   - {fileID: 1624346880}
   - {fileID: 64257190}
   - {fileID: 1122595011}
+  PromoChance: 8
   TargetingLayerMask:
     serializedVersion: 2
     m_Bits: 128

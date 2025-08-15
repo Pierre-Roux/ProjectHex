@@ -1650,6 +1650,7 @@ MonoBehaviour:
   EnemyShielded: []
   Targetable: 0
   Shielded: 0
+  isHollow: 0
 --- !u!65 &637965886
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3857,7 +3858,9 @@ MonoBehaviour:
   PlayerCore: {fileID: 637965885}
   EnemiesDataBase:
   - {fileID: 5728494894741626448, guid: 8c6f90f68e3cad64093a6a1b8e1af2e7, type: 3}
+  - {fileID: 5728494894741626448, guid: 510c1bf40bcc99a45926e2c5aa4dad80, type: 3}
   Interactable: 0
+  Win: 0
   CurrentTurn: 0
   EnemySpawn: {fileID: 2013951735}
   EndGameDefeatPanel: {fileID: 602313453}
@@ -3868,6 +3871,8 @@ MonoBehaviour:
   EnemyWeaponZone: {fileID: 0}
   EnemyShieldZone: {fileID: 0}
   EnemySupportZone: {fileID: 0}
+  MaxPermPlayer: 0
+  MaxPermEnemy: 0
   currentEnemy: {fileID: 0}
   Enemy_Permanents: []
   Player_Permanents: []

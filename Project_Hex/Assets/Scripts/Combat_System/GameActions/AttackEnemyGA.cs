@@ -1,14 +1,15 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class AttackEnemyGA : GameAction
 {
-    public TargetMode TargetMode;
+    public List<PermanentView> playerTargets;
+    public List<EnemySlotView> enemyTargets;
     public int Damage;
-    public AttackEnemyGA(int damage, TargetMode targetMode)
+    public AttackEnemyGA(int damage, List<PermanentView> PlayerTargets, List<EnemySlotView> EnemyTargets)
     {
         Damage = damage;
-        TargetMode = targetMode;
+        playerTargets = PlayerTargets;
+        enemyTargets = EnemyTargets;
     }
 }

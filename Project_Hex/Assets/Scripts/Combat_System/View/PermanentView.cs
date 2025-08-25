@@ -17,6 +17,7 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public int MaxDurability { get; set; }
     [HideInInspector] public int Durability { get; set; }
     [HideInInspector] public int DecayCounter { get; set; }
+    [HideInInspector] public int BonusPower { get; set; }
     [HideInInspector] public Card CardReferenceArchive;
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
@@ -29,6 +30,7 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
     [HideInInspector] public bool isHollow;
+    [HideInInspector] public bool isInvoc;
 
     public void Setup(Card cardReference)
     {
@@ -38,6 +40,7 @@ public class PermanentView : MonoBehaviour
         PermanentSpriteRenderer.sprite = cardReference.data.PermanentImage;
         MaxLife = cardReference.data.life;
         currentLife = MaxLife;
+        isInvoc = cardReference.data.isInvoc;
         permanentType = cardReference.data.permanentType;
         UnShieldable = cardReference.UnShieldable;
         DecayCounter = cardReference.DecayCounter;
@@ -49,7 +52,7 @@ public class PermanentView : MonoBehaviour
         if (MaxDurability > 0)
         {
             if (Durability == 0)
-            {   
+            {
                 isHollow = true;
             }
         }
@@ -88,6 +91,7 @@ public class PermanentView : MonoBehaviour
 
     public void TakeDamage(int Amount)
     {
+        if (Amount <= 0) return;
         currentLife -= Amount;
         UpdateLifeText();
         
@@ -170,6 +174,13 @@ public class PermanentView : MonoBehaviour
             ShieldVisual.SetActive(false);
             Shielded = false;  
         }
+    }
+
+    public void TakeAlterPower(int Amount)
+    {
+        if (IsDead) return;
+        BonusPower += Amount;
+        transform.DOShakePosition(0f, 0.1f);
     }
 
     public void ActiveSelectEffect()

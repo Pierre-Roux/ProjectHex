@@ -21,6 +21,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public Sprite PermanentImage { get; private set; }
     [field: SerializeField] public PermanentType permanentType  { get; private set; }
     [field: SerializeField] public bool UnShieldable;
+    [field: SerializeField] public bool isInvoc;
 
     [field: Header("Spell")]
     [field: SerializeField] public bool IsSpell { get; private set; }

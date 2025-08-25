@@ -10,36 +10,56 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: Slime
+  m_Name: LordSlime
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Slime
-  <Description>k__BackingField: Start Turn deal 1 to RDM 2 when hollow
+  <Title>k__BackingField: DebuffSlime
+  <Description>k__BackingField: All enemy lose 3 power
   <cost>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <Money_Cost>k__BackingField: 30
+  <Image>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
+  <Money_Cost>k__BackingField: 50
   <life>k__BackingField: 5
   <DecayCounter>k__BackingField: 0
-  <Durability>k__BackingField: 1
-  <MaxDurability>k__BackingField: 1
-  <PermanentImage>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <permanentType>k__BackingField: 1
+  <Durability>k__BackingField: 2
+  <MaxDurability>k__BackingField: 2
+  <PermanentImage>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
+  <permanentType>k__BackingField: 3
   UnShieldable: 0
   isInvoc: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
-  - rid: 1273757036253806595
-  - rid: 8456800761348882433
+  - rid: 8456800604179398657
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 1273757036253806595
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+    - rid: 8456800604179398657
+      type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
-        Events: 4
-        HollowEffect: 1
+        Events: 0
+        HollowEffect: 0
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 7
+        TriggerOnDurationEnd: 1
+        LinkedEffect:
+          rid: 8456800761348882432
+        Actionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        alterAmount: -3
+        targetMode: 0
+        passive: 1
+        permaTypes: 2
+        targetNumber: 0
+    - rid: 8456800761348882432
+      type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 0
+        Events: 8
+        HollowEffect: 0
         Intent_Title: 
         number: 
         Duration: 0
@@ -50,25 +70,8 @@ MonoBehaviour:
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 2
-        targetMode: 5
-        targetNumber: 0
-    - rid: 8456800761348882433
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
-      data:
-        actionnerType: 0
-        Events: 4
-        HollowEffect: 0
-        Intent_Title: 
-        number: 
-        Duration: 0
-        DurationType: 4
-        TriggerOnDurationEnd: 0
-        LinkedEffect:
-          rid: -2
-        Actionner: {fileID: 0}
-        TargetForLinked_Player: []
-        TargetForLinked_Enemy: []
-        damageAmount: 1
-        targetMode: 5
+        alterAmount: 3
+        targetMode: 0
+        passive: 1
+        permaTypes: 2
         targetNumber: 0

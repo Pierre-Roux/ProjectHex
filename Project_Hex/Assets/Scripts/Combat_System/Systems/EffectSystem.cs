@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class EffectSystem : Singleton<EffectSystem>
@@ -10,12 +10,12 @@ public class EffectSystem : Singleton<EffectSystem>
     {
         ActionSystem.AttachPerformer<DoEffectGA>(PerformEffectPerformer);
         ActionSystem.AttachPerformer<DealDamageGA>(DealDamagePerformer);
-        ActionSystem.AttachPerformer<HealGA>(DealHealPerformer); 
-        ActionSystem.AttachPerformer<ShieldGA>(DealShieldPerformer); 
-        ActionSystem.AttachPerformer<LoseShieldGA>(LoseShieldPerformer); 
+        ActionSystem.AttachPerformer<HealGA>(DealHealPerformer);
+        ActionSystem.AttachPerformer<ShieldGA>(DealShieldPerformer);
+        ActionSystem.AttachPerformer<LoseShieldGA>(LoseShieldPerformer);
         ActionSystem.AttachPerformer<DecountPlayerDecayGA>(DecountDecayPlayerPerformer);
         ActionSystem.AttachPerformer<DecountEnemyDecayGA>(DecountDecayEnemyPerformer);
-        
+        ActionSystem.AttachPerformer<AlterPowerGA>(AlterPowerPerformer);
     }
 
     void OnDisable()
@@ -27,11 +27,11 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<LoseShieldGA>();
         ActionSystem.DetachPerformer<DecountPlayerDecayGA>();
         ActionSystem.DetachPerformer<DecountEnemyDecayGA>();
+        ActionSystem.DetachPerformer<AlterPowerGA>();
     }
 
 
     // Performers
-
     private IEnumerator PerformEffectPerformer(DoEffectGA doEffectGA)
     {
         GameAction effectAction = doEffectGA.Effect.GetGameAction();
@@ -157,7 +157,7 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in shieldGA.Targets_Enemy)
             {
-                target.TakeShield(null,shieldGA.Actionner.GetComponent<EnemySlotView>());
+                target.TakeShield(null, shieldGA.Actionner.GetComponent<EnemySlotView>());
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
@@ -169,12 +169,12 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (PermanentView perm in loseShieldGA.PermanentView.PlayerShielded)
             {
-                perm.RemoveShield(loseShieldGA.PermanentView,null);
+                perm.RemoveShield(loseShieldGA.PermanentView, null);
                 yield return new WaitForSeconds(AnimDelay);
             }
             foreach (EnemySlotView perm in loseShieldGA.PermanentView.EnemyShielded)
             {
-                perm.RemoveShield(loseShieldGA.PermanentView,null);
+                perm.RemoveShield(loseShieldGA.PermanentView, null);
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
@@ -183,12 +183,12 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (PermanentView perm in loseShieldGA.EnemySlotView.PlayerShielded)
             {
-                perm.RemoveShield(null,loseShieldGA.EnemySlotView);
+                perm.RemoveShield(null, loseShieldGA.EnemySlotView);
                 yield return new WaitForSeconds(AnimDelay);
             }
             foreach (EnemySlotView perm in loseShieldGA.EnemySlotView.EnemyShielded)
             {
-                perm.RemoveShield(null,loseShieldGA.EnemySlotView);
+                perm.RemoveShield(null, loseShieldGA.EnemySlotView);
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
@@ -212,7 +212,7 @@ public class EffectSystem : Singleton<EffectSystem>
     }
 
     private IEnumerator DecountDecayEnemyPerformer(DecountEnemyDecayGA decountEnemyDecayGA)
-    { 
+    {
         foreach (EnemySlotView EnemySlot in CombatSystem.Instance.Enemy_Permanents)
         {
             if (EnemySlot.DecayCounter > 0)
@@ -223,8 +223,76 @@ public class EffectSystem : Singleton<EffectSystem>
                     DieEnemySlotGA dieEnemySlotGA = new(EnemySlot);
                     ActionSystem.Instance.AddReaction(dieEnemySlotGA);
                 }
-            }           
-        }    
+            }
+        }
         yield return null;
+    }
+
+    private IEnumerator AlterPowerPerformer(AlterPowerGA alterPowerGA)
+    {
+        if (alterPowerGA.passive)
+        {
+            UnityEngine.Debug.Log("Passive on " + alterPowerGA.permaTypes);
+            switch (alterPowerGA.permaTypes)
+            {
+                case PermaTypes.All:
+                    CombatSystem.Instance.GeneralPower += alterPowerGA.Amount;
+                    break;
+
+                case PermaTypes.Players:
+                    CombatSystem.Instance.PlayerGeneralPower += alterPowerGA.Amount;
+                    UnityEngine.Debug.Log("PowerAugment by " + alterPowerGA.Amount);
+                    break;
+
+                case PermaTypes.Enemy:
+                    CombatSystem.Instance.EnemyGeneralPower += alterPowerGA.Amount;
+                    break;
+
+                case PermaTypes.AllInvoc:
+                    CombatSystem.Instance.Invoc_GeneralPower += alterPowerGA.Amount;
+                    break;
+
+                case PermaTypes.AllInvoc_Players:
+                    CombatSystem.Instance.Invoc_PlayerGeneralPower += alterPowerGA.Amount;
+                    break;
+
+                case PermaTypes.AllInvoc_Enemy:
+                    CombatSystem.Instance.Invoc_EnemyGeneralPower += alterPowerGA.Amount;
+                    break;
+
+                default:
+                    break;
+            }
+
+            foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+            {
+                // Update l'afichage pour les cartes
+            }
+            
+            foreach (EnemySlotView item in CombatSystem.Instance.Enemy_Permanents)
+            {
+                item.UpdateIntentText(item.IntentAction);
+            }
+        }
+        else
+        {
+            if (alterPowerGA.Targets_Player != null)
+            {
+                foreach (var target in alterPowerGA.Targets_Player)
+                {
+                    target.TakeAlterPower(alterPowerGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }
+
+            if (alterPowerGA.Targets_Enemy != null)
+            {
+                foreach (var target in alterPowerGA.Targets_Enemy)
+                {
+                    target.TakeAlterPower(alterPowerGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }
+        }
     }
 }

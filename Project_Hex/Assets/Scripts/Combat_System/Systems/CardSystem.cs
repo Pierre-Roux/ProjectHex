@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardSystem : Singleton<CardSystem>
@@ -143,17 +144,39 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.Instance.AddReaction(spendManaGA);
         foreach (var effect in playCardGA.Card.Effects)
         {
-            if (effect.Events == Events.Instant)
+            // On clone l’effet de base pour éviter les références partagées
+            Effect clonedEffect = effect.Clone();
+            clonedEffect.Actionner = null;
+
+            while (clonedEffect != null)
             {
-                DoEffectGA performEffectGA = new(effect);
-                ActionSystem.Instance.AddReaction(performEffectGA);
-            }
-            else
-            {
-                if (effect.Events != Events.OnDeath && effect.Events != Events.OnDestroy && effect.Events != Events.OnDamaged && effect.Events != Events.OnActivate)
+                if (clonedEffect.Events == Events.Instant)
                 {
-                    GameEventSystem.Instance.AddEffectToEvent(effect);
+                    // Exécution immédiate via GameAction
+                    ActionSystem.Instance.AddReaction(clonedEffect.GetGameAction());
                 }
+                else
+                {
+                    // Ajout aux Events (sauf cas spéciaux)
+                    if (clonedEffect.Events != Events.OnDeath &&
+                        clonedEffect.Events != Events.OnDestroy &&
+                        clonedEffect.Events != Events.OnDamaged &&
+                        clonedEffect.Events != Events.OnActivate &&
+                        clonedEffect.Events != Events.EnemyTurn &&
+                        clonedEffect.Events != Events.Instant)
+                    {
+                        GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                    }
+                }
+
+                // On lie le parent au linked effect (utile si la chaîne est clonée)
+                if (clonedEffect.LinkedEffect != null)
+                {
+                    clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                }
+
+                // Avancer dans la chaîne
+                clonedEffect = clonedEffect.LinkedEffect;
             }
         }
     }

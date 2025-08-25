@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -12,11 +13,13 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<AttackPlayerGA>(AttackPlayerPerformer);
         ActionSystem.AttachPerformer<HealEnemyGA>(HealEnemyPerformer);
         ActionSystem.AttachPerformer<ShieldEnemyGA>(ShieldEnemyPerformer);
+        ActionSystem.AttachPerformer<EnemyAlterPowerGA>(AlterPlayerPerformer);
         ActionSystem.AttachPerformer<SpawnConstructGA>(PerformIntentConstructPerformer);
 
         ActionSystem.SubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
         
     }
 
@@ -26,11 +29,13 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<AttackPlayerGA>();
         ActionSystem.DetachPerformer<HealEnemyGA>();
         ActionSystem.DetachPerformer<ShieldEnemyGA>();
+        ActionSystem.DetachPerformer<EnemyAlterPowerGA>();
         ActionSystem.DetachPerformer<SpawnConstructGA>();
 
         ActionSystem.UnsubscribeReaction<AttackPlayerGA>(BeforeAttackPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
     }
 
 
@@ -62,19 +67,32 @@ public class EnemySystem : Singleton<EnemySystem>
             yield return tween.WaitForCompletion();
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
 
-            if (attackPlayerGA.TargetMode == TargetMode.Manual)
+            if (attackPlayerGA.playerTargets != null && attackPlayerGA.playerTargets.Count > 0)
             {
-
+                int DamageAmount;
+                if (Attacker.isInvoc)
+                {
+                    DamageAmount = attackPlayerGA.Damage + Attacker.BonusPower + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;;
+                }
+                else
+                {
+                    DamageAmount = attackPlayerGA.Damage + Attacker.BonusPower + CombatSystem.Instance.EnemyGeneralPower;
+                }
+                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackPlayerGA.playerTargets, null));
             }
-            else
+                
+            if (attackPlayerGA.enemyTargets != null && attackPlayerGA.enemyTargets.Count > 0)
             {
-                var (playerTargets, enemyTargets) = TargetSystem.GetTargets(attackPlayerGA.TargetMode, attackPlayerGA.Actionner);
-
-                if (playerTargets != null && playerTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new DealDamageGA(attackPlayerGA.Damage, playerTargets, null));
-
-                if (enemyTargets != null && enemyTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new DealDamageGA(attackPlayerGA.Damage, null, enemyTargets));
+                int DamageAmount;
+                if (Attacker.isInvoc)
+                {
+                    DamageAmount = attackPlayerGA.Damage + Attacker.BonusPower + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;;
+                }
+                else
+                {
+                    DamageAmount = attackPlayerGA.Damage + Attacker.BonusPower + CombatSystem.Instance.EnemyGeneralPower;
+                }
+                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, null, attackPlayerGA.enemyTargets));
             }
         }
     }
@@ -89,20 +107,11 @@ public class EnemySystem : Singleton<EnemySystem>
             yield return tween.WaitForCompletion();
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
 
-            if (healEnemyGA.TargetMode == TargetMode.Manual)
-            {
+            if (healEnemyGA.playerTargets != null && healEnemyGA.playerTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new HealGA(healEnemyGA.HealAmount, healEnemyGA.playerTargets, null));
 
-            }
-            else
-            {
-                var (playerTargets, enemyTargets) = TargetSystem.GetTargets(healEnemyGA.TargetMode, healEnemyGA.Actionner);
-
-                if (playerTargets != null && playerTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new HealGA(healEnemyGA.HealAmount, playerTargets, null));
-
-                if (enemyTargets != null && enemyTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new HealGA(healEnemyGA.HealAmount, null, enemyTargets));
-            }
+            if (healEnemyGA.enemyTargets != null && healEnemyGA.enemyTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new HealGA(healEnemyGA.HealAmount, null, healEnemyGA.enemyTargets));
         }
     }
 
@@ -116,28 +125,43 @@ public class EnemySystem : Singleton<EnemySystem>
             yield return tween.WaitForCompletion();
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
 
-            if (shieldEnemyGA.TargetMode == TargetMode.Manual)
+            if (shieldEnemyGA.playerTargets != null && shieldEnemyGA.playerTargets.Count > 0)
             {
+                ShieldGA shieldGA = new ShieldGA(shieldEnemyGA.playerTargets, null);
+                shieldGA.Actionner = shieldEnemyGA.Actionner;
+                ActionSystem.Instance.AddReaction(shieldGA);
+            }
 
+            if (shieldEnemyGA.enemyTargets != null && shieldEnemyGA.enemyTargets.Count > 0)
+            {
+                ShieldGA shieldGA = new ShieldGA(null, shieldEnemyGA.enemyTargets);
+                shieldGA.Actionner = shieldEnemyGA.Actionner;
+                ActionSystem.Instance.AddReaction(shieldGA);
+            }
+        }
+    }
+
+    private IEnumerator AlterPlayerPerformer(EnemyAlterPowerGA enemyAlterPowerGA)
+    {
+        if (enemyAlterPowerGA.Actionner != null)
+        {
+            EnemySlotView Attacker = enemyAlterPowerGA.Actionner.GetComponent<EnemySlotView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y + 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+            if (enemyAlterPowerGA.passive)
+            {
+                ActionSystem.Instance.AddReaction(new AlterPowerGA(enemyAlterPowerGA.Amount, enemyAlterPowerGA.passive, enemyAlterPowerGA.permaTypes, null, null));
             }
             else
             {
-                var (playerTargets, enemyTargets) = TargetSystem.GetTargets(shieldEnemyGA.TargetMode, shieldEnemyGA.Actionner);
+                if (enemyAlterPowerGA.playerTargets != null && enemyAlterPowerGA.playerTargets.Count > 0)
+                    ActionSystem.Instance.AddReaction(new AlterPowerGA(enemyAlterPowerGA.Amount, enemyAlterPowerGA.passive, enemyAlterPowerGA.permaTypes, enemyAlterPowerGA.playerTargets, null));
 
-                if (playerTargets != null && playerTargets.Count > 0)
-                {
-                    ShieldGA shieldGA = new ShieldGA(playerTargets, null);
-                    shieldGA.Actionner = shieldEnemyGA.Actionner;
-                    ActionSystem.Instance.AddReaction(shieldGA);
-                }
-
-                if (enemyTargets != null && enemyTargets.Count > 0)
-                {
-                    ShieldGA shieldGA = new ShieldGA(null, enemyTargets);
-                    shieldGA.Actionner = shieldEnemyGA.Actionner;
-                    ActionSystem.Instance.AddReaction(shieldGA);
-                }
-            }
+                if (enemyAlterPowerGA.enemyTargets != null && enemyAlterPowerGA.enemyTargets.Count > 0)
+                    ActionSystem.Instance.AddReaction(new AlterPowerGA(enemyAlterPowerGA.Amount, enemyAlterPowerGA.passive, enemyAlterPowerGA.permaTypes, null, enemyAlterPowerGA.enemyTargets));
+            }            
         }
     }
 
@@ -209,6 +233,12 @@ public class EnemySystem : Singleton<EnemySystem>
     private void BeforeShieldPreReaction(ShieldEnemyGA shieldEnemyGA)
     {
         EnemySlotView Attacker = shieldEnemyGA.Actionner.GetComponent<EnemySlotView>();
+        Attacker.SetPosition(Attacker.transform.position);
+    }
+
+    private void BeforeAlterPreReaction(EnemyAlterPowerGA enemyAlterPowerGA)
+    {
+        EnemySlotView Attacker = enemyAlterPowerGA.Actionner.GetComponent<EnemySlotView>();
         Attacker.SetPosition(Attacker.transform.position);
     }
 }

@@ -50,11 +50,22 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
         {
             foreach (Effect effect in enemySlotView.PossibleIntent)
             {
-                if (effect.Events == Events.Instant)
+                Effect clonedEffect = effect.Clone();
+
+                while (clonedEffect != null)
                 {
-                    effect.Actionner = enemySlotView.gameObject;
-                    var CloneEffect = effect.Clone();
-                    enemyView.SetupActions.Add(CloneEffect.GetGameAction());
+                    if (clonedEffect.Events == Events.Instant)
+                    {
+                        clonedEffect.Actionner = enemySlotView.gameObject;
+                        enemyView.SetupActions.Add(clonedEffect.GetGameAction());
+                    }
+
+                    if (clonedEffect.LinkedEffect != null)
+                    {
+                        clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                    }
+                    clonedEffect.Actionner = enemySlotView.gameObject;
+                    clonedEffect = clonedEffect.LinkedEffect;
                 }
             }
         }
@@ -62,11 +73,30 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
         {
             foreach (Effect effect in enemySlotView.PossibleIntent)
             {
-                if (effect.Events == Events.Instant)
+
+                Effect clonedEffect = effect.Clone();
+                
+                while (clonedEffect != null)
                 {
-                    effect.Actionner = enemySlotView.gameObject;
-                    var CloneEffect = effect.Clone();
-                    ActionSystem.Instance.AddReaction(CloneEffect.GetGameAction());
+                    if (clonedEffect.Events == Events.Instant)
+                    {
+                        clonedEffect.Actionner = enemySlotView.gameObject;
+                        ActionSystem.Instance.AddReaction(clonedEffect.GetGameAction());
+                    }
+                    else
+                    {
+                        if (clonedEffect.Events != Events.EnemyTurn &&
+                            clonedEffect.Events != Events.Instant)
+                        {
+                            GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                        }
+                    }
+                    if (clonedEffect.LinkedEffect != null)
+                    {
+                        clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                    }
+                    clonedEffect.Actionner = enemySlotView.gameObject;
+                    clonedEffect = clonedEffect.LinkedEffect;
                 }
             }
         }

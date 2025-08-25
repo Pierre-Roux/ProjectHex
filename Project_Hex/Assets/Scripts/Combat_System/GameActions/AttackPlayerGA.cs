@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 public class AttackPlayerGA : GameAction
 {
-    public TargetMode TargetMode;
+    public List<PermanentView> playerTargets;
+    public List<EnemySlotView> enemyTargets;
     public int Damage;
-    public AttackPlayerGA(int damage, TargetMode targetMode)
+    public AttackPlayerGA(int damage, List<PermanentView> PlayerTargets, List<EnemySlotView> EnemyTargets)
     {
         Damage = damage;
-        TargetMode = targetMode;
+        playerTargets = PlayerTargets;
+        enemyTargets = EnemyTargets;
     }
 }

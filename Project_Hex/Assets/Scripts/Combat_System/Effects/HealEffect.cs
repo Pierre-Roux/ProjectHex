@@ -6,15 +6,15 @@ using System;
 public class HealEffect : Effect
 {
     [Header("Effect Param")]
-    [SerializeField] private int amount;
-    [SerializeField] private TargetMode targetMode;
+    [SerializeField] public int amount;
+    [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType)
+    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -27,6 +27,10 @@ public class HealEffect : Effect
         number = Number;
         Duration = duration;
         DurationType = durationType;
+        TriggerOnDurationEnd = triggerOnDurationEnd;
+        LinkedEffect = linkedEffect;
+        TargetForLinked_Player = targetForLinked_Player;
+        TargetForLinked_Enemy = targetForLinked_Enemy;
     }
 
     public override GameAction GetGameAction()
@@ -37,12 +41,20 @@ public class HealEffect : Effect
             if (targetMode == TargetMode.Manual)
             {
                 HealGA healGA = new(amount, null, null);
-                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber);
+                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
                 return startManualTargetingGA;
+            }
+            else if (targetMode == TargetMode.EffectParent_Targets)
+            {
+                HealGA healGA = new(amount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                return healGA;
             }
             else
             {
                 var (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                TargetForLinked_Player = playerTargets;
+                TargetForLinked_Enemy = enemyTargets;
+
                 HealGA healGA = new(amount, playerTargets, enemyTargets);
                 return healGA;
             }
@@ -51,26 +63,106 @@ public class HealEffect : Effect
         else
         {
             // SI ENEMY
-            if (actionnerType == ActionnerType.ENEMY)
+            if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
-                HealEnemyGA healEnemyGA = new(amount, targetMode);
-                healEnemyGA.Actionner = Actionner;
-                return healEnemyGA;
+                if (targetMode == TargetMode.Manual)
+                {
+                    HealGA healGA = new(amount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
+                    return startManualTargetingGA;
+                }
+                else
+                {
+                    List<PermanentView> playerTargets;
+                    List<EnemySlotView> enemyTargets;
+
+                    if (targetMode == TargetMode.EffectParent_Targets)
+                    {
+                        playerTargets = ParentEffect.TargetForLinked_Player;
+                        enemyTargets = ParentEffect.TargetForLinked_Enemy;
+                    }
+                    else
+                    {
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+
+                        TargetForLinked_Player = playerTargets;
+                        TargetForLinked_Enemy = enemyTargets;
+                    }
+
+                    HealEnemyGA healEnemyGA = new(amount, playerTargets, enemyTargets);
+                    healEnemyGA.Actionner = Actionner;
+                    return healEnemyGA;
+                }
             }
             // SI PLAYER
-            else if (actionnerType == ActionnerType.PLAYER)
+            else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
-                HealPlayerGA healPlayerGA = new(amount, targetMode);
-                healPlayerGA.Actionner = Actionner;
-                return healPlayerGA;
+                if (targetMode == TargetMode.Manual)
+                {
+                    HealGA healGA = new(amount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
+                    return startManualTargetingGA;
+                }
+                else
+                {
+                    List<PermanentView> playerTargets;
+                    List<EnemySlotView> enemyTargets;
+
+                    if (targetMode == TargetMode.EffectParent_Targets)
+                    {
+                        playerTargets = ParentEffect.TargetForLinked_Player;
+                        enemyTargets = ParentEffect.TargetForLinked_Enemy;
+                    }
+                    else
+                    {
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+
+                        TargetForLinked_Player = playerTargets;
+                        TargetForLinked_Enemy = enemyTargets;
+                    }
+
+                    HealPlayerGA healPlayerGA = new(amount, playerTargets, enemyTargets);
+                    healPlayerGA.Actionner = Actionner;
+                    return healPlayerGA;
+                }
             }
-            //NEVER
-            else {return null;}
+            // NEVER
+            else
+            {
+                Debug.LogError("Effect.GetGameAction returned Null");
+                return null;
+            }
         }
     }
 
     public override Effect Clone()
     {
-        return new HealEffect(amount, targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner,Intent_Title,number,Duration,DurationType);
+        var clonedPlayerTargets = TargetForLinked_Player != null 
+            ? new List<PermanentView>(TargetForLinked_Player) 
+            : null;
+
+        var clonedEnemyTargets = TargetForLinked_Enemy != null 
+            ? new List<EnemySlotView>(TargetForLinked_Enemy) 
+            : null;
+
+        Effect clonedLinked = LinkedEffect != null ? LinkedEffect.Clone() : null;
+
+        return new HealEffect(
+            amount,
+            targetMode,
+            targetNumber,
+            actionnerType,
+            Events,
+            Actionner,
+            CardActionner,
+            Intent_Title,
+            number,
+            Duration,
+            DurationType,
+            TriggerOnDurationEnd,
+            clonedLinked,
+            clonedPlayerTargets,
+            clonedEnemyTargets
+        );
     }
 }

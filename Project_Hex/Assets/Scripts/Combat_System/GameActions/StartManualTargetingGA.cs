@@ -7,9 +7,11 @@ public class StartManualTargetingGA : GameAction
 {
     public GameAction ActionToRealiseAfterTargetting;
     public int TargetNumber;
-    public StartManualTargetingGA(GameAction actionToRealiseAfterTargetting, int targetNumber)
+    public Effect EffectRef;
+    public StartManualTargetingGA(GameAction actionToRealiseAfterTargetting, int targetNumber, Effect effectRef = null)
     {
         ActionToRealiseAfterTargetting = actionToRealiseAfterTargetting;
         TargetNumber = targetNumber;
+        EffectRef = effectRef;
     }
 }

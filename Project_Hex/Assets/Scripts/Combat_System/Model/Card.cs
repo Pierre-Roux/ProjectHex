@@ -21,6 +21,7 @@ public class Card
     public int DecayCounter { get; set; }
     public int MaxDurability { get; set; }
     public int Money_Cost { get; set; }
+    public bool isInvoc;
 
     public List<Effect> Effects => data.Effects;
 
@@ -31,6 +32,7 @@ public class Card
         cost = cardData.cost;
         IsSpell = cardData.IsSpell;
         Money_Cost = data.Money_Cost;
+        isInvoc = data.isInvoc;
         if (!cardData.IsSpell)
         {
             life = cardData.life;

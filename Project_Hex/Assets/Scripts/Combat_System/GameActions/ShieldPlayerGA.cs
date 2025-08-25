@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class ShieldPlayerGA : GameAction
 {
-    public TargetMode TargetMode;
+    public List<PermanentView> playerTargets;
+    public List<EnemySlotView> enemyTargets;
 
-    public ShieldPlayerGA(TargetMode targetMode)
+    public ShieldPlayerGA(List<PermanentView> PlayerTargets, List<EnemySlotView> EnemyTargets)
     {
-        TargetMode = targetMode;
+        playerTargets = PlayerTargets;
+        enemyTargets = EnemyTargets;
     }
 }

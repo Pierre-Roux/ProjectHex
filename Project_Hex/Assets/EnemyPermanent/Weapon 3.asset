@@ -10,18 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
-  m_Name: Weapon 1
+  m_Name: Weapon 3
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
+  PermanentImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
   PermanentLife: 10
   IsCore: 0
+  IsInvoc: 0
   UnShieldable: 0
   permanentType: 1
   DecayCounter: 0
   <PossibleIntent>k__BackingField:
   - rid: 1273757063170490374
-  RDMSequence: 1
-  <IntentSequence>k__BackingField: []
+  RDMSequence: 0
+  <IntentSequence>k__BackingField:
+  - 
+  - 
+  - A
   LoopingSequence: 0
   references:
     version: 2
@@ -32,9 +36,9 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 1
-        Events: 1
+        Events: 2
         HollowEffect: 0
-        Intent_Title: Deal 5 dmg to rdm
+        Intent_Title: Bomba at end of 3 turns
         number: A
         Duration: 0
         DurationType: 0
@@ -44,6 +48,6 @@ MonoBehaviour:
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 5
-        targetMode: 3
+        damageAmount: 2
+        targetMode: 15
         targetNumber: 0

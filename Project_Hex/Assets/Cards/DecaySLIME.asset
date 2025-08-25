@@ -24,6 +24,7 @@ MonoBehaviour:
   <PermanentImage>k__BackingField: {fileID: 21300000, guid: 6e62f4595d41c4a40b3f894d584f89a0, type: 3}
   <permanentType>k__BackingField: 1
   UnShieldable: 0
+  isInvoc: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
   - rid: 1273757036253806595
@@ -35,6 +36,7 @@ MonoBehaviour:
       data:
         actionnerType: 0
         Events: 4
+        HollowEffect: 0
         Intent_Title: 
         number: 
         Duration: 0

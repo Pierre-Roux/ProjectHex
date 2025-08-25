@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class HealEnemyGA : GameAction
 {
-    public TargetMode TargetMode;
+    public List<PermanentView> playerTargets;
+    public List<EnemySlotView> enemyTargets;
     public int HealAmount;
 
-    public HealEnemyGA(int healAmount, TargetMode targetMode)
+    public HealEnemyGA(int healAmount, List<PermanentView> PlayerTargets, List<EnemySlotView> EnemyTargets)
     {
         HealAmount = healAmount;
-        TargetMode = targetMode;
+        playerTargets = PlayerTargets;
+        enemyTargets = EnemyTargets;
     }
 }

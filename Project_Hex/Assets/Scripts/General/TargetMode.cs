@@ -24,5 +24,6 @@ public enum TargetMode
     ALL_Enemy_Shields,
     ALL_Enemy_Supports,
     All_All,
-    Manual
+    Manual,
+    EffectParent_Targets,
 }

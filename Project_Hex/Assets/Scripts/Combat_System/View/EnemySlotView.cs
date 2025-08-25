@@ -15,6 +15,7 @@ public class EnemySlotView : MonoBehaviour
     [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] public GameObject ShieldVisual ;
     [SerializeField] public bool UnShieldable;
+    [SerializeField] public bool isInvoc;
 
 
     [HideInInspector] public Effect IntentAction;
@@ -23,6 +24,7 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
     [HideInInspector] public int DecayCounter { get; set; }
+    [HideInInspector] public int BonusPower { get; set; }
 
     [HideInInspector] public PermanentType permanentType;
 
@@ -47,6 +49,7 @@ public class EnemySlotView : MonoBehaviour
         currentLife = PermanentData.PermanentLife;
         IsCore = PermanentData.IsCore;
         UnShieldable = PermanentData.UnShieldable;
+        isInvoc = PermanentData.IsInvoc;
         ShieldVisual.SetActive(false);
         Targetable = true;
         RDMSequence = PermanentData.RDMSequence;
@@ -121,16 +124,67 @@ public class EnemySlotView : MonoBehaviour
         {
             IntentAction = selectedEffect.Clone();
             IntentAction.Actionner = this.gameObject;
-            IntentText.text = selectedEffect.Intent_Title;
+            UpdateIntentText(selectedEffect);
         }
         else
         {
-            IntentText.text = "—";
+            IntentText.text = "!";
         }
+    }
+
+    public void UpdateIntentText(Effect selectedEffect)
+    {
+        if (selectedEffect == null) return;
+
+        string intentText = selectedEffect.Intent_Title; // fallback
+
+        switch (selectedEffect)
+        {
+            case DealDamageEffect dmg:
+                int damagetext;
+                int dmgBonus;
+                if (isInvoc)
+                {
+                    dmgBonus = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;
+                }
+                else
+                {
+                    dmgBonus = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower;
+                }
+                if (dmgBonus <= 0)
+                {
+                    damagetext = 0;
+                }
+                else
+                {
+                    damagetext = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower;
+                }
+                intentText = $"Deal {damagetext} damage to {dmg.targetMode}";
+                break;
+
+            case HealEffect heal:
+                intentText = $"Heal {heal.amount} HP to {heal.targetMode}";
+                break;
+
+            case DrawCardsEffect draw:
+                intentText = $"Draw {draw.drawAmount} cards";
+                break;
+
+            case ShieldEffect shield:
+                intentText = $"Shield {shield.targetMode} ";
+                break;
+
+            case AlterPowerEffect alter:
+                intentText = $"Alter power by {alter.alterAmount} of {alter.targetMode}";
+                break;
+        }
+
+        IntentText.text = intentText;
     }
 
     public void TakeDamage(int Amount)
     {
+        if (Amount <= 0) return;
         if (!IsDead)
         {
             transform.DOShakePosition(0.2f, 0.5f);
@@ -213,6 +267,17 @@ public class EnemySlotView : MonoBehaviour
             ShieldVisual.SetActive(false);
             Shielded = false;
         }
+    }
+
+    public void TakeAlterPower(int Amount)
+    {
+        if (IsDead) return;
+        BonusPower += Amount;
+        if (transform != null)
+        {
+            transform.DOShakePosition(0f, 0.1f);
+        }
+        UpdateIntentText(IntentAction);
     }
 
     public void ActiveSelectEffect()

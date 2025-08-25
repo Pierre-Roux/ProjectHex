@@ -8,6 +8,7 @@ public class EnemyPermanentData : ScriptableObject
     [field: SerializeField] public Sprite PermanentImage;
     [field: SerializeField] public int PermanentLife;
     [field: SerializeField] public bool IsCore;
+    [field: SerializeField] public bool IsInvoc;
     [field: SerializeField] public bool UnShieldable;
     [field: SerializeField] public PermanentType permanentType;
     [field: SerializeField] public int DecayCounter;

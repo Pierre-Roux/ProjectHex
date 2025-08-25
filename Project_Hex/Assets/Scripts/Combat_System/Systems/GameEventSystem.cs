@@ -41,7 +41,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
             list = new List<Effect>();
             effectsByEvent[effectToExecute.Events] = list;
         }
-        list.Add(effectToExecute.Clone());
+        list.Add(effectToExecute);
     }
 
     public IEnumerator TriggerEvent(TriggerEventGA triggerEventGA)
@@ -54,28 +54,31 @@ public class GameEventSystem : Singleton<GameEventSystem>
             {
                 bool isCardMatch = triggerEventGA.card == null || triggerEventGA.card == effect.CardActionner;
 
-                if (isCardMatch)
+                if (effect.Events == Events.OnDeath)
                 {
-                    GameAction ga = effect.GetGameAction();
-                    if (ga != null)
-                        ActionSystem.Instance.AddReaction(ga);
-
-                    /*if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
-                    {
-                        effect.Duration--;
-                        if (effect.Duration <= 0)
-                        {
-                            effectsToRemove.Add(effect);
-                        }
-                    }*/
+                    Debug.Log("here");
                 }
+
+                if (isCardMatch)
+                    {
+                        if (effect.TriggerOnDurationEnd)
+                        {
+                            if (effect.Duration == 1)
+                            {
+                                GameAction ga = effect.GetGameAction();
+                                if (ga != null)
+                                    ActionSystem.Instance.AddReaction(ga);
+                            }
+                        }
+                        else
+                        {
+                            GameAction ga = effect.GetGameAction();
+                            if (ga != null)
+                                ActionSystem.Instance.AddReaction(ga);
+                        }
+                    }
             }
         }
-
-        /*foreach (var effect in effectsToRemove)
-        {
-            RemoveEffect(effect);
-        }*/
 
         yield return null;
     }
@@ -126,7 +129,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
     public IEnumerator TriggerPermanentEventPerformer(TriggerPermanentEventGA triggerPermanentEventGA)
     {
-        //Debug.Log("TriggerPermanentEvent : " + triggerPermanentEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
+        Debug.Log("TriggerPermanentEvent : " + triggerPermanentEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
 
         if (!effectsByEvent.TryGetValue(triggerPermanentEventGA.gameEvent, out var effectList))
             yield break;
@@ -135,6 +138,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
         {
             foreach (var effect in effectList)
             {
+                Debug.Log(effect);
                 if (effect.Actionner.GetComponent<PermanentView>() == triggerPermanentEventGA.permanentView)
                 {
                     GameAction ga = effect.GetGameAction();
@@ -172,25 +176,6 @@ public class GameEventSystem : Singleton<GameEventSystem>
     
     private void UpdateDurationReaction(TriggerEventGA triggerEventGA)
     {
-        /*List<Effect> effectsToRemove = new();
-        if(triggerEventGA.gameEvent == Events.StartTurn)Debug.Log("StartTurn");
-        if (effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var list))
-        {
-            foreach (var effect in new List<Effect>(list))
-            {
-                Debug.Log(effect + " found");
-                if (effect.Duration >= 0 && triggerEventGA.gameEvent == effect.DurationType)
-                {
-                    effect.Duration--;
-                    Debug.Log(effect + " Lost 1 duration : " + effect.Duration + " Left");
-                    if (effect.Duration <= 0)
-                    {
-                        effectsToRemove.Add(effect);
-                    }
-                }
-            }
-        }*/
-
         List<Effect> effectsToRemove = new();
 
         foreach (var kvp in effectsByEvent)

@@ -92,8 +92,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ce1077b53a7cd459100c281f3c25d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tier: 10
-  EnemyPreset: []
+  Tier: 0
+  EnemyPreset:
+  - {fileID: 11400000, guid: be776f2f33e54a94ebd9209480f6bc5c, type: 2}
+  - {fileID: 11400000, guid: ef1adf0c83444c9409eee8f1f0e0918d, type: 2}
   WeaponZone: {fileID: 3491431722004416334}
   ShieldZone: {fileID: 938283172723516546}
   SupportZone: {fileID: 351204710267823827}
@@ -104,7 +106,6 @@ MonoBehaviour:
   ConstructSequence:
   - A
   - B
-  - A
   LoopingSequence: 1
   sequenceIndex: 0
   references:
@@ -115,14 +116,13 @@ MonoBehaviour:
       data:
         number: A
         EnemyData:
-        - {fileID: 11400000, guid: ef1adf0c83444c9409eee8f1f0e0918d, type: 2}
+        - {fileID: 11400000, guid: be776f2f33e54a94ebd9209480f6bc5c, type: 2}
     - rid: 2382742974966530049
       type: {class: GenericIntentConstruct, ns: , asm: Assembly-CSharp}
       data:
         number: B
         EnemyData:
-        - {fileID: 11400000, guid: be776f2f33e54a94ebd9209480f6bc5c, type: 2}
-        - {fileID: 11400000, guid: be776f2f33e54a94ebd9209480f6bc5c, type: 2}
+        - {fileID: 11400000, guid: ef1adf0c83444c9409eee8f1f0e0918d, type: 2}
 --- !u!1 &6470439035658852412
 GameObject:
   m_ObjectHideFlags: 0

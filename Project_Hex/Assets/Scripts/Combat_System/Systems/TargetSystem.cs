@@ -38,6 +38,9 @@ public class TargetSystem : Singleton<TargetSystem>
 
         (enemyTargets, playerTargets) = EndManualTargeting();
 
+        startManualTargetingGA.EffectRef.TargetForLinked_Player = playerTargets;
+        startManualTargetingGA.EffectRef.TargetForLinked_Enemy = enemyTargets;
+
         var action = startManualTargetingGA.ActionToRealiseAfterTargetting;
         var type = action.GetType();
 

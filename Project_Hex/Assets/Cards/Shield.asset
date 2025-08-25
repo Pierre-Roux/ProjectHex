@@ -17,13 +17,14 @@ MonoBehaviour:
   <cost>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
   <Money_Cost>k__BackingField: 30
-  <life>k__BackingField: 10
-  <damage>k__BackingField: 0
-  <Durability>k__BackingField: 1
-  <MaxDurability>k__BackingField: 1
+  <life>k__BackingField: 15
+  <DecayCounter>k__BackingField: 0
+  <Durability>k__BackingField: 3
+  <MaxDurability>k__BackingField: 3
   <PermanentImage>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
   <permanentType>k__BackingField: 2
   UnShieldable: 1
+  isInvoc: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
   - rid: 2382742888600829952
@@ -35,6 +36,7 @@ MonoBehaviour:
       data:
         actionnerType: 0
         Events: 0
+        HollowEffect: 0
         Intent_Title: 
         number: 
         Duration: 0

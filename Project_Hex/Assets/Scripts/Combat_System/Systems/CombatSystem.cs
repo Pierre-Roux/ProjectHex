@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Unity.VisualScripting;
 using System.Linq;
 
 public class CombatSystem : Singleton<CombatSystem>
@@ -30,6 +29,13 @@ public class CombatSystem : Singleton<CombatSystem>
 
     [HideInInspector] public int MaxPermPlayer;
     [HideInInspector] public int MaxPermEnemy;
+
+    [HideInInspector] public int PlayerGeneralPower;
+    [HideInInspector] public int EnemyGeneralPower;
+    [HideInInspector] public int GeneralPower;
+    [HideInInspector] public int Invoc_GeneralPower;
+    [HideInInspector] public int Invoc_PlayerGeneralPower;
+    [HideInInspector] public int Invoc_EnemyGeneralPower;
 
     public EnemyView currentEnemy;
 
@@ -164,12 +170,22 @@ public class CombatSystem : Singleton<CombatSystem>
             if (enemySlotView.PossibleIntent == null) continue;
             foreach (Effect effect in enemySlotView.PossibleIntent)
             {
-                if (effect.Events != Events.EnemyTurn && effect.Events != Events.Instant)
+                Effect clonedEffect = effect.Clone();
+                while (clonedEffect != null)
                 {
-                    Effect clonedEffect = effect.Clone();
-                    clonedEffect.Actionner = enemySlotView.gameObject;
+                    if (clonedEffect.Events != Events.EnemyTurn &&
+                        clonedEffect.Events != Events.Instant
+                        )
+                    {
+                        GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                    }
 
-                    GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                    if (clonedEffect.LinkedEffect != null)
+                    {
+                        clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                    }
+                    clonedEffect.Actionner = enemySlotView.gameObject;
+                    clonedEffect = clonedEffect.LinkedEffect;
                 }
             }
         }
@@ -186,7 +202,7 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         if (!diePermanentGA.IsCore)
         {
-            if (diePermanentGA.Durability == 0)
+            if (diePermanentGA.Durability == 0 || diePermanentGA.PermanentView.isInvoc)
             {
                 if (diePermanentGA.PermanentView != null)
                 {
@@ -200,11 +216,6 @@ public class CombatSystem : Singleton<CombatSystem>
 
                     DestroyPermanentGA destroyPermanentGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(destroyPermanentGA);
-
-                    if (diePermanentGA.PermanentView.MaxDurability > 0)
-                    {
-                        DataBase.Instance.DeckList.Remove(destroyPermanentGA.PermanentView.CardReferenceArchive.data);
-                    }
                 }
             }
             else
@@ -336,6 +347,7 @@ public class CombatSystem : Singleton<CombatSystem>
     private void EndEnemyTurnPostReaction(EndEnemyTurnGA endEnemyTurnGA)
     {
         TriggerEventGA triggerEventGA = new(Events.EndEnemyTurn);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
         DecountEnemyDecayGA decountEnemyDecayGA = new();
         ActionSystem.Instance.AddReaction(decountEnemyDecayGA);
         SpawnConstructGA spawnConstructGA = new();

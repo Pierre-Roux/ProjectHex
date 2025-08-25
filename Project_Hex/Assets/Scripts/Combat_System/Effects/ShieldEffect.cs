@@ -6,14 +6,14 @@ using System;
 public class ShieldEffect : Effect
 {
     [Header("Effect Param")]
-    [SerializeField] private TargetMode targetMode;
+    [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
 
     public ShieldEffect(){}
 
-    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType)
+    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
     {
         targetMode = TargetMode;
         targetNumber = TargetNumber;
@@ -25,6 +25,10 @@ public class ShieldEffect : Effect
         number = Number;
         Duration = duration;
         DurationType = durationType;
+        TriggerOnDurationEnd = triggerOnDurationEnd;
+        LinkedEffect = linkedEffect;
+        TargetForLinked_Player = targetForLinked_Player;
+        TargetForLinked_Enemy = targetForLinked_Enemy;
     }
 
     public override GameAction GetGameAction()
@@ -35,12 +39,20 @@ public class ShieldEffect : Effect
             if (targetMode == TargetMode.Manual)
             {
                 ShieldGA shieldGA = new(null, null);
-                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber);
+                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,this);
                 return startManualTargetingGA;
+            }
+            else if (targetMode == TargetMode.EffectParent_Targets)
+            {
+                ShieldGA shieldGA = new(ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                return shieldGA;
             }
             else
             {
                 var (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                TargetForLinked_Player = playerTargets;
+                TargetForLinked_Enemy = enemyTargets;
+
                 ShieldGA shieldGA = new(playerTargets, enemyTargets);
                 return shieldGA;
             }
@@ -49,23 +61,71 @@ public class ShieldEffect : Effect
         else
         {
             // SI ENEMY
-            if (actionnerType == ActionnerType.ENEMY)
+            if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
-                ShieldEnemyGA shieldEnemyGA = new(targetMode);
-                shieldEnemyGA.Actionner = Actionner;
-                return shieldEnemyGA;
+                if (targetMode == TargetMode.Manual)
+                {
+                    ShieldGA shieldGA = new(null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,this);
+                    return startManualTargetingGA;
+                }
+                else
+                {
+                    List<PermanentView> playerTargets;
+                    List<EnemySlotView> enemyTargets;
+
+                    if (targetMode == TargetMode.EffectParent_Targets)
+                    {
+                        playerTargets = ParentEffect.TargetForLinked_Player;
+                        enemyTargets = ParentEffect.TargetForLinked_Enemy;
+                    }
+                    else
+                    {
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        TargetForLinked_Player = playerTargets;
+                        TargetForLinked_Enemy = enemyTargets;
+                    }
+
+                    ShieldEnemyGA shieldEnemyGA = new(playerTargets, enemyTargets);
+                    shieldEnemyGA.Actionner = Actionner;
+                    return shieldEnemyGA;
+                }
             }
             // SI PLAYER
-            else if (actionnerType == ActionnerType.PLAYER)
+            else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
-                ShieldPlayerGA shieldPlayerGA = new(targetMode);
-                shieldPlayerGA.Actionner = Actionner;
-                return shieldPlayerGA;
+                if (targetMode == TargetMode.Manual)
+                {
+                    ShieldGA shieldGA = new(null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,this);
+                    return startManualTargetingGA;
+                }
+                else
+                {
+                    List<PermanentView> playerTargets;
+                    List<EnemySlotView> enemyTargets;
+
+                    if (targetMode == TargetMode.EffectParent_Targets)
+                    {
+                        playerTargets = ParentEffect.TargetForLinked_Player;
+                        enemyTargets = ParentEffect.TargetForLinked_Enemy;
+                    }
+                    else
+                    {
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        TargetForLinked_Player = playerTargets;
+                        TargetForLinked_Enemy = enemyTargets;
+                    }
+
+                    ShieldPlayerGA shieldPlayerGA = new(playerTargets, enemyTargets);
+                    shieldPlayerGA.Actionner = Actionner;
+                    return shieldPlayerGA;
+                }
             }
-            //NEVER
-            else 
+            // NEVER
+            else
             {
-                Debug.Log("ERROR GET GAME ACTION RETURN NULL");
+                Debug.LogError("Effect.GetGameAction returned Null");
                 return null;
             }
         }
@@ -73,7 +133,32 @@ public class ShieldEffect : Effect
 
     public override Effect Clone()
     {
-        return new ShieldEffect(targetMode, targetNumber,actionnerType,Events,Actionner,CardActionner,Intent_Title,number,Duration,DurationType);
+        var clonedPlayerTargets = TargetForLinked_Player != null 
+            ? new List<PermanentView>(TargetForLinked_Player) 
+            : null;
+
+        var clonedEnemyTargets = TargetForLinked_Enemy != null 
+            ? new List<EnemySlotView>(TargetForLinked_Enemy) 
+            : null;
+
+        Effect clonedLinked = LinkedEffect != null ? LinkedEffect.Clone() : null;
+
+        return new ShieldEffect(
+            targetMode,
+            targetNumber,
+            actionnerType,
+            Events,
+            Actionner,
+            CardActionner,
+            Intent_Title,
+            number,
+            Duration,
+            DurationType,
+            TriggerOnDurationEnd,
+            clonedLinked,
+            clonedPlayerTargets,
+            clonedEnemyTargets
+        );
     }
 
 }

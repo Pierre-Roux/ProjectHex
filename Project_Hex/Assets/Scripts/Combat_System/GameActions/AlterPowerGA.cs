@@ -1,0 +1,21 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AlterPowerGA : GameAction
+{
+    public int Amount { get; set; }
+    public bool passive;
+    public PermaTypes permaTypes;
+    public List<PermanentView> Targets_Player { get; set; }
+    public List<EnemySlotView> Targets_Enemy { get; set; }
+
+    public AlterPowerGA(int amount, bool Passive, PermaTypes PermaTypes, List<PermanentView> targets_Player = null, List<EnemySlotView> targets_Enemy = null)
+    {
+        Amount = amount;
+        passive = Passive;
+        permaTypes = PermaTypes;
+        Targets_Player = targets_Player;
+        Targets_Enemy = targets_Enemy;
+    }
+}

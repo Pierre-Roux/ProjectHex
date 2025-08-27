@@ -22,6 +22,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public PermanentType permanentType  { get; private set; }
     [field: SerializeField] public bool UnShieldable;
     [field: SerializeField] public bool isInvoc;
+    [field: SerializeField] public bool isArtillery;
 
     [field: Header("Spell")]
     [field: SerializeField] public bool IsSpell { get; private set; }

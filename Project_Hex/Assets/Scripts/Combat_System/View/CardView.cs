@@ -14,17 +14,18 @@ public class CardView : MonoBehaviour
     [SerializeField] public TMP_Text Durability;
     [SerializeField] public GameObject Wrapper;
     [SerializeField] private LayerMask DropAreaLayer;
+    [SerializeField] SpriteRenderer PermanentSpriteRenderer;
 
-    public bool IsReward;
-    public bool RewardTaken;
+    [HideInInspector] public bool IsReward;
+    [HideInInspector] public bool RewardTaken;
     [HideInInspector] public ShopSlot shopSlot;
 
-    public bool isDragging = false;
+    [HideInInspector] public bool isDragging = false;
 
     private Vector3 OriginalPos;
     private Quaternion OriginalRotation;
 
-    public Card Card { get; private set; }
+    [HideInInspector] public Card Card { get; private set; }
 
     public void Setup(Card card)
     {
@@ -61,12 +62,15 @@ public class CardView : MonoBehaviour
     {
         if (!IsReward)
         {
-            if (ActionSystem.Instance.IsPerforming) return;
-            if (!CombatSystem.Instance.Interactable) return;
+            if (!TargetSystem.Instance.CardTargetingActive)
+            {
+                if (ActionSystem.Instance.IsPerforming) return;
+                if (!CombatSystem.Instance.Interactable) return;
+            }
             if (isDragging) return;
             Wrapper.SetActive(false);
             Vector3 pos = new(transform.position.x, -2.5f, 0);
-            CardViewHover.Instance.Show(Card, pos);
+            CardViewHover.Instance.Show(this, pos);
         }
     }
 
@@ -108,6 +112,7 @@ public class CardView : MonoBehaviour
                         isDragging = false;
                         PlayCardGA playCardGA = new(Card);
                         ActionSystem.Instance.Perform(playCardGA);
+                        CombatSystem.Instance.SpellCast_This_Turn++;
                     }
                     else
                     {
@@ -129,7 +134,7 @@ public class CardView : MonoBehaviour
                             Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
                             break;
                         default:
-                            Debug.Log("No Type For Perm " + Card.data.name);
+                            Debug.LogError("No Type For Perm " + Card.data.name);
                             break;
                     }
                     if (Parent != null)
@@ -145,6 +150,7 @@ public class CardView : MonoBehaviour
                             isDragging = false;
                             SummonGA summonGA = new(Card);
                             ActionSystem.Instance.Perform(summonGA);
+                            CombatSystem.Instance.PermanentCast_This_Turn++;
                         }
                     }
                 }
@@ -171,5 +177,15 @@ public class CardView : MonoBehaviour
             mousePos.z = 0;
             transform.DOMove(mousePos, 0.25f).SetEase(Ease.OutCubic);
         }
+    }
+
+    public void ActiveSelectEffect()
+    {
+        PermanentSpriteRenderer.color = Color.red;
+    }
+
+    public void RemoveSelectEffect()
+    {
+        PermanentSpriteRenderer.color = Color.white;
     }
 }

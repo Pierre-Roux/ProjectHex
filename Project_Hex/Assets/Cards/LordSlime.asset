@@ -25,6 +25,7 @@ MonoBehaviour:
   <permanentType>k__BackingField: 3
   UnShieldable: 0
   isInvoc: 0
+  isArtillery: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
   - rid: 8456800604179398657
@@ -42,17 +43,18 @@ MonoBehaviour:
         Intent_Title: 
         number: 
         Duration: 0
-        DurationType: 7
-        TriggerOnDurationEnd: 1
+        DurationType: 0
+        TriggerOnDurationEnd: 0
         LinkedEffect:
           rid: 8456800761348882432
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         alterAmount: -3
-        targetMode: 0
+        DynamicAmount: 0
+        targetMode: 16
         passive: 1
-        permaTypes: 2
+        permaTypes: 4
         targetNumber: 0
     - rid: 8456800761348882432
       type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
@@ -71,7 +73,8 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         alterAmount: 3
-        targetMode: 0
+        DynamicAmount: 0
+        targetMode: 16
         passive: 1
-        permaTypes: 2
+        permaTypes: 4
         targetNumber: 0

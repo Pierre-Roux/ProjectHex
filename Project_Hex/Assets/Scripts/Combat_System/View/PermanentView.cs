@@ -14,10 +14,12 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] private int MaxLife { get; set; }
     [HideInInspector] public int currentLife { get; set; }
+    [HideInInspector] public int baseLife { get; set; }
     [HideInInspector] public int MaxDurability { get; set; }
     [HideInInspector] public int Durability { get; set; }
     [HideInInspector] public int DecayCounter { get; set; }
     [HideInInspector] public int BonusPower { get; set; }
+    [HideInInspector] public int CurrentHPBonus { get; set; }
     [HideInInspector] public Card CardReferenceArchive;
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
@@ -31,6 +33,8 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public bool Shielded;
     [HideInInspector] public bool isHollow;
     [HideInInspector] public bool isInvoc;
+    [HideInInspector] public bool isDecay;
+    [HideInInspector] public bool isArtillery;
 
     public void Setup(Card cardReference)
     {
@@ -38,12 +42,15 @@ public class PermanentView : MonoBehaviour
         IsCore = false;
         CardReferenceArchive = cardReference;
         PermanentSpriteRenderer.sprite = cardReference.data.PermanentImage;
-        MaxLife = cardReference.data.life;
-        currentLife = MaxLife;
+        baseLife = cardReference.data.life;
+        MaxLife = CalculateBonusLife(baseLife);
+        currentLife = MaxLife; 
         isInvoc = cardReference.data.isInvoc;
+        isArtillery = cardReference.data.isArtillery;
         permanentType = cardReference.data.permanentType;
         UnShieldable = cardReference.UnShieldable;
         DecayCounter = cardReference.DecayCounter;
+        if (DecayCounter > 0) isDecay = true;
         ShieldVisual.SetActive(false);
         UpdateLifeText();
 
@@ -77,8 +84,9 @@ public class PermanentView : MonoBehaviour
         IsCore = true;
         PermanentSpriteRenderer.sprite = CoreData.CoreImage;
         permanentType = PermanentType.none;
-        MaxLife = CoreData.CoreHealth;
-        currentLife = MaxLife;
+        baseLife = CoreData.CoreHealth;
+        MaxLife = CalculateBonusLife(baseLife);
+        currentLife = MaxLife; 
         UnShieldable = false;
         ShieldVisual.SetActive(false);
         UpdateLifeText();
@@ -88,13 +96,93 @@ public class PermanentView : MonoBehaviour
     {
         HealthText.text = currentLife.ToString();
     }
+    
+    public int CalculateBonusPower(int BaseAmount)
+    {
+        int PassiveBonus = 0;
+
+        if (isInvoc)
+        {
+            PassiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralPower;
+        }
+        if (isDecay)
+        {
+            PassiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralPower;
+        }
+        if (isHollow)
+        {
+            PassiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralPower;
+        }
+        if (isArtillery)
+        {
+            PassiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralPower;
+        }
+
+
+        int finalDMG = 0;
+        finalDMG = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower; ;
+        if (finalDMG < 0) finalDMG = 0;
+        return finalDMG;
+    }
+    public int CalculateBonusLife(int BaseAmount)
+    {
+        int PassiveBonus = 0;
+
+        if (isInvoc)
+        {
+            PassiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
+        }
+        if (isDecay)
+        {
+            PassiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
+        }
+        if (isHollow)
+        {
+            PassiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
+        }
+        if (isArtillery)
+        {
+            PassiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
+        }
+
+
+        int finalHPGain = 0;
+        finalHPGain = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.PlayerGeneralHPGain + CombatSystem.Instance.GeneralHPGain; ;
+        if (finalHPGain < 0) finalHPGain = 0;
+        return finalHPGain;
+    }
+
+    public void UpdateLife()
+    {
+        int passiveBonus = CalculateBonusLife(0);
+        MaxLife = baseLife + passiveBonus;
+
+        if (currentLife > MaxLife)
+        {
+            currentLife = MaxLife;
+        }
+        else
+        {
+            if (currentLife + passiveBonus > MaxLife)
+            {
+                currentLife = MaxLife;
+            }
+            else
+            {
+                currentLife = currentLife + passiveBonus;
+            }
+        }
+
+
+        UpdateLifeText();
+    }
 
     public void TakeDamage(int Amount)
     {
         if (Amount <= 0) return;
         currentLife -= Amount;
         UpdateLifeText();
-        
+
         if (!IsDead)
         {
             transform.DOShakePosition(0.2f, 0.5f);
@@ -181,6 +269,44 @@ public class PermanentView : MonoBehaviour
         if (IsDead) return;
         BonusPower += Amount;
         transform.DOShakePosition(0f, 0.1f);
+    }
+
+    public void TakeLifeLoss(int Amount)
+    {
+        if (IsDead) return;
+        if (Amount <= 0) return;
+
+        transform.DOShakePosition(0.2f, 0.5f);
+        TriggerPermanentEventGA triggerEventGA = new(this, Events.OnDamaged);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
+        
+
+        currentLife -= Amount;
+        if (currentLife <= 0)
+        {
+            DiePermanentGA diePermanentGA = new(IsCore, Durability, CardReferenceArchive, this);
+            ActionSystem.Instance.AddReaction(diePermanentGA);
+            IsDead = true;
+        }
+
+        UpdateLifeText();
+    }
+
+    public void GainLife(int Amount)
+    {
+        if (IsDead) return;
+
+        currentLife += Amount;
+        MaxLife += Amount;
+
+        if (currentLife <= 0)
+        {
+            DiePermanentGA diePermanentGA = new(IsCore, Durability, CardReferenceArchive, this);
+            ActionSystem.Instance.AddReaction(diePermanentGA);
+            IsDead = true;
+        }
+
+        UpdateLifeText();
     }
 
     public void ActiveSelectEffect()

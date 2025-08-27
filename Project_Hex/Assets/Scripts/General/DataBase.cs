@@ -6,9 +6,11 @@ public class DataBase : Singleton<DataBase>
 {
     public List<CardData> INITIALDeckList;
     public List<CardData> DeckList;
-    public int CurrentStage;
     public List<CardData> GlobalCardList;
+    
+    public int CurrentStage;
     public int Money;
+    public int MaxMana;
 
     //For fight
     public bool IsElite;

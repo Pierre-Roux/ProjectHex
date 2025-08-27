@@ -81,7 +81,7 @@ public class ShieldEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
                     }
@@ -112,7 +112,7 @@ public class ShieldEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
                     }

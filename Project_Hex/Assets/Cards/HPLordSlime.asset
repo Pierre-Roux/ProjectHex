@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
+  m_Name: HPLordSlime
+  m_EditorClassIdentifier: 
+  <Title>k__BackingField: BuffSlime
+  <Description>k__BackingField: All ally gain 3PV
+  <cost>k__BackingField: 2
+  <Image>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
+  <Money_Cost>k__BackingField: 150
+  <life>k__BackingField: 8
+  <DecayCounter>k__BackingField: 0
+  <Durability>k__BackingField: 2
+  <MaxDurability>k__BackingField: 2
+  <PermanentImage>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
+  <permanentType>k__BackingField: 3
+  UnShieldable: 0
+  isInvoc: 0
+  isArtillery: 0
+  <IsSpell>k__BackingField: 0
+  <Effects>k__BackingField:
+  - rid: 8456800823964860419
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8456800823964860419
+      type: {class: GainHPEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 0
+        Events: 0
+        HollowEffect: 0
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 0
+        TriggerOnDurationEnd: 0
+        LinkedEffect:
+          rid: 8456800823964860420
+        Actionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        GainAmount: 1
+        DynamicAmount: 0
+        targetMode: 15
+        passive: 1
+        permaTypes: 4
+        targetNumber: 0
+    - rid: 8456800823964860420
+      type: {class: GainHPEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 0
+        Events: 8
+        HollowEffect: 0
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 0
+        TriggerOnDurationEnd: 0
+        LinkedEffect:
+          rid: -2
+        Actionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        GainAmount: -1
+        DynamicAmount: 0
+        targetMode: 15
+        passive: 1
+        permaTypes: 4
+        targetNumber: 0

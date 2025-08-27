@@ -44,7 +44,7 @@ public class PermanentSystem : Singleton<PermanentSystem>
 
             // On démarre par l’effet cloné
             Effect clonedEffect = effect.Clone();
-            
+
             while (clonedEffect != null)
             {
                 if (clonedEffect.Events == Events.Instant)

@@ -1652,6 +1652,8 @@ MonoBehaviour:
   Shielded: 0
   isHollow: 0
   isInvoc: 0
+  isDecay: 0
+  isArtillery: 0
 --- !u!65 &637965886
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2688,6 +2690,10 @@ PrefabInstance:
     - target: {fileID: 4777711837667748101, guid: c68f7dfa85d4e8645945b0060592f244, type: 3}
       propertyPath: m_Name
       value: CardViewHovered
+      objectReference: {fileID: 0}
+    - target: {fileID: 4777711837667748101, guid: c68f7dfa85d4e8645945b0060592f244, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4777711837667748101, guid: c68f7dfa85d4e8645945b0060592f244, type: 3}
       propertyPath: m_IsActive
@@ -3810,6 +3816,9 @@ MonoBehaviour:
   TargetingLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  CardviewTargetingLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   CursorGameobject: {fileID: 3260153}
 --- !u!1 &1153776335
 GameObject:
@@ -3873,6 +3882,23 @@ MonoBehaviour:
   EnemySupportZone: {fileID: 0}
   MaxPermPlayer: 0
   MaxPermEnemy: 0
+  PlayerGeneralPower: 0
+  EnemyGeneralPower: 0
+  GeneralPower: 0
+  Invoc_GeneralPower: 0
+  Invoc_PlayerGeneralPower: 0
+  Invoc_EnemyGeneralPower: 0
+  Hollow_GeneralPower: 0
+  Hollow_PlayerGeneralPower: 0
+  Hollow_EnemyGeneralPower: 0
+  Decay_GeneralPower: 0
+  Decay_PlayerGeneralPower: 0
+  Decay_EnemyGeneralPower: 0
+  Artillery_GeneralPower: 0
+  Artillery_PlayerGeneralPower: 0
+  Artillery_EnemyGeneralPower: 0
+  SpellCast_This_Turn: 0
+  PermanentCast_This_Turn: 0
   currentEnemy: {fileID: 0}
   Enemy_Permanents: []
   Player_Permanents: []
@@ -5245,6 +5271,7 @@ MonoBehaviour:
   manaUI: {fileID: 422571700}
   MAX_MANA: 5
   currentMana: 5
+  Mana_Spent_Count: 0
 --- !u!1 &1871844032
 GameObject:
   m_ObjectHideFlags: 0

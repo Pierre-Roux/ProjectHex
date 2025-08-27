@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EffectSystem : Singleton<EffectSystem>
@@ -16,6 +17,9 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.AttachPerformer<DecountPlayerDecayGA>(DecountDecayPlayerPerformer);
         ActionSystem.AttachPerformer<DecountEnemyDecayGA>(DecountDecayEnemyPerformer);
         ActionSystem.AttachPerformer<AlterPowerGA>(AlterPowerPerformer);
+        ActionSystem.AttachPerformer<LifeLossGA>(LifeLossPerformer);
+        ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
+        ActionSystem.AttachPerformer<GainLifeGA>(GainLifePerformer);
     }
 
     void OnDisable()
@@ -28,6 +32,9 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<DecountPlayerDecayGA>();
         ActionSystem.DetachPerformer<DecountEnemyDecayGA>();
         ActionSystem.DetachPerformer<AlterPowerGA>();
+        ActionSystem.DetachPerformer<LifeLossGA>();
+        ActionSystem.DetachPerformer<DiscardCardGA>();
+        ActionSystem.DetachPerformer<GainLifeGA>();
     }
 
 
@@ -232,34 +239,71 @@ public class EffectSystem : Singleton<EffectSystem>
     {
         if (alterPowerGA.passive)
         {
-            UnityEngine.Debug.Log("Passive on " + alterPowerGA.permaTypes);
-            switch (alterPowerGA.permaTypes)
+            UnityEngine.Debug.Log("Passive on " + alterPowerGA.permaTypes + " of " + alterPowerGA.targetMode);
+            switch (alterPowerGA.targetMode)
             {
-                case PermaTypes.All:
-                    CombatSystem.Instance.GeneralPower += alterPowerGA.Amount;
+                case TargetMode.All_All:
+                    switch (alterPowerGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_GeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_GeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_GeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_GeneralPower += alterPowerGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.GeneralPower += alterPowerGA.Amount;
+                            break;
+                    }
                     break;
 
-                case PermaTypes.Players:
-                    CombatSystem.Instance.PlayerGeneralPower += alterPowerGA.Amount;
-                    UnityEngine.Debug.Log("PowerAugment by " + alterPowerGA.Amount);
+                case TargetMode.All_Player:
+                    switch (alterPowerGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_PlayerGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_PlayerGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_PlayerGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_PlayerGeneralPower += alterPowerGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.PlayerGeneralPower += alterPowerGA.Amount;
+                            break;
+                    }
                     break;
 
-                case PermaTypes.Enemy:
-                    CombatSystem.Instance.EnemyGeneralPower += alterPowerGA.Amount;
+                case TargetMode.All_Enemy:
+                    switch (alterPowerGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_EnemyGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_EnemyGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_EnemyGeneralPower += alterPowerGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_EnemyGeneralPower += alterPowerGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.EnemyGeneralPower += alterPowerGA.Amount;
+                            break;
+                    }
                     break;
-
-                case PermaTypes.AllInvoc:
-                    CombatSystem.Instance.Invoc_GeneralPower += alterPowerGA.Amount;
-                    break;
-
-                case PermaTypes.AllInvoc_Players:
-                    CombatSystem.Instance.Invoc_PlayerGeneralPower += alterPowerGA.Amount;
-                    break;
-
-                case PermaTypes.AllInvoc_Enemy:
-                    CombatSystem.Instance.Invoc_EnemyGeneralPower += alterPowerGA.Amount;
-                    break;
-
                 default:
                     break;
             }
@@ -268,7 +312,7 @@ public class EffectSystem : Singleton<EffectSystem>
             {
                 // Update l'afichage pour les cartes
             }
-            
+
             foreach (EnemySlotView item in CombatSystem.Instance.Enemy_Permanents)
             {
                 item.UpdateIntentText(item.IntentAction);
@@ -290,6 +334,143 @@ public class EffectSystem : Singleton<EffectSystem>
                 foreach (var target in alterPowerGA.Targets_Enemy)
                 {
                     target.TakeAlterPower(alterPowerGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }
+        }
+    }
+
+    private IEnumerator LifeLossPerformer(LifeLossGA lifeLossGA)
+    {
+        if (lifeLossGA.Targets_Player != null)
+        {
+            foreach (var target in lifeLossGA.Targets_Player)
+            {
+                target.TakeLifeLoss(lifeLossGA.Amount);
+                yield return new WaitForSeconds(AnimDelay);
+            }
+        }
+
+        if (lifeLossGA.Targets_Enemy != null)
+        {
+            foreach (var target in lifeLossGA.Targets_Enemy)
+            {
+                target.TakeLifeLoss(lifeLossGA.Amount);
+                yield return new WaitForSeconds(AnimDelay);
+            }
+        }
+    }
+
+    private IEnumerator DiscardCardPerformer(DiscardCardGA discardCardGA)
+    {
+        foreach (CardView item in discardCardGA.CardViews)
+        {
+            CardSystem.Instance.handView.RemoveCard(item.Card);
+            CardSystem.Instance.hand.Remove(item.Card);  
+            StartCoroutine(CardSystem.Instance.DiscardCard(item, true));
+            yield return null;
+        }
+    }
+    
+    private IEnumerator GainLifePerformer(GainLifeGA gainLifeGA)
+    {
+        if (gainLifeGA.passive)
+        {
+            UnityEngine.Debug.Log("Passive on " + gainLifeGA.permaTypes + " of " + gainLifeGA.targetMode);
+            switch (gainLifeGA.targetMode)
+            {
+                case TargetMode.All_All:
+                    switch (gainLifeGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_GeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_GeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_GeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_GeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.GeneralHPGain += gainLifeGA.Amount;
+                            break;
+                    }
+                    break;
+
+                case TargetMode.All_Player:
+                    switch (gainLifeGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_PlayerGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_PlayerGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_PlayerGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_PlayerGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.PlayerGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                    }
+                    break;
+
+                case TargetMode.All_Enemy:
+                    switch (gainLifeGA.permaTypes)
+                    {
+                        case PermaTypes.Artillery:
+                            CombatSystem.Instance.Artillery_EnemyGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Decay:
+                            CombatSystem.Instance.Decay_EnemyGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Hollow:
+                            CombatSystem.Instance.Hollow_EnemyGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        case PermaTypes.Invoc:
+                            CombatSystem.Instance.Invoc_EnemyGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                        default:
+                            CombatSystem.Instance.EnemyGeneralHPGain += gainLifeGA.Amount;
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+            {
+                item.UpdateLife();
+            }
+
+            foreach (EnemySlotView item in CombatSystem.Instance.Enemy_Permanents)
+            {
+                item.UpdateLife();
+            }
+        }
+        else
+        {
+            if (gainLifeGA.Targets_Player != null)
+            {
+                foreach (var target in gainLifeGA.Targets_Player)
+                {
+                    target.GainLife(gainLifeGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }
+
+            if (gainLifeGA.Targets_Enemy != null)
+            {
+                foreach (var target in gainLifeGA.Targets_Enemy)
+                {
+                    target.GainLife(gainLifeGA.Amount);
                     yield return new WaitForSeconds(AnimDelay);
                 }
             }

@@ -6,15 +6,20 @@ public class DrawCardsEffect : Effect
 {
     [Header("Effect Param")]
     [SerializeField] public int drawAmount;
+    [SerializeField] public DynamicAmount DynamicAmount;
 
     public override GameAction GetGameAction()
     {
+        if (DynamicAmount != DynamicAmount.NULL)
+        {
+            drawAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
+        }
         DrawCardsGA drawCardsGA = new(drawAmount);
         return drawCardsGA;
     }
     public DrawCardsEffect(){}
 
-    public DrawCardsEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
+    public DrawCardsEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
     {
         drawAmount = Amount;
         Events = Event;
@@ -29,6 +34,7 @@ public class DrawCardsEffect : Effect
         LinkedEffect = linkedEffect;
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
+        DynamicAmount = dynamicAmount;
     }
 
     public override Effect Clone()
@@ -56,7 +62,8 @@ public class DrawCardsEffect : Effect
             TriggerOnDurationEnd,
             clonedLinked,
             clonedPlayerTargets,
-            clonedEnemyTargets
+            clonedEnemyTargets,
+            DynamicAmount
         );
     }
 

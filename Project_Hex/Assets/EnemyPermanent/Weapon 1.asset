@@ -15,6 +15,7 @@ MonoBehaviour:
   PermanentImage: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
   PermanentLife: 10
   IsCore: 0
+  IsInvoc: 0
   UnShieldable: 0
   permanentType: 1
   DecayCounter: 0
@@ -45,5 +46,6 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         damageAmount: 5
-        targetMode: 3
+        DynamicAmount: 0
+        targetMode: 8
         targetNumber: 0

@@ -8,6 +8,7 @@ public class DealDamageEffect : Effect
     [Header("Effect Param")]
 
     [SerializeField] public int damageAmount;
+    [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
@@ -15,7 +16,7 @@ public class DealDamageEffect : Effect
 
     public DealDamageEffect(){}
 
-    public DealDamageEffect(int DamageAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
+    public DealDamageEffect(int DamageAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
     {
         damageAmount = DamageAmount;
         targetMode = TargetMode;
@@ -32,16 +33,21 @@ public class DealDamageEffect : Effect
         LinkedEffect = linkedEffect;
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
+        DynamicAmount = dynamicAmount;
     }
 
     public override GameAction GetGameAction()
     {
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
+            if (DynamicAmount != DynamicAmount.NULL)
+            {
+                damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
+            }
             if (targetMode == TargetMode.Manual)
             {
                 DealDamageGA dealDamageGA = new(damageAmount, null, null);
-                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber,this);
+                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -63,10 +69,14 @@ public class DealDamageEffect : Effect
         {
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
+                }
                 if (targetMode == TargetMode.Manual)
                 {
                     DealDamageGA dealDamageGA = new(damageAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber,this);
+                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -81,7 +91,7 @@ public class DealDamageEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
@@ -94,10 +104,14 @@ public class DealDamageEffect : Effect
             }
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
+                }
                 if (targetMode == TargetMode.Manual)
                 {
                     DealDamageGA dealDamageGA = new(damageAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber,this);
+                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -112,7 +126,7 @@ public class DealDamageEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
@@ -158,7 +172,8 @@ public class DealDamageEffect : Effect
             TriggerOnDurationEnd,
             clonedLinked,
             clonedPlayerTargets,
-            clonedEnemyTargets
+            clonedEnemyTargets,
+            DynamicAmount
         );
     }
 }

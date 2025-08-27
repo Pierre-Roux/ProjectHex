@@ -18,5 +18,5 @@ public enum Events
     OnDestroy,
 
     //Card Event (ON DrawThis, onDiscardThis ...)
-
+    Null,
 }

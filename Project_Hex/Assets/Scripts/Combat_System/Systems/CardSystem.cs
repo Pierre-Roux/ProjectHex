@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CardSystem : Singleton<CardSystem>
 {
-    [SerializeField] private HandView handView;
+    [SerializeField] public HandView handView;
     [SerializeField] private Transform drawPilePoint;
     [SerializeField] private Transform discardPilePoint;
 
@@ -104,15 +104,19 @@ public class CardSystem : Singleton<CardSystem>
         foreach (var card in hand)
         {
             CardView cardView = handView.RemoveCard(card);
-            yield return DiscardCard(cardView);
+            yield return DiscardCard(cardView, discardAllCardsGA.CountAsDiscard);
         }
         hand.Clear();
     }
 
-    public IEnumerator DiscardCard(CardView cardView)
+    public IEnumerator DiscardCard(CardView cardView, bool countAsDiscard_INGAME)
     {
-        TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView.Card);
-        ActionSystem.Instance.AddReaction(triggerEventGA);
+        if (countAsDiscard_INGAME)
+        {
+            TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView.Card);
+            ActionSystem.Instance.AddReaction(triggerEventGA);      
+        }
+
         cardView.transform.DOScale(Vector3.zero, 0.15f);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
         yield return tween.WaitForCompletion();
@@ -124,7 +128,6 @@ public class CardSystem : Singleton<CardSystem>
     public IEnumerator DestroyCard(CardView cardView)
     {
         Tween tween = cardView.transform.DOScale(Vector3.zero, 0.15f);
-        //Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
         yield return tween.WaitForCompletion();
         Destroy(cardView.gameObject);
     }
@@ -137,11 +140,12 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.Instance.AddReaction(triggerEventGA);
         hand.Remove(playCardGA.Card);
         CardView cardView = handView.RemoveCard(playCardGA.Card);
-        yield return DiscardCard(cardView);
+        yield return DiscardCard(cardView, false);
 
 
         SpendManaGA spendManaGA = new(playCardGA.Card.cost);
-        ActionSystem.Instance.AddReaction(spendManaGA);
+        ActionSystem.Instance.AddReaction(spendManaGA);        
+
         foreach (var effect in playCardGA.Card.Effects)
         {
             // On clone l’effet de base pour éviter les références partagées
@@ -183,14 +187,14 @@ public class CardSystem : Singleton<CardSystem>
 
     public IEnumerator InsertCard(CardView card)
     {
-        yield return DiscardCard(card);
+        yield return DiscardCard(card, false);
     }
 
     // REACTIONS
 
     private void EndPlayerTurnPreReaction(EndPlayerTurnGA endPlayerTurnGA)
     {
-        DiscardAllCardsGA discardAllCardsGA = new();
+        DiscardAllCardsGA discardAllCardsGA = new(false);
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
     }
 

@@ -20,11 +20,15 @@ public class EnemySlotView : MonoBehaviour
 
     [HideInInspector] public Effect IntentAction;
     [HideInInspector] public int currentLife { get; set; }
+    [HideInInspector] public int baseLife { get; set; }
+    [HideInInspector] public int MaxLife { get; set; }
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] public bool IsDead = false;
+    [HideInInspector] public bool isDecay = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
     [HideInInspector] public int DecayCounter { get; set; }
     [HideInInspector] public int BonusPower { get; set; }
+    [HideInInspector] public int CurrentHPBonus { get; set; }
 
     [HideInInspector] public PermanentType permanentType;
 
@@ -46,7 +50,9 @@ public class EnemySlotView : MonoBehaviour
     {
         PossibleIntent = PermanentData.PossibleIntent;
         spriteRenderer.sprite = PermanentData.PermanentImage;
-        currentLife = PermanentData.PermanentLife;
+        baseLife = PermanentData.PermanentLife;
+        MaxLife = CalculateBonusLife(baseLife);
+        currentLife = MaxLife; 
         IsCore = PermanentData.IsCore;
         UnShieldable = PermanentData.UnShieldable;
         isInvoc = PermanentData.IsInvoc;
@@ -56,6 +62,7 @@ public class EnemySlotView : MonoBehaviour
         IntentSequence = PermanentData.IntentSequence;
         LoopingSequence = PermanentData.LoopingSequence;
         DecayCounter = PermanentData.DecayCounter;
+        if (DecayCounter > 0) isDecay = true;
         if (IsCore)
         {
             permanentType = PermanentType.none;
@@ -141,24 +148,8 @@ public class EnemySlotView : MonoBehaviour
         switch (selectedEffect)
         {
             case DealDamageEffect dmg:
-                int damagetext;
-                int dmgBonus;
-                if (isInvoc)
-                {
-                    dmgBonus = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;
-                }
-                else
-                {
-                    dmgBonus = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower;
-                }
-                if (dmgBonus <= 0)
-                {
-                    damagetext = 0;
-                }
-                else
-                {
-                    damagetext = dmg.damageAmount + BonusPower + CombatSystem.Instance.EnemyGeneralPower;
-                }
+                int damagetext = CalculateBonusPower(dmg.damageAmount);
+
                 intentText = $"Deal {damagetext} damage to {dmg.targetMode}";
                 break;
 
@@ -182,6 +173,86 @@ public class EnemySlotView : MonoBehaviour
         IntentText.text = intentText;
     }
 
+    public int CalculateBonusPower(int BaseAmount)
+    {
+        int PassiveBonus = 0;
+
+        if (isInvoc)
+        {
+            PassiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;
+        }
+        if (isDecay)
+        {
+            PassiveBonus += CombatSystem.Instance.Decay_EnemyGeneralPower + CombatSystem.Instance.Decay_GeneralPower;
+        }
+        /*if (isHollow)
+        {
+            PassiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralPower + CombatSystem.Instance.Hollow_GeneralPower;
+        }
+        if (isArtillery)
+        {
+            PassiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralPower + CombatSystem.Instance.Artillery_GeneralPower;
+        }*/
+
+
+        int finalDMG = 0;
+        finalDMG = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower;;
+        if (finalDMG < 0) finalDMG = 0;
+        return finalDMG;
+    }
+
+    public int CalculateBonusLife(int BaseAmount)
+    {
+        int PassiveBonus = 0;
+
+        if (isInvoc)
+        {
+            PassiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
+        }
+        if (isDecay)
+        {
+            PassiveBonus += CombatSystem.Instance.Decay_EnemyGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
+        }
+        /*if (isHollow)
+        {
+            PassiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
+        }
+        if (isArtillery)
+        {
+            PassiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
+        }*/
+
+
+        int finalHPGain = 0;
+        finalHPGain = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralHPGain + CombatSystem.Instance.GeneralHPGain; ;
+        if (finalHPGain < 0) finalHPGain = 0;
+        return finalHPGain;
+    }
+
+    public void UpdateLife()
+    {
+        int passiveBonus = CalculateBonusLife(0);
+        MaxLife = baseLife + passiveBonus;
+
+        if (currentLife > MaxLife)
+        {
+            currentLife = MaxLife;
+        }
+        else
+        {
+            if (currentLife + passiveBonus > MaxLife)
+            {
+                currentLife = MaxLife;
+            }
+            else
+            {
+                currentLife = currentLife + passiveBonus;
+            }
+        }
+
+        UpdateLifeText();
+    }
+
     public void TakeDamage(int Amount)
     {
         if (Amount <= 0) return;
@@ -202,16 +273,16 @@ public class EnemySlotView : MonoBehaviour
                 IsDead = true;
             }
         }
-        
+
         UpdateLifeText();
     }
 
     public void TakeHeal(int Amount)
     {
         currentLife += Amount;
-        if (currentLife > PermanentData.PermanentLife)
+        if (currentLife > MaxLife)
         {
-            currentLife = PermanentData.PermanentLife;
+            currentLife = MaxLife;
         }
         transform.DOShakePosition(0f, 0.1f);
         UpdateLifeText();
@@ -278,6 +349,44 @@ public class EnemySlotView : MonoBehaviour
             transform.DOShakePosition(0f, 0.1f);
         }
         UpdateIntentText(IntentAction);
+    }
+
+    public void TakeLifeLoss(int Amount)
+    {
+        if (IsDead) return;
+        if (Amount <= 0) return;
+
+        transform.DOShakePosition(0.2f, 0.5f);
+        TriggerEnemyEventGA triggerEventGA = new(this, Events.OnDamaged);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
+        
+
+        currentLife -= Amount;
+        if (currentLife <= 0)
+        {
+            DieEnemySlotGA dieEnemySlotGA = new(this);
+            ActionSystem.Instance.AddReaction(dieEnemySlotGA);
+            IsDead = true;
+        }
+
+        UpdateLifeText();
+    }
+
+    public void GainLife(int Amount)
+    {
+        if (IsDead) return;
+
+        currentLife += Amount;
+        MaxLife += Amount;
+
+        if (currentLife <= 0)
+        {
+            DieEnemySlotGA dieEnemySlotGA = new(this);
+            ActionSystem.Instance.AddReaction(dieEnemySlotGA);
+            IsDead = true;
+        }
+
+        UpdateLifeText();
     }
 
     public void ActiveSelectEffect()

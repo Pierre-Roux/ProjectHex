@@ -437,7 +437,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   INITIALDeckList: []
   DeckList: []
-  CurrentStage: 0
   GlobalCardList:
   - {fileID: 11400000, guid: 91e8aa0ab1dcd10479e8620d35181d7d, type: 2}
   - {fileID: 11400000, guid: 497155a975955db4cb757558b8eb6126, type: 2}
@@ -450,7 +449,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
   - {fileID: 11400000, guid: b0ac02ba5a1c57e4d8efb2a5b33d705f, type: 2}
   - {fileID: 11400000, guid: babfd0193735b3f41a8b09e86a4dc94c, type: 2}
+  CurrentStage: 0
   Money: 0
+  MaxMana: 3
   IsElite: 0
   CoreLife: 0
 --- !u!1 &115397218

@@ -7,6 +7,7 @@ public class AlterPowerEffect : Effect
     [Header("Effect Param")]
 
     [SerializeField] public int alterAmount;
+    [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public TargetMode targetMode;
     [SerializeField] public bool passive;
     [SerializeField] public PermaTypes permaTypes;
@@ -16,7 +17,7 @@ public class AlterPowerEffect : Effect
 
     public AlterPowerEffect() { }
 
-    public AlterPowerEffect(int AlterAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes)
+    public AlterPowerEffect(int AlterAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount)
     {
         alterAmount = AlterAmount;
         targetMode = TargetMode;
@@ -35,15 +36,20 @@ public class AlterPowerEffect : Effect
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
         permaTypes = PermaTypes;
+        DynamicAmount = dynamicAmount;
     }
 
     public override GameAction GetGameAction()
     {
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
+            if (DynamicAmount != DynamicAmount.NULL)
+            {
+                alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
+            }
             if (passive)
             {
-                AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null, null);
+                AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
                 return alterPowerGA;
             }
             else
@@ -70,15 +76,19 @@ public class AlterPowerEffect : Effect
                     return alterPowerGA;
                 }
             }
-            
+
         }
         else
         {
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
+                }
                 if (passive)
                 {
-                    EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null);
+                    EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
                     enemyAlterPowerGA.Actionner = Actionner;
                     return enemyAlterPowerGA;
                 }
@@ -102,7 +112,7 @@ public class AlterPowerEffect : Effect
                         }
                         else
                         {
-                            (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                            (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                             TargetForLinked_Player = playerTargets;
                             TargetForLinked_Enemy = enemyTargets;
@@ -111,16 +121,20 @@ public class AlterPowerEffect : Effect
                         EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, playerTargets, enemyTargets);
                         enemyAlterPowerGA.Actionner = Actionner;
                         return enemyAlterPowerGA;
-                    }                    
+                    }
                 }
 
             }
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
+                }
                 if (passive)
                 {
                     Debug.Log("PermaTypes : " + permaTypes);
-                    PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null);
+                    PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
                     playerAlterPowerGA.Actionner = Actionner;
                     return playerAlterPowerGA;
                 }
@@ -144,7 +158,7 @@ public class AlterPowerEffect : Effect
                         }
                         else
                         {
-                            (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                            (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                             TargetForLinked_Player = playerTargets;
                             TargetForLinked_Enemy = enemyTargets;
@@ -193,7 +207,8 @@ public class AlterPowerEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            permaTypes
+            permaTypes,
+            DynamicAmount
         );
     }
 }

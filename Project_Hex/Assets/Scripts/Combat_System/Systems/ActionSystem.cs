@@ -43,6 +43,17 @@ public class ActionSystem : Singleton<ActionSystem>
         reactions?.Add(gameAction);
     }
 
+    public IEnumerator RunAction(GameAction action)
+    {
+        if (action == null) yield break;
+
+        IsPerforming = true;
+        yield return Flow(action, () =>
+        {
+            IsPerforming = false;
+        });
+    }
+
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)
     {
         // Vérification stricte de nullité

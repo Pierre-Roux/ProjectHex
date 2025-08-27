@@ -36,6 +36,34 @@ public class CombatSystem : Singleton<CombatSystem>
     [HideInInspector] public int Invoc_GeneralPower;
     [HideInInspector] public int Invoc_PlayerGeneralPower;
     [HideInInspector] public int Invoc_EnemyGeneralPower;
+    [HideInInspector] public int Hollow_GeneralPower;
+    [HideInInspector] public int Hollow_PlayerGeneralPower;
+    [HideInInspector] public int Hollow_EnemyGeneralPower;
+    [HideInInspector] public int Decay_GeneralPower;
+    [HideInInspector] public int Decay_PlayerGeneralPower;
+    [HideInInspector] public int Decay_EnemyGeneralPower;
+    [HideInInspector] public int Artillery_GeneralPower;
+    [HideInInspector] public int Artillery_PlayerGeneralPower;
+    [HideInInspector] public int Artillery_EnemyGeneralPower;
+
+    [HideInInspector] public int PlayerGeneralHPGain;
+    [HideInInspector] public int EnemyGeneralHPGain;
+    [HideInInspector] public int GeneralHPGain;
+    [HideInInspector] public int Invoc_GeneralHPGain;
+    [HideInInspector] public int Invoc_PlayerGeneralHPGain;
+    [HideInInspector] public int Invoc_EnemyGeneralHPGain;
+    [HideInInspector] public int Hollow_GeneralHPGain;
+    [HideInInspector] public int Hollow_PlayerGeneralHPGain;
+    [HideInInspector] public int Hollow_EnemyGeneralHPGain;
+    [HideInInspector] public int Decay_GeneralHPGain;
+    [HideInInspector] public int Decay_PlayerGeneralHPGain;
+    [HideInInspector] public int Decay_EnemyGeneralHPGain;
+    [HideInInspector] public int Artillery_GeneralHPGain;
+    [HideInInspector] public int Artillery_PlayerGeneralHPGain;
+    [HideInInspector] public int Artillery_EnemyGeneralHPGain;
+
+    [HideInInspector] public int SpellCast_This_Turn;
+    [HideInInspector] public int PermanentCast_This_Turn;
 
     public EnemyView currentEnemy;
 
@@ -190,6 +218,8 @@ public class CombatSystem : Singleton<CombatSystem>
             }
         }
 
+        ManaSystem.Instance.SetManaMax(DataBase.Instance.MaxMana);
+
         StartFightGA startFight = new(enemyView);
         ActionSystem.Instance.Perform(startFight);
 
@@ -197,7 +227,6 @@ public class CombatSystem : Singleton<CombatSystem>
     }
 
     // PERFORMER
-
     public IEnumerator DiePermanentPerformer(DiePermanentGA diePermanentGA)
     {
         if (!diePermanentGA.IsCore)
@@ -326,6 +355,10 @@ public class CombatSystem : Singleton<CombatSystem>
     }
     private void PlayerTurnPreReaction(PlayerTurnGA playerTurnGA)
     {
+        // Reset DynamicVariable
+        SpellCast_This_Turn = 0;
+        PermanentCast_This_Turn = 0;
+
         ReffilManaGA reffilManaGA = new();
         ActionSystem.Instance.AddReaction(reffilManaGA);
         DrawCardsGA drawCardsGA = new(5);

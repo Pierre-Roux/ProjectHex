@@ -7,6 +7,7 @@ public class HealEffect : Effect
 {
     [Header("Effect Param")]
     [SerializeField] public int amount;
+    [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
@@ -14,7 +15,7 @@ public class HealEffect : Effect
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
+    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -31,6 +32,7 @@ public class HealEffect : Effect
         LinkedEffect = linkedEffect;
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
+        DynamicAmount = dynamicAmount;
     }
 
     public override GameAction GetGameAction()
@@ -38,10 +40,14 @@ public class HealEffect : Effect
         // SI CARTE
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
+            if (DynamicAmount != DynamicAmount.NULL)
+            {
+                amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
+            }
             if (targetMode == TargetMode.Manual)
             {
                 HealGA healGA = new(amount, null, null);
-                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
+                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -65,10 +71,14 @@ public class HealEffect : Effect
             // SI ENEMY
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
+                }
                 if (targetMode == TargetMode.Manual)
                 {
                     HealGA healGA = new(amount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
+                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -83,7 +93,7 @@ public class HealEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
@@ -97,10 +107,14 @@ public class HealEffect : Effect
             // SI PLAYER
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
+                }
                 if (targetMode == TargetMode.Manual)
                 {
                     HealGA healGA = new(amount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,this);
+                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -115,7 +129,7 @@ public class HealEffect : Effect
                     }
                     else
                     {
-                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, null);
+                        (playerTargets, enemyTargets) = TargetSystem.GetTargets(targetMode, Actionner);
 
                         TargetForLinked_Player = playerTargets;
                         TargetForLinked_Enemy = enemyTargets;
@@ -162,7 +176,8 @@ public class HealEffect : Effect
             TriggerOnDurationEnd,
             clonedLinked,
             clonedPlayerTargets,
-            clonedEnemyTargets
+            clonedEnemyTargets,
+            DynamicAmount
         );
     }
 }

@@ -26,4 +26,5 @@ public enum TargetMode
     All_All,
     Manual,
     EffectParent_Targets,
+    Null,
 }

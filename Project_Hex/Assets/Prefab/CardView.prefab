@@ -527,7 +527,7 @@ GameObject:
   - component: {fileID: 4067262638672651143}
   - component: {fileID: 9180317443728888737}
   - component: {fileID: 1627203214755621564}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CardView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,6 +576,7 @@ MonoBehaviour:
   DropAreaLayer:
     serializedVersion: 2
     m_Bits: 8
+  PermanentSpriteRenderer: {fileID: 3588991809432581948}
   IsReward: 0
   RewardTaken: 0
   shopSlot: {fileID: 0}

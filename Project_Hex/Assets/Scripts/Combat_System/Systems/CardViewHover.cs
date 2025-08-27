@@ -3,13 +3,17 @@ using UnityEngine;
 public class CardViewHover : Singleton<CardViewHover>
 {
     [SerializeField] private CardView cardViewToHover;
+    
 
-    public void Show(Card card, Vector3 position)
+    public void Show(CardView cardview, Vector3 position)
     {
-        if (!CombatSystem.Instance.Interactable) return;
-        if (ActionSystem.Instance.IsPerforming) return;
+        if (!TargetSystem.Instance.CardTargetingActive)
+        {
+            if (!CombatSystem.Instance.Interactable) return;
+            if (ActionSystem.Instance.IsPerforming) return;
+        }
         cardViewToHover.gameObject.SetActive(true);
-        cardViewToHover.Setup(card);
+        cardViewToHover.Setup(cardview.Card);
         cardViewToHover.transform.position = position;
     }
 

@@ -31,6 +31,7 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public List<EnemySlotView> EnemyShielded;
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
+    [HideInInspector] public bool Activated;
     [HideInInspector] public bool isHollow;
     [HideInInspector] public bool isInvoc;
     [HideInInspector] public bool isDecay;

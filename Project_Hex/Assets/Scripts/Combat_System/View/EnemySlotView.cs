@@ -39,6 +39,7 @@ public class EnemySlotView : MonoBehaviour
     
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
+    [HideInInspector] public bool Activated;
 
     [HideInInspector] public bool RDMSequence;
     [HideInInspector] public List<string> IntentSequence = new List<string>();

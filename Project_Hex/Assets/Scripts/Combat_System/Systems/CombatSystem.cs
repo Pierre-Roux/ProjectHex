@@ -79,6 +79,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.AttachPerformer<DiePermanentGA>(DiePermanentPerformer);
             ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
             ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
+            ActionSystem.AttachPerformer<GlobalResetActivationGA>(GlobalResetActivationPerformer);
             ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
 
             ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -98,6 +99,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.DetachPerformer<DiePermanentGA>();
             ActionSystem.DetachPerformer<DieEnemySlotGA>();
             ActionSystem.DetachPerformer<DestroyPermanentGA>();
+            ActionSystem.DetachPerformer<GlobalResetActivationGA>();
             ActionSystem.DetachPerformer<EndCombatGA>();
 
             ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -331,6 +333,19 @@ public class CombatSystem : Singleton<CombatSystem>
         }
     }
 
+    public IEnumerator GlobalResetActivationPerformer(GlobalResetActivationGA globalResetActivationGA)
+    {
+        foreach (PermanentView item in Player_Permanents)
+        {
+            item.Activated = false;
+        }
+        foreach (EnemySlotView item in Enemy_Permanents)
+        {
+            item.Activated = false;
+        }
+        yield return null;
+    }
+
     public IEnumerator EndCombat(EndCombatGA endCombatGA)
     {
         // Bloque l'interactivité du joeur 
@@ -373,6 +388,8 @@ public class CombatSystem : Singleton<CombatSystem>
         ActionSystem.Instance.AddReaction(triggerEventGA);
         DecountPlayerDecayGA decountPlayerDecayGA = new();
         ActionSystem.Instance.AddReaction(decountPlayerDecayGA);
+        GlobalResetActivationGA globalResetActivationGA = new();
+        ActionSystem.Instance.AddReaction(globalResetActivationGA);
         EnemyTurnGA enemyTurnGA = new();
         ActionSystem.Instance.AddReaction(enemyTurnGA);
     }

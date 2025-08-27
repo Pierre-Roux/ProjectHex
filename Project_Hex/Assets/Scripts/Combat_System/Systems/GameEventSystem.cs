@@ -136,17 +136,21 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
         if (triggerPermanentEventGA.permanentView != null)
         {
-            foreach (var effect in effectList)
+            if (triggerPermanentEventGA.gameEvent == Events.OnActivate)
             {
-                Debug.Log(effect);
-                if (effect.Actionner.GetComponent<PermanentView>() == triggerPermanentEventGA.permanentView)
-                {
-                    GameAction ga = effect.GetGameAction();
-                    if (ga != null)
-                        ActionSystem.Instance.AddReaction(ga);
-                }
-                yield return null;
+                triggerPermanentEventGA.permanentView.Activated = true;
             }
+            foreach (var effect in effectList)
+                {
+                    Debug.Log(effect);
+                    if (effect.Actionner.GetComponent<PermanentView>() == triggerPermanentEventGA.permanentView)
+                    {
+                        GameAction ga = effect.GetGameAction();
+                        if (ga != null)
+                            ActionSystem.Instance.AddReaction(ga);
+                    }
+                    yield return null;
+                }
         }
     }
 
@@ -159,6 +163,10 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
         if (triggerEnemyEventGA.enemySlotView != null)
         {
+            if (triggerEnemyEventGA.gameEvent == Events.OnActivate)
+            {
+                triggerEnemyEventGA.enemySlotView.Activated = true;
+            }
             foreach (var effect in effectList)
             {
                 if (effect.Actionner.GetComponent<EnemySlotView>() == triggerEnemyEventGA.enemySlotView)

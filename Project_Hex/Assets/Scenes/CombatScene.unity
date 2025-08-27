@@ -1650,6 +1650,7 @@ MonoBehaviour:
   EnemyShielded: []
   Targetable: 0
   Shielded: 0
+  Activated: 0
   isHollow: 0
   isInvoc: 0
   isDecay: 0
@@ -1701,7 +1702,7 @@ Transform:
   m_GameObject: {fileID: 672738262}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1726,7 +1727,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 20, y: 6.5, z: 1}
+  m_Size: {x: 20, y: 5, z: 1}
   m_Center: {x: 0, y: 2, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -3820,6 +3821,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   CursorGameobject: {fileID: 3260153}
+  CardTargetingActive: 0
 --- !u!1 &1153776335
 GameObject:
   m_ObjectHideFlags: 0
@@ -3897,6 +3899,21 @@ MonoBehaviour:
   Artillery_GeneralPower: 0
   Artillery_PlayerGeneralPower: 0
   Artillery_EnemyGeneralPower: 0
+  PlayerGeneralHPGain: 0
+  EnemyGeneralHPGain: 0
+  GeneralHPGain: 0
+  Invoc_GeneralHPGain: 0
+  Invoc_PlayerGeneralHPGain: 0
+  Invoc_EnemyGeneralHPGain: 0
+  Hollow_GeneralHPGain: 0
+  Hollow_PlayerGeneralHPGain: 0
+  Hollow_EnemyGeneralHPGain: 0
+  Decay_GeneralHPGain: 0
+  Decay_PlayerGeneralHPGain: 0
+  Decay_EnemyGeneralHPGain: 0
+  Artillery_GeneralHPGain: 0
+  Artillery_PlayerGeneralHPGain: 0
+  Artillery_EnemyGeneralHPGain: 0
   SpellCast_This_Turn: 0
   PermanentCast_This_Turn: 0
   currentEnemy: {fileID: 0}

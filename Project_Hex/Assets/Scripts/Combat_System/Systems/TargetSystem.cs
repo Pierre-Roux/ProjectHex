@@ -38,7 +38,6 @@ public class TargetSystem : Singleton<TargetSystem>
         TargetingNumber = InitTargetingNumber = startManualTargetingGA.TargetNumber;
 
         StartManualTargeting();
-
         while (TargetingActive)
             yield return null;
 
@@ -51,8 +50,8 @@ public class TargetSystem : Singleton<TargetSystem>
         var type = action.GetType();
 
         // Vérifie qu'il y a bien les propriétés attendues
-        var playerTargetsProp = type.GetProperty("Targets_Player");
-        var enemyTargetsProp = type.GetProperty("Targets_Enemy");
+        var playerTargetsProp = type.GetProperty("playerTargets");
+        var enemyTargetsProp = type.GetProperty("enemyTargets");
 
         if (playerTargetsProp != null && enemyTargetsProp != null)
         {
@@ -61,7 +60,7 @@ public class TargetSystem : Singleton<TargetSystem>
         }
         else
         {
-            Debug.LogError("L'action ne contient pas les propriétés Targets_Player ou Targets_Enemy");
+            Debug.LogError("L'action ne contient pas les propriétés playerTargets ou enemyTargets");
         }
 
         ActionSystem.Instance.AddReaction(startManualTargetingGA.ActionToRealiseAfterTargetting);
@@ -576,8 +575,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 }
             }
         }
-
-        if (CardTargetingActive)
+        else if (CardTargetingActive)
         {
             if (Input.GetKeyDown(KeyCode.Space)) // Espace = confirmer
             {
@@ -612,6 +610,31 @@ public class TargetSystem : Singleton<TargetSystem>
                             cardView.RemoveSelectEffect();
                             TargetingNumber += 1;
                         }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0)) // 0 = clic gauche 1 = clic droit
+            {
+                if (!CombatSystem.Instance.Interactable) return;
+                if (ActionSystem.Instance.IsPerforming) return;
+                if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit, 10f, TargetingLayerMask) && raycastHit.collider != null && raycastHit.transform.TryGetComponent(out EnemySlotView enemyView))
+                {
+                    if (!enemyView.Activated)
+                    {
+                        TriggerEnemyEventGA triggerEnemyEventGA = new(enemyView, Events.OnActivate);
+                        ActionSystem.Instance.Perform(triggerEnemyEventGA);
+                    }
+
+                }
+                else if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit2, 10f, TargetingLayerMask) && raycastHit2.collider != null && raycastHit2.transform.TryGetComponent(out PermanentView permanentView))
+                {
+                    if (!permanentView.Activated)
+                    {
+                        TriggerPermanentEventGA triggerPermanentEventGA = new(permanentView, Events.OnActivate);
+                        ActionSystem.Instance.Perform(triggerPermanentEventGA);
                     }
                 }
             }

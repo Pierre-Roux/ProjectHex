@@ -77,8 +77,8 @@ public class HealEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealGA healGA = new(amount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
+                    HealEnemyGA healEnemyGA = new(amount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -113,8 +113,8 @@ public class HealEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealGA healGA = new(amount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
+                    HealPlayerGA healPlayerGA = new(amount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else

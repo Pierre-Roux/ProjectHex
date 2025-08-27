@@ -49,9 +49,9 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator DealDamagePerformer(DealDamageGA dealDamageGA)
     {
-        if (dealDamageGA.Targets_Player != null)
+        if (dealDamageGA.playerTargets != null)
         {
-            foreach (var target in dealDamageGA.Targets_Player)
+            foreach (var target in dealDamageGA.playerTargets)
             {
                 if (target.Shielded)
                 {
@@ -88,9 +88,9 @@ public class EffectSystem : Singleton<EffectSystem>
             }
         }
 
-        if (dealDamageGA.Targets_Enemy != null)
+        if (dealDamageGA.enemyTargets != null)
         {
-            foreach (var target in dealDamageGA.Targets_Enemy)
+            foreach (var target in dealDamageGA.enemyTargets)
             {
                 if (target.Shielded)
                 {
@@ -130,18 +130,18 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator DealHealPerformer(HealGA healGA)
     {
-        if (healGA.Targets_Player != null)
+        if (healGA.playerTargets != null)
         {
-            foreach (var target in healGA.Targets_Player)
+            foreach (var target in healGA.playerTargets)
             {
                 target.TakeHeal(healGA.Amount);
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
 
-        if (healGA.Targets_Enemy != null)
+        if (healGA.enemyTargets != null)
         {
-            foreach (var target in healGA.Targets_Enemy)
+            foreach (var target in healGA.enemyTargets)
             {
                 target.TakeHeal(healGA.Amount);
                 yield return new WaitForSeconds(AnimDelay);
@@ -151,18 +151,18 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator DealShieldPerformer(ShieldGA shieldGA)
     {
-        if (shieldGA.Targets_Player != null)
+        if (shieldGA.playerTargets != null)
         {
-            foreach (var target in shieldGA.Targets_Player)
+            foreach (var target in shieldGA.playerTargets)
             {
                 target.TakeShield(shieldGA.Actionner.GetComponent<PermanentView>(), null);
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
 
-        if (shieldGA.Targets_Enemy != null)
+        if (shieldGA.enemyTargets != null)
         {
-            foreach (var target in shieldGA.Targets_Enemy)
+            foreach (var target in shieldGA.enemyTargets)
             {
                 target.TakeShield(null, shieldGA.Actionner.GetComponent<EnemySlotView>());
                 yield return new WaitForSeconds(AnimDelay);
@@ -320,18 +320,18 @@ public class EffectSystem : Singleton<EffectSystem>
         }
         else
         {
-            if (alterPowerGA.Targets_Player != null)
+            if (alterPowerGA.playerTargets != null)
             {
-                foreach (var target in alterPowerGA.Targets_Player)
+                foreach (var target in alterPowerGA.playerTargets)
                 {
                     target.TakeAlterPower(alterPowerGA.Amount);
                     yield return new WaitForSeconds(AnimDelay);
                 }
             }
 
-            if (alterPowerGA.Targets_Enemy != null)
+            if (alterPowerGA.enemyTargets != null)
             {
-                foreach (var target in alterPowerGA.Targets_Enemy)
+                foreach (var target in alterPowerGA.enemyTargets)
                 {
                     target.TakeAlterPower(alterPowerGA.Amount);
                     yield return new WaitForSeconds(AnimDelay);
@@ -342,18 +342,18 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator LifeLossPerformer(LifeLossGA lifeLossGA)
     {
-        if (lifeLossGA.Targets_Player != null)
+        if (lifeLossGA.playerTargets != null)
         {
-            foreach (var target in lifeLossGA.Targets_Player)
+            foreach (var target in lifeLossGA.playerTargets)
             {
                 target.TakeLifeLoss(lifeLossGA.Amount);
                 yield return new WaitForSeconds(AnimDelay);
             }
         }
 
-        if (lifeLossGA.Targets_Enemy != null)
+        if (lifeLossGA.enemyTargets != null)
         {
-            foreach (var target in lifeLossGA.Targets_Enemy)
+            foreach (var target in lifeLossGA.enemyTargets)
             {
                 target.TakeLifeLoss(lifeLossGA.Amount);
                 yield return new WaitForSeconds(AnimDelay);
@@ -457,18 +457,18 @@ public class EffectSystem : Singleton<EffectSystem>
         }
         else
         {
-            if (gainLifeGA.Targets_Player != null)
+            if (gainLifeGA.playerTargets != null)
             {
-                foreach (var target in gainLifeGA.Targets_Player)
+                foreach (var target in gainLifeGA.playerTargets)
                 {
                     target.GainLife(gainLifeGA.Amount);
                     yield return new WaitForSeconds(AnimDelay);
                 }
             }
 
-            if (gainLifeGA.Targets_Enemy != null)
+            if (gainLifeGA.enemyTargets != null)
             {
-                foreach (var target in gainLifeGA.Targets_Enemy)
+                foreach (var target in gainLifeGA.enemyTargets)
                 {
                     target.GainLife(gainLifeGA.Amount);
                     yield return new WaitForSeconds(AnimDelay);

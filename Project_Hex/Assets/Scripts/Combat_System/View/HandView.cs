@@ -31,31 +31,30 @@ public class HandView : MonoBehaviour
         yield return UpdateCardPosition(0.15f);
     }
 
-    /*public IEnumerator RemoveCard(int index)
-    {
-        Debug.Log("index of delete : " + (index-1));
-        cards.RemoveAt(index-1);
-        Debug.Log("il reste  : " + cards.Count + " carte en main");
-        yield return UpdateCardPosition(0.15f);
-    }*/
-
     private IEnumerator UpdateCardPosition(float duration)
     {
         if (cards.Count == 0) yield break;
         float cardSpacing = 1f / 10f;
         float firstCardPosition = 0.5f - (cards.Count - 1) * cardSpacing / 2;
         Spline spline = SplineContainer.Spline;
+
         for (int i = 0; i < cards.Count; i++)
         {
             float p = firstCardPosition + i * cardSpacing;
-            Vector3 SplinePosition = spline.EvaluatePosition(p);
+            Vector3 splinePosition = spline.EvaluatePosition(p);
             Vector3 forward = spline.EvaluateTangent(p);
             Vector3 up = spline.EvaluateUpVector(p);
             Quaternion rotation = Quaternion.LookRotation(Vector3.Cross(up, forward).normalized, up);
-            cards[i].transform.DOMove(SplinePosition + transform.position + 0.01f * i * Vector3.back, duration);
-            cards[i].transform.DORotate(rotation.eulerAngles, duration);
+
+            Vector3 targetPos = splinePosition + transform.position + 0.01f * i * Vector3.back;
+            Quaternion targetRot = rotation;
+
+            cards[i].transform.DOMove(targetPos, duration);
+            cards[i].transform.DORotateQuaternion(targetRot, duration);
+            cards[i].OriginalPos = targetPos;
+            cards[i].OriginalRotation = targetRot;
         }
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(duration); 
     } 
 }

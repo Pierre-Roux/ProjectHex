@@ -75,8 +75,8 @@ public class LifeLossEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    LifeLossGA lifeLossGA = new(LifeLossAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber, this);
+                    EnemyLifeLossGA enemyLifeLossGA = new(LifeLossAmount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -110,8 +110,8 @@ public class LifeLossEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    LifeLossGA lifeLossGA = new(LifeLossAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber, this);
+                    PlayerLifeLossGA playerLifeLossGA = new(LifeLossAmount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else

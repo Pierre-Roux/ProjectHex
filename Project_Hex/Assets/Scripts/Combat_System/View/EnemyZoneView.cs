@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyZoneView : MonoBehaviour
 {
 
-    public float spacing = 1.5f;
+    public float spacing = 2f;
 
     public void RepositionChildrenEnemySlotView()
     {

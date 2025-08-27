@@ -22,8 +22,8 @@ public class CardView : MonoBehaviour
 
     [HideInInspector] public bool isDragging = false;
 
-    private Vector3 OriginalPos;
-    private Quaternion OriginalRotation;
+    [HideInInspector] public Vector3 OriginalPos;
+    [HideInInspector] public Quaternion OriginalRotation;
 
     [HideInInspector] public Card Card { get; private set; }
 
@@ -91,8 +91,6 @@ public class CardView : MonoBehaviour
             if (ActionSystem.Instance.IsPerforming) return;
             if (!CombatSystem.Instance.Interactable) return;
             isDragging = true;
-            OriginalPos = transform.position;
-            OriginalRotation = transform.rotation;
             transform.rotation = Quaternion.identity;
             CardViewHover.Instance.Hide();
             Wrapper.SetActive(true);
@@ -121,37 +119,44 @@ public class CardView : MonoBehaviour
                 }
                 else
                 {
-                    GameObject Parent = null;
-                    switch (Card.permanentType)
+                    if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
                     {
-                        case PermanentType.Weapon:
-                            Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
-                            break;
-                        case PermanentType.Shield:
-                            Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
-                            break;
-                        case PermanentType.Support:
-                            Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
-                            break;
-                        default:
-                            Debug.LogError("No Type For Perm " + Card.data.name);
-                            break;
+                        GameObject Parent = null;
+                        switch (Card.permanentType)
+                        {
+                            case PermanentType.Weapon:
+                                Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
+                                break;
+                            case PermanentType.Shield:
+                                Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
+                                break;
+                            case PermanentType.Support:
+                                Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
+                                break;
+                            default:
+                                Debug.LogError("No Type For Perm " + Card.data.name);
+                                break;
+                        }
+                        if (Parent != null)
+                        {
+                            int childCount = Parent.transform.childCount;
+                            if (childCount >= CombatSystem.Instance.MaxPermPlayer)
+                            {
+                                // LimitReached
+                                returnCardToHand();
+                            }
+                            else
+                            {
+                                isDragging = false;
+                                SummonGA summonGA = new(Card);
+                                ActionSystem.Instance.Perform(summonGA);
+                                CombatSystem.Instance.PermanentCast_This_Turn++;
+                            }
+                        }
                     }
-                    if (Parent != null)
+                    else
                     {
-                        int childCount = Parent.transform.childCount;
-                        if (childCount >= CombatSystem.Instance.MaxPermPlayer)
-                        {
-                            // LimitReached
-                            returnCardToHand();
-                        }
-                        else
-                        {
-                            isDragging = false;
-                            SummonGA summonGA = new(Card);
-                            ActionSystem.Instance.Perform(summonGA);
-                            CombatSystem.Instance.PermanentCast_This_Turn++;
-                        }
+                        returnCardToHand();
                     }
                 }
             }

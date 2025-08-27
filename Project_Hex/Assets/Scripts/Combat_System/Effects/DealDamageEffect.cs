@@ -75,8 +75,8 @@ public class DealDamageEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    DealDamageGA dealDamageGA = new(damageAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
+                    AttackPlayerGA attackPlayerGA = new(damageAmount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(attackPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -110,8 +110,8 @@ public class DealDamageEffect : Effect
                 }
                 if (targetMode == TargetMode.Manual)
                 {
-                    DealDamageGA dealDamageGA = new(damageAmount, null, null);
-                    StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
+                    AttackEnemyGA attackEnemyGA = new(damageAmount, null, null);
+                    StartManualTargetingGA startManualTargetingGA = new(attackEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else

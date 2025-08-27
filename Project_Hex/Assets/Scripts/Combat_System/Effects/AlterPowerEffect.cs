@@ -96,8 +96,8 @@ public class AlterPowerEffect : Effect
                 {
                     if (targetMode == TargetMode.Manual)
                     {
-                        AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null, null);
-                        StartManualTargetingGA startManualTargetingGA = new(alterPowerGA, targetNumber, this);
+                        EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        StartManualTargetingGA startManualTargetingGA = new(enemyAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
                     else
@@ -133,7 +133,6 @@ public class AlterPowerEffect : Effect
                 }
                 if (passive)
                 {
-                    Debug.Log("PermaTypes : " + permaTypes);
                     PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
                     playerAlterPowerGA.Actionner = Actionner;
                     return playerAlterPowerGA;
@@ -142,8 +141,8 @@ public class AlterPowerEffect : Effect
                 {
                     if (targetMode == TargetMode.Manual)
                     {
-                        AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null, null);
-                        StartManualTargetingGA startManualTargetingGA = new(alterPowerGA, targetNumber, this);
+                        PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        StartManualTargetingGA startManualTargetingGA = new(playerAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
                     else

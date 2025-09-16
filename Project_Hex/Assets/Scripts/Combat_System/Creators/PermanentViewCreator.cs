@@ -1,4 +1,5 @@
 using DG.Tweening;
+using FMODUnity;
 using UnityEngine;
 
 public class PermanentViewCreator : Singleton<PermanentViewCreator>
@@ -33,6 +34,15 @@ public class PermanentViewCreator : Singleton<PermanentViewCreator>
         {
             //Debug.Log($"[EnemySlotViewCreator] Cannot add {data.name} to {type} zone — already {childCount} slots (limit = 9)");
             return null;
+        }
+        
+        if (!AudioManager.Instance.IsValid(cardReference.SummonPPermanentSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.SummonPPermanentSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(cardReference.SummonPPermanentSound);
         }
 
         PermanentView PermanentView = Instantiate(PermanentViewPrefab, Vector3.zero, Quaternion.identity, Parent.transform);

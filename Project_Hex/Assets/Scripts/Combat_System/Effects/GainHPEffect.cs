@@ -97,6 +97,7 @@ public class GainHPEffect : Effect
                     if (targetMode == TargetMode.Manual)
                     {
                         EnemyGainLifeGA enemyGainLifeGA = new(GainAmount, passive, permaTypes, null, null);
+                        enemyGainLifeGA.Actionner = Actionner;
                         StartManualTargetingGA startManualTargetingGA = new(enemyGainLifeGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -142,6 +143,7 @@ public class GainHPEffect : Effect
                     if (targetMode == TargetMode.Manual)
                     {
                         PlayerGainLifeGA playerGainLifeGA = new(GainAmount, passive, permaTypes, null, null);
+                        playerGainLifeGA.Actionner = Actionner;
                         StartManualTargetingGA startManualTargetingGA = new(playerGainLifeGA, targetNumber, this);
                         return startManualTargetingGA;
                     }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.AttachPerformer<LifeLossGA>(LifeLossPerformer);
         ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
         ActionSystem.AttachPerformer<GainLifeGA>(GainLifePerformer);
+        ActionSystem.AttachPerformer<ScryGA>(ScryPerformer);
     }
 
     void OnDisable()
@@ -35,6 +37,7 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<LifeLossGA>();
         ActionSystem.DetachPerformer<DiscardCardGA>();
         ActionSystem.DetachPerformer<GainLifeGA>();
+        ActionSystem.DetachPerformer<ScryGA>();
     }
 
 
@@ -239,7 +242,6 @@ public class EffectSystem : Singleton<EffectSystem>
     {
         if (alterPowerGA.passive)
         {
-            UnityEngine.Debug.Log("Passive on " + alterPowerGA.permaTypes + " of " + alterPowerGA.targetMode);
             switch (alterPowerGA.targetMode)
             {
                 case TargetMode.All_All:
@@ -370,6 +372,21 @@ public class EffectSystem : Singleton<EffectSystem>
             StartCoroutine(CardSystem.Instance.DiscardCard(item, true));
             yield return null;
         }
+    }
+
+    private IEnumerator ScryPerformer(ScryGA scryGA)
+    {
+        List<Card> topCards = CardSystem.Instance.drawPile.TakeTop(scryGA.Amount);
+        if (topCards.Count == 0) yield break;
+
+        CardSystem.Instance.ShowScryPanel(topCards);
+
+        CardSystem.Instance.ScryScrollRect.enabled = false;
+
+        yield return new WaitUntil(() => CardSystem.Instance.ScryCardViews.Count == 0);
+
+        CardSystem.Instance.HideScryPanel();
+        yield return null;
     }
     
     private IEnumerator GainLifePerformer(GainLifeGA gainLifeGA)

@@ -35,6 +35,7 @@ public class BrowseReward : MonoBehaviour
             cardView.transform.DOScale(50f, 0.5f);
             cardView.IsReward = true;
             cardView.gameObject.layer = LayerMask.NameToLayer("CardReward");
+            cardView.gameObject.GetComponent<SortingGroup>().sortingLayerName = "UI";
         }
         CardRewardPanel.SetActive(true);
         RewardSystem.Instance.CardSelectionMode = true;

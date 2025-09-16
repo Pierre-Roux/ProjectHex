@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FMODUnity;
 using SerializeReferenceEditor;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Durability { get; private set; }
     [field: SerializeField] public int MaxDurability { get; private set; }
     [field: SerializeField] public Sprite PermanentImage { get; private set; }
-    [field: SerializeField] public PermanentType permanentType  { get; private set; }
+    [field: SerializeField] public PermanentType permanentType { get; private set; }
     [field: SerializeField] public bool UnShieldable;
     [field: SerializeField] public bool isInvoc;
     [field: SerializeField] public bool isArtillery;
@@ -27,4 +28,23 @@ public class CardData : ScriptableObject
     [field: Header("Spell")]
     [field: SerializeField] public bool IsSpell { get; private set; }
     [field: SerializeReference, SR] public List<Effect> Effects { get; private set; }
+    
+    [field: Header("Audio")]
+    [field: SerializeField] public EventReference PlayCardSound;
+    [field: SerializeField] public EventReference DiscardCardSound;
+    [field: SerializeField] public EventReference DrawCardSound;
+    [field: SerializeField] public EventReference SummonPPermanentSound;
+    [field: SerializeField] public EventReference DieSound;
+    [field: SerializeField] public EventReference HollowDieSound;
+    [field: SerializeField] public EventReference BeingDamageSound;
+    [field: SerializeField] public EventReference BeingHealSound;
+    [field: SerializeField] public EventReference BeingShieldSound;
+    [field: SerializeField] public EventReference LoseShieldSound;
+    [field: SerializeField] public EventReference GainPowerSound;
+    [field: SerializeField] public EventReference LosePowerSound;
+    [field: SerializeField] public EventReference TakeLifeLossSound;
+    [field: SerializeField] public EventReference BuffLifeSound;
+    [field: SerializeField] public EventReference DebuffLifeSound;
+    [field: SerializeField] public EventReference SelectedSound;
+    [field: SerializeField] public EventReference UnSelectedSound;
 }

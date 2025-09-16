@@ -76,6 +76,7 @@ public class DealDamageEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     AttackPlayerGA attackPlayerGA = new(damageAmount, null, null);
+                    attackPlayerGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(attackPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -111,6 +112,7 @@ public class DealDamageEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     AttackEnemyGA attackEnemyGA = new(damageAmount, null, null);
+                    attackEnemyGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(attackEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }

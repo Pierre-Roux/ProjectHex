@@ -2,7 +2,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine;
 using System.Collections;
-using System;
 
 public class Main_Menu_Manager : MonoBehaviour
 {
@@ -89,12 +88,18 @@ public class Main_Menu_Manager : MonoBehaviour
                 SaveHolder.Instance.saveFile = saveFile;
                 SaveHolder.Instance.SaveProfile = profileNumber;
                 RestoreLoadedData();
+                #if UNITY_EDITOR
+                UnityEditor.Selection.activeObject = null;
+                #endif
                 SceneManager.LoadScene("TransitionScene");
             }
             else
             {
                 SaveHolder.Instance.saveFile = new SaveFile();
                 SaveHolder.Instance.SaveProfile = profileNumber;
+                #if UNITY_EDITOR
+                UnityEditor.Selection.activeObject = null;
+                #endif
                 SceneManager.LoadScene("TransitionScene");
             }
         });

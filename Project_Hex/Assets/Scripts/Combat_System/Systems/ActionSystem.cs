@@ -67,6 +67,8 @@ public class ActionSystem : Singleton<ActionSystem>
         string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
         //Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
 
+        //Debug.Log("action = " + action);
+
         reactions = action.PreReactions;
         PerformSubscribers(action, preSubs);
         yield return PerformReactions();

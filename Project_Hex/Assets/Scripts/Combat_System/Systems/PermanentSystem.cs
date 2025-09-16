@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class PermanentSystem : Singleton<PermanentSystem>
@@ -26,6 +27,15 @@ public class PermanentSystem : Singleton<PermanentSystem>
 
         cardSystem.hand.Remove(cardToSummon);
         CardView cardView = handView.RemoveCard(cardToSummon);
+
+        if (!AudioManager.Instance.IsValid(cardToSummon.PlayCardSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.PlayCardSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(cardToSummon.PlayCardSound);
+        }
 
         PermanentView permanentView = PermanentViewCreator.Instance.CreatePermanentViewCreator(cardToSummon, cardToSummon.permanentType);
         CombatSystem.Instance.Player_Permanents.Add(permanentView);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
@@ -33,6 +34,15 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
         {
             //Debug.Log($"[EnemySlotViewCreator] Cannot add {data.name} to {type} zone — already {childCount} slots (limit = 9)");
             return null;
+        }
+
+        if (!AudioManager.Instance.IsValid(data.SummonEPermanentSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.SummonEPermanentSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(data.SummonEPermanentSound);
         }
 
         EnemySlotView enemySlotView = Instantiate(SlotPrefab, Vector3.zero, Quaternion.identity, Parent.transform);

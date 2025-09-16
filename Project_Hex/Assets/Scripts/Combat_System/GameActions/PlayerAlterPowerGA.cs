@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class PlayerAlterPowerGA : GameAction
 {
     public int Amount;
-    public List<PermanentView> playerTargets;
-    public List<EnemySlotView> enemyTargets;
+    public List<PermanentView> playerTargets { get; set; }
+    public List<EnemySlotView> enemyTargets { get; set; }
     public TargetMode targetMode;
     public bool passive;
     public PermaTypes permaTypes;

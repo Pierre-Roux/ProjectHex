@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 1024515846376142620}
   - component: {fileID: 5313502043812365378}
   m_Layer: 6
-  m_Name: PermanentView
+  m_Name: PPermanentView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,6 +255,83 @@ MonoBehaviour:
   HealthText: {fileID: 6262918214128263930}
   ShieldVisual: {fileID: 8210921774048756653}
   UnShieldable: 0
+  BeingDamageSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  BeingHealSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  BeingShieldSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  LoseShieldSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  GainPowerSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  LosePowerSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  TakeLifeLossSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  BuffLifeSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  DebuffLifeSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  SelectedSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  UnSelectedSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
   IsDead: 0
   permanentType: 0
   PlayerShielder: []
@@ -263,7 +340,11 @@ MonoBehaviour:
   EnemyShielded: []
   Targetable: 0
   Shielded: 0
+  Activated: 0
   isHollow: 0
+  isInvoc: 0
+  isDecay: 0
+  isArtillery: 0
 --- !u!65 &5313502043812365378
 BoxCollider:
   m_ObjectHideFlags: 0

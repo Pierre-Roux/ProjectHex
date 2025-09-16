@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using Unity.VisualScripting;
+using FMODUnity;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class CardSystem : Singleton<CardSystem>
 {
@@ -13,6 +15,13 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] private DeckView DrawDeck;
     [SerializeField] private DeckView DiscardDeck;
 
+    [SerializeField] public GameObject ScryPanel;
+    [SerializeField] public GameObject ScryPanelContent;
+
+    [SerializeField] public ScrollRect ScryScrollRect;
+
+    [HideInInspector] public List<CardView> ScryCardViews;
+    
     public List<Card> drawPile = new();
     public List<Card> discardPile = new();
     public List<Card> hand = new();
@@ -89,6 +98,17 @@ public class CardSystem : Singleton<CardSystem>
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
         TriggerEventGA triggerEventGA = new(Events.OnDraw, cardView.Card);
         ActionSystem.Instance.AddReaction(triggerEventGA);
+
+
+        if (!AudioManager.Instance.IsValid(card.DrawCardSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.DrawCardSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(card.DrawCardSound);
+        }
+        
         yield return handView.AddCard(cardView);
     }
 
@@ -117,6 +137,15 @@ public class CardSystem : Singleton<CardSystem>
             ActionSystem.Instance.AddReaction(triggerEventGA);      
         }
 
+        if (!AudioManager.Instance.IsValid(cardView.Card.DiscardCardSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.DiscardCardSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(cardView.Card.DiscardCardSound);
+        }
+
         cardView.transform.DOScale(Vector3.zero, 0.15f);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
         yield return tween.WaitForCompletion();
@@ -138,10 +167,19 @@ public class CardSystem : Singleton<CardSystem>
         // Si on joue une carte toute les event OnPlay ce joue (il faudrait faire des OnPlaySpell, OnPlayPermanent ect...)
         TriggerEventGA triggerEventGA = new(Events.OnPlayCard);
         ActionSystem.Instance.AddReaction(triggerEventGA);
+
+        if (!AudioManager.Instance.IsValid(playCardGA.Card.PlayCardSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.PlayCardSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(playCardGA.Card.PlayCardSound);
+        }
+
         hand.Remove(playCardGA.Card);
         CardView cardView = handView.RemoveCard(playCardGA.Card);
         yield return DiscardCard(cardView, false);
-
 
         SpendManaGA spendManaGA = new(playCardGA.Card.cost);
         ActionSystem.Instance.AddReaction(spendManaGA);        
@@ -188,6 +226,42 @@ public class CardSystem : Singleton<CardSystem>
     public IEnumerator InsertCard(CardView card)
     {
         yield return DiscardCard(card, false);
+    }
+
+    public void ShowScryPanel(List<Card> cards)
+    {
+        DisplayScryCards(cards);
+        ScryPanel.SetActive(true);
+        CombatSystem.Instance.Interactable = false;
+    }
+
+    public void HideScryPanel()
+    {
+        ScryPanel.SetActive(false);
+        CombatSystem.Instance.Interactable = true;          
+    }
+
+    public void DisplayScryCards(List<Card> CardsToDisplay)
+    {
+        CleanScryPanel();
+        foreach (var card in CardsToDisplay)
+        {
+            CardView cardView = CardViewCreator.Instance.CreateCardView(card, Vector3.zero, Quaternion.identity, ScryPanelContent.transform);
+            cardView.IsScryCard = true;
+            cardView.gameObject.GetComponent<SortingGroup>().sortingOrder = 5;
+            cardView.gameObject.GetComponent<SortingGroup>().sortingLayerName = "UI";
+            cardView.gameObject.transform.position.Set(cardView.gameObject.transform.position.x, cardView.gameObject.transform.position.y, 0);
+            cardView.transform.DOScale(60, 0.5f);
+            ScryCardViews.Add(cardView);
+        }
+    }
+
+    public void CleanScryPanel()
+    {
+        foreach (Transform child in ScryPanelContent.transform)
+            Destroy(child.gameObject);
+
+        ScryCardViews.Clear();
     }
 
     // REACTIONS

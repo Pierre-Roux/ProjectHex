@@ -14,6 +14,7 @@ public class DiscardEffect : Effect
     {
         if (DiscardAll)
         {
+            Debug.Log("Here " + DiscardAmount);
             DiscardAllCardsGA discardAllCardsGA = new(true);
             return discardAllCardsGA;
         }
@@ -25,6 +26,7 @@ public class DiscardEffect : Effect
             }
             if (DiscardAmount >= CardSystem.Instance.hand.Count)
             {
+                Debug.Log("Here " + DiscardAmount);
                 DiscardAllCardsGA discardAllCardsGA = new(true);
                 return discardAllCardsGA;
             }

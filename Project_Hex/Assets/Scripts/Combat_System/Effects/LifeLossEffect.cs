@@ -76,6 +76,7 @@ public class LifeLossEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     EnemyLifeLossGA enemyLifeLossGA = new(LifeLossAmount, null, null);
+                    enemyLifeLossGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -111,6 +112,7 @@ public class LifeLossEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     PlayerLifeLossGA playerLifeLossGA = new(LifeLossAmount, null, null);
+                    playerLifeLossGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber, this);
                     return startManualTargetingGA;
                 }

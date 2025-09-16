@@ -2,6 +2,7 @@ using SerializeReferenceEditor;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 
 [System.Serializable]
 public abstract class Effect
@@ -10,6 +11,7 @@ public abstract class Effect
     [SerializeField] public ActionnerType actionnerType;
     [SerializeField] public Events Events;
     [SerializeField] public bool HollowEffect;
+    [SerializeField] private EventReference EffectSound;
 
     [Header("Enemy_Only")]
     [SerializeField] public String Intent_Title;

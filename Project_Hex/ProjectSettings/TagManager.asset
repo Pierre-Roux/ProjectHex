@@ -9,20 +9,20 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - DropArea
+  - 
   - Water
   - UI
   - AnyPermanent
-  - CardReward
+  - 
+  - 
+  - DeckDropArea
+  - DiscardDropArea
+  - DropArea
+  - 
+  - 
+  - 
   - CardView
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - CardReward
   - 
   - 
   - 
@@ -41,4 +41,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 526096713
+    locked: 0
+  - name: Cursor
+    uniqueID: 193844685
     locked: 0

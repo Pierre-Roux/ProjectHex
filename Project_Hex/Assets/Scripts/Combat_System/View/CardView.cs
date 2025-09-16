@@ -1,7 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardView : MonoBehaviour
 {
@@ -14,6 +14,8 @@ public class CardView : MonoBehaviour
     [SerializeField] public TMP_Text Durability;
     [SerializeField] public GameObject Wrapper;
     [SerializeField] private LayerMask DropAreaLayer;
+    [SerializeField] private LayerMask DropDeckLayer;
+    [SerializeField] private LayerMask DropDiscardLayer;
     [SerializeField] SpriteRenderer PermanentSpriteRenderer;
 
     [HideInInspector] public bool IsReward;
@@ -26,6 +28,8 @@ public class CardView : MonoBehaviour
     [HideInInspector] public Quaternion OriginalRotation;
 
     [HideInInspector] public Card Card { get; private set; }
+
+    [HideInInspector] public bool IsScryCard;
 
     public void Setup(Card card)
     {
@@ -69,7 +73,7 @@ public class CardView : MonoBehaviour
             }
             if (isDragging) return;
             Wrapper.SetActive(false);
-            Vector3 pos = new(transform.position.x, -2.5f, 0);
+            Vector3 pos = new(transform.position.x, transform.position.y, 0);
             CardViewHover.Instance.Show(this, pos);
         }
     }
@@ -88,8 +92,11 @@ public class CardView : MonoBehaviour
     {
         if (!IsReward)
         {
-            if (ActionSystem.Instance.IsPerforming) return;
-            if (!CombatSystem.Instance.Interactable) return;
+            if (!IsScryCard)
+            {
+                if (ActionSystem.Instance.IsPerforming) return;
+                if (!CombatSystem.Instance.Interactable) return;
+            }
             isDragging = true;
             transform.rotation = Quaternion.identity;
             CardViewHover.Instance.Hide();
@@ -101,68 +108,95 @@ public class CardView : MonoBehaviour
     {
         if (isDragging)
         {
-            if (ManaSystem.Instance.HasEnoughMana(Card.cost))
+            if (IsScryCard)
             {
-                if (Card.IsSpell)
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out hit, 10f, DropDeckLayer))
                 {
-                    if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
-                    {
-                        isDragging = false;
-                        PlayCardGA playCardGA = new(Card);
-                        ActionSystem.Instance.Perform(playCardGA);
-                        CombatSystem.Instance.SpellCast_This_Turn++;
-                    }
-                    else
-                    {
-                        returnCardToHand();
-                    }
+                    isDragging = false;
+                    CardSystem.Instance.ScryCardViews.Remove(this);
+                    CardSystem.Instance.drawPile.PutTop(new[] { this.Card });
+                    Destroy(this.gameObject);
+
+                }
+                else if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out hit, 10f, DropDiscardLayer))
+                {
+                    isDragging = false;
+                    CardSystem.Instance.ScryCardViews.Remove(this);
+                    CardSystem.Instance.discardPile.PutTop(new[] { this.Card });
+                    Destroy(this.gameObject);
                 }
                 else
                 {
-                    if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
-                    {
-                        GameObject Parent = null;
-                        switch (Card.permanentType)
-                        {
-                            case PermanentType.Weapon:
-                                Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
-                                break;
-                            case PermanentType.Shield:
-                                Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
-                                break;
-                            case PermanentType.Support:
-                                Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
-                                break;
-                            default:
-                                Debug.LogError("No Type For Perm " + Card.data.name);
-                                break;
-                        }
-                        if (Parent != null)
-                        {
-                            int childCount = Parent.transform.childCount;
-                            if (childCount >= CombatSystem.Instance.MaxPermPlayer)
-                            {
-                                // LimitReached
-                                returnCardToHand();
-                            }
-                            else
-                            {
-                                isDragging = false;
-                                SummonGA summonGA = new(Card);
-                                ActionSystem.Instance.Perform(summonGA);
-                                CombatSystem.Instance.PermanentCast_This_Turn++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        returnCardToHand();
-                    }
+                    isDragging = false;
+                    return;
                 }
             }
             else
             {
-                returnCardToHand();
+                if (ManaSystem.Instance.HasEnoughMana(Card.cost))
+                {
+                    if (Card.IsSpell)
+                    {
+                        if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
+                        {
+                            isDragging = false;
+                            PlayCardGA playCardGA = new(Card);
+                            ActionSystem.Instance.Perform(playCardGA);
+                            CombatSystem.Instance.SpellCast_This_Turn++;
+                        }
+                        else
+                        {
+                            returnCardToHand();
+                        }
+                    }
+                    else
+                    {
+                        if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
+                        {
+                            GameObject Parent = null;
+                            switch (Card.permanentType)
+                            {
+                                case PermanentType.Weapon:
+                                    Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
+                                    break;
+                                case PermanentType.Shield:
+                                    Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
+                                    break;
+                                case PermanentType.Support:
+                                    Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
+                                    break;
+                                default:
+                                    Debug.LogError("No Type For Perm " + Card.data.name);
+                                    break;
+                            }
+                            if (Parent != null)
+                            {
+                                int childCount = Parent.transform.childCount;
+                                if (childCount >= CombatSystem.Instance.MaxPermPlayer)
+                                {
+                                    // LimitReached
+                                    returnCardToHand();
+                                }
+                                else
+                                {
+                                    isDragging = false;
+                                    SummonGA summonGA = new(Card);
+                                    ActionSystem.Instance.Perform(summonGA);
+                                    CombatSystem.Instance.PermanentCast_This_Turn++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            returnCardToHand();
+                        }
+                    }
+                }
+                else
+                {
+                    returnCardToHand();
+                }
             }
         }
     }
@@ -178,9 +212,18 @@ public class CardView : MonoBehaviour
     {
         if (isDragging)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0;
-            transform.DOMove(mousePos, 0.25f).SetEase(Ease.OutCubic);
+            if (IsScryCard)
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePos.z = -1;
+                transform.DOMove(mousePos, 0.25f).SetEase(Ease.OutCubic);
+            }
+            else
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePos.z = 0;
+                transform.DOMove(mousePos, 0.25f).SetEase(Ease.OutCubic);
+            }
         }
     }
 

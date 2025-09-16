@@ -78,6 +78,7 @@ public class HealEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     HealEnemyGA healEnemyGA = new(amount, null, null);
+                    healEnemyGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -114,6 +115,7 @@ public class HealEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     HealPlayerGA healPlayerGA = new(amount, null, null);
+                    healPlayerGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }

@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -18,8 +16,9 @@ public class DeckViewSystem : Singleton<DeckViewSystem>
 
         foreach (var card in randomized)
         {
-            CardView cardView = CardViewCreator.Instance.CreateCardView(card, Vector3.zero, quaternion.identity, UIDeckViewPanelContent.transform);
-            cardView.gameObject.GetComponent<SortingGroup>().sortingOrder = 1;
+            CardView cardView = CardViewCreator.Instance.CreateCardView(card, Vector3.zero, Quaternion.identity, UIDeckViewPanelContent.transform);
+            cardView.gameObject.GetComponent<SortingGroup>().sortingOrder = 2;
+            cardView.gameObject.GetComponent<SortingGroup>().sortingLayerName = "UI";
             cardView.transform.DOScale(50, 0.5f);
         }
     }

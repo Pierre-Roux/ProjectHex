@@ -66,6 +66,7 @@ public class ShieldEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     ShieldEnemyGA shieldEnemyGA = new(null, null);
+                    shieldEnemyGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber,this);
                     return startManualTargetingGA;
                 }
@@ -97,6 +98,7 @@ public class ShieldEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     ShieldPlayerGA shieldPlayerGA = new(null, null);
+                    shieldPlayerGA.Actionner = Actionner;
                     StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber,this);
                     return startManualTargetingGA;
                 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using FMODUnity;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +18,18 @@ public class EnemySlotView : MonoBehaviour
     [SerializeField] public bool UnShieldable;
     [SerializeField] public bool isInvoc;
 
+    [SerializeField] public EventReference DieSound;
+    [SerializeField] public EventReference BeingDamageSound;
+    [SerializeField] public EventReference BeingHealSound;
+    [SerializeField] public EventReference BeingShieldSound;
+    [SerializeField] public EventReference LoseShieldSound;
+    [SerializeField] public EventReference GainPowerSound;
+    [SerializeField] public EventReference LosePowerSound;
+    [SerializeField] public EventReference TakeLifeLossSound;
+    [SerializeField] public EventReference BuffLifeSound;
+    [SerializeField] public EventReference DebuffLifeSound;
+    [SerializeField] public EventReference SelectedSound;
+    [SerializeField] public EventReference UnSelectedSound;
 
     [HideInInspector] public Effect IntentAction;
     [HideInInspector] public int currentLife { get; set; }
@@ -72,6 +85,21 @@ public class EnemySlotView : MonoBehaviour
         {
             permanentType = PermanentData.permanentType;
         }
+
+        //Audio
+        if (PermanentData.DieSound.Path != "") DieSound = PermanentData.DieSound;
+        if (PermanentData.BeingDamageSound.Path != "") BeingDamageSound = PermanentData.BeingDamageSound;
+        if (PermanentData.BeingHealSound.Path != "") BeingHealSound = PermanentData.BeingHealSound;
+        if (PermanentData.BeingShieldSound.Path != "") BeingShieldSound = PermanentData.BeingShieldSound;
+        if (PermanentData.LoseShieldSound.Path != "") LoseShieldSound = PermanentData.LoseShieldSound;
+        if (PermanentData.GainPowerSound.Path != "") GainPowerSound = PermanentData.GainPowerSound;
+        if (PermanentData.LosePowerSound.Path != "") LosePowerSound = PermanentData.LosePowerSound;
+        if (PermanentData.TakeLifeLossSound.Path != "") TakeLifeLossSound = PermanentData.TakeLifeLossSound;
+        if (PermanentData.BuffLifeSound.Path != "") BuffLifeSound = PermanentData.BuffLifeSound;
+        if (PermanentData.DebuffLifeSound.Path != "") DebuffLifeSound = PermanentData.DebuffLifeSound;
+        if (PermanentData.SelectedSound.Path != "") SelectedSound = PermanentData.SelectedSound;
+        if (PermanentData.UnSelectedSound.Path != "") UnSelectedSound = PermanentData.UnSelectedSound;
+
         UpdateIntent();
         UpdateLifeText();
     }
@@ -274,6 +302,10 @@ public class EnemySlotView : MonoBehaviour
                 IsDead = true;
             }
         }
+        else
+        {
+            RuntimeManager.PlayOneShot(BeingDamageSound);
+        }
 
         UpdateLifeText();
     }
@@ -285,6 +317,7 @@ public class EnemySlotView : MonoBehaviour
         {
             currentLife = MaxLife;
         }
+        RuntimeManager.PlayOneShot(BeingHealSound);
         transform.DOShakePosition(0f, 0.1f);
         UpdateLifeText();
     }
@@ -295,6 +328,7 @@ public class EnemySlotView : MonoBehaviour
         {
             if (playerShielder != null)
             {
+                RuntimeManager.PlayOneShot(BeingShieldSound);
                 if (!PlayerShielder.Contains(playerShielder))
                 {
                     PlayerShielder.Add(playerShielder);
@@ -336,6 +370,7 @@ public class EnemySlotView : MonoBehaviour
         }
         else
         {
+            RuntimeManager.PlayOneShot(LoseShieldSound);
             ShieldVisual.SetActive(false);
             Shielded = false;
         }
@@ -344,6 +379,17 @@ public class EnemySlotView : MonoBehaviour
     public void TakeAlterPower(int Amount)
     {
         if (IsDead) return;
+        
+        if (Amount > 0)
+        {
+            RuntimeManager.PlayOneShot(GainPowerSound);
+        }
+        else if (Amount < 0)
+        {
+            RuntimeManager.PlayOneShot(LosePowerSound);
+        }
+        else { return; }
+        
         BonusPower += Amount;
         if (transform != null)
         {
@@ -369,6 +415,10 @@ public class EnemySlotView : MonoBehaviour
             ActionSystem.Instance.AddReaction(dieEnemySlotGA);
             IsDead = true;
         }
+        else
+        {
+            RuntimeManager.PlayOneShot(TakeLifeLossSound);
+        }
 
         UpdateLifeText();
     }
@@ -376,6 +426,16 @@ public class EnemySlotView : MonoBehaviour
     public void GainLife(int Amount)
     {
         if (IsDead) return;
+
+        if (Amount > 0)
+        {
+            RuntimeManager.PlayOneShot(BuffLifeSound);
+        }
+        else if (Amount < 0)
+        {
+            RuntimeManager.PlayOneShot(DebuffLifeSound);
+        }
+        else { return; }
 
         currentLife += Amount;
         MaxLife += Amount;
@@ -393,10 +453,12 @@ public class EnemySlotView : MonoBehaviour
     public void ActiveSelectEffect()
     {
         spriteRenderer.color = Color.red;
+        RuntimeManager.PlayOneShot(SelectedSound);
     }
 
     public void RemoveSelectEffect()
     {
         spriteRenderer.color = Color.white;
+        RuntimeManager.PlayOneShot(UnSelectedSound);
     }
 }

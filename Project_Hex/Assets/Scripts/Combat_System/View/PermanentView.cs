@@ -1,8 +1,8 @@
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
-using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 
 public class PermanentView : MonoBehaviour
 {
@@ -10,6 +10,20 @@ public class PermanentView : MonoBehaviour
     [SerializeField] TMP_Text HealthText;
     [SerializeField] public GameObject ShieldVisual;
     [SerializeField] public bool UnShieldable;
+
+    [SerializeField] public EventReference DieSound;
+    [SerializeField] public EventReference HollowDieSound;
+    [SerializeField] public EventReference BeingDamageSound;
+    [SerializeField] public EventReference BeingHealSound;
+    [SerializeField] public EventReference BeingShieldSound;
+    [SerializeField] public EventReference LoseShieldSound;
+    [SerializeField] public EventReference GainPowerSound;
+    [SerializeField] public EventReference LosePowerSound;
+    [SerializeField] public EventReference TakeLifeLossSound;
+    [SerializeField] public EventReference BuffLifeSound;
+    [SerializeField] public EventReference DebuffLifeSound;
+    [SerializeField] public EventReference SelectedSound;
+    [SerializeField] public EventReference UnSelectedSound;
 
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] private int MaxLife { get; set; }
@@ -45,7 +59,7 @@ public class PermanentView : MonoBehaviour
         PermanentSpriteRenderer.sprite = cardReference.data.PermanentImage;
         baseLife = cardReference.data.life;
         MaxLife = CalculateBonusLife(baseLife);
-        currentLife = MaxLife; 
+        currentLife = MaxLife;
         isInvoc = cardReference.data.isInvoc;
         isArtillery = cardReference.data.isArtillery;
         permanentType = cardReference.data.permanentType;
@@ -72,6 +86,21 @@ public class PermanentView : MonoBehaviour
             c.a = 0.5f;
             PermanentSpriteRenderer.color = c;
         }
+
+        //Audio
+        if (cardReference.DieSound.Path != "") DieSound = cardReference.DieSound;
+        if (cardReference.HollowDieSound.Path != "") HollowDieSound = cardReference.HollowDieSound;
+        if (cardReference.BeingDamageSound.Path != "") BeingDamageSound = cardReference.BeingDamageSound;
+        if (cardReference.BeingHealSound.Path != "") BeingHealSound = cardReference.BeingHealSound;
+        if (cardReference.BeingShieldSound.Path != "") BeingShieldSound = cardReference.BeingShieldSound;
+        if (cardReference.LoseShieldSound.Path != "") LoseShieldSound = cardReference.LoseShieldSound;
+        if (cardReference.GainPowerSound.Path != "") GainPowerSound = cardReference.GainPowerSound;
+        if (cardReference.LosePowerSound.Path != "") LosePowerSound = cardReference.LosePowerSound;
+        if (cardReference.TakeLifeLossSound.Path != "") TakeLifeLossSound = cardReference.TakeLifeLossSound;
+        if (cardReference.BuffLifeSound.Path != "") BuffLifeSound = cardReference.BuffLifeSound;
+        if (cardReference.DebuffLifeSound.Path != "") DebuffLifeSound = cardReference.DebuffLifeSound;
+        if (cardReference.SelectedSound.Path != "") SelectedSound = cardReference.SelectedSound;
+        if (cardReference.UnSelectedSound.Path != "") UnSelectedSound = cardReference.UnSelectedSound;
     }
 
     public void SetPosition(Vector3 pos)
@@ -200,6 +229,10 @@ public class PermanentView : MonoBehaviour
                 IsDead = true;
             }
         }
+        else
+        {
+            RuntimeManager.PlayOneShot(BeingDamageSound);
+        }
     }
 
     public void TakeHeal(int Amount)
@@ -209,6 +242,7 @@ public class PermanentView : MonoBehaviour
         {
             currentLife = MaxLife;
         }
+        RuntimeManager.PlayOneShot(BeingHealSound);
         transform.DOShakePosition(0.1f, 0.1f);
         UpdateLifeText();
     }
@@ -217,14 +251,15 @@ public class PermanentView : MonoBehaviour
     {
         if (!UnShieldable)
         {
+            RuntimeManager.PlayOneShot(BeingShieldSound);
             if (playerShielder != null)
+            {
+                if (!PlayerShielder.Contains(playerShielder))
                 {
-                    if (!PlayerShielder.Contains(playerShielder))
-                    {
-                        PlayerShielder.Add(playerShielder);
-                        playerShielder.GetComponent<PermanentView>().PlayerShielded.Add(this);
-                    }
+                    PlayerShielder.Add(playerShielder);
+                    playerShielder.GetComponent<PermanentView>().PlayerShielded.Add(this);
                 }
+            }
 
             if (enemyShielder != null)
             {
@@ -260,6 +295,7 @@ public class PermanentView : MonoBehaviour
         }
         else
         {
+            RuntimeManager.PlayOneShot(LoseShieldSound);
             ShieldVisual.SetActive(false);
             Shielded = false;  
         }
@@ -268,8 +304,22 @@ public class PermanentView : MonoBehaviour
     public void TakeAlterPower(int Amount)
     {
         if (IsDead) return;
+        
+        if (Amount > 0)
+        {
+            RuntimeManager.PlayOneShot(GainPowerSound);
+        }
+        else if (Amount < 0)
+        {
+            RuntimeManager.PlayOneShot(LosePowerSound);
+        }
+        else { return; }
+
         BonusPower += Amount;
-        transform.DOShakePosition(0f, 0.1f);
+        if (transform != null)
+        {
+            transform.DOShakePosition(0f, 0.1f);
+        }
     }
 
     public void TakeLifeLoss(int Amount)
@@ -289,6 +339,10 @@ public class PermanentView : MonoBehaviour
             ActionSystem.Instance.AddReaction(diePermanentGA);
             IsDead = true;
         }
+        else
+        {
+            RuntimeManager.PlayOneShot(TakeLifeLossSound);
+        }
 
         UpdateLifeText();
     }
@@ -296,6 +350,16 @@ public class PermanentView : MonoBehaviour
     public void GainLife(int Amount)
     {
         if (IsDead) return;
+
+        if (Amount > 0)
+        {
+            RuntimeManager.PlayOneShot(BuffLifeSound);
+        }
+        else if (Amount < 0)
+        {
+            RuntimeManager.PlayOneShot(DebuffLifeSound);
+        }
+        else { return; }
 
         currentLife += Amount;
         MaxLife += Amount;
@@ -313,11 +377,13 @@ public class PermanentView : MonoBehaviour
     public void ActiveSelectEffect()
     {
         PermanentSpriteRenderer.color = Color.red;
+        RuntimeManager.PlayOneShot(SelectedSound);
     }
 
     public void RemoveSelectEffect()
     {
         PermanentSpriteRenderer.color = Color.white;
+        RuntimeManager.PlayOneShot(UnSelectedSound);
     }
 
 }

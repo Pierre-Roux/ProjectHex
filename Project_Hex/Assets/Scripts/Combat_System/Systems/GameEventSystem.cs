@@ -129,7 +129,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
     public IEnumerator TriggerPermanentEventPerformer(TriggerPermanentEventGA triggerPermanentEventGA)
     {
-        Debug.Log("TriggerPermanentEvent : " + triggerPermanentEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
+        //Debug.Log("TriggerPermanentEvent : " + triggerPermanentEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
 
         if (!effectsByEvent.TryGetValue(triggerPermanentEventGA.gameEvent, out var effectList))
             yield break;

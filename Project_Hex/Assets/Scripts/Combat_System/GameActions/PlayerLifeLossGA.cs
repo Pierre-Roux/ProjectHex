@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerLifeLossGA : GameAction
 {
-    public List<PermanentView> playerTargets;
-    public List<EnemySlotView> enemyTargets;
+    public List<PermanentView> playerTargets { get; set; }
+    public List<EnemySlotView> enemyTargets { get; set; }
     public int Amount;
     public PlayerLifeLossGA(int amount, List<PermanentView> PlayerTargets, List<EnemySlotView> EnemyTargets)
     {

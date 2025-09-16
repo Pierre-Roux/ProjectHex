@@ -13,7 +13,7 @@ public class CursorView : MonoBehaviour
     public void Update()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorldPos.z = 0;
+        mouseWorldPos.z = -1;
         Vector3 endPos = mouseWorldPos;
         CursorGameObject.transform.position = endPos;
     }

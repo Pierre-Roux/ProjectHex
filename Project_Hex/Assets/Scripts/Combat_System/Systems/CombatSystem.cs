@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using FMODUnity;
 
 public class CombatSystem : Singleton<CombatSystem>
 {
@@ -79,7 +80,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.AttachPerformer<DiePermanentGA>(DiePermanentPerformer);
             ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
             ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
-            ActionSystem.AttachPerformer<GlobalResetActivationGA>(GlobalResetActivationPerformer);
+            //ActionSystem.AttachPerformer<GlobalResetActivationGA>(GlobalResetActivationPerformer);
             ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
 
             ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -99,7 +100,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.DetachPerformer<DiePermanentGA>();
             ActionSystem.DetachPerformer<DieEnemySlotGA>();
             ActionSystem.DetachPerformer<DestroyPermanentGA>();
-            ActionSystem.DetachPerformer<GlobalResetActivationGA>();
+            //ActionSystem.DetachPerformer<GlobalResetActivationGA>();
             ActionSystem.DetachPerformer<EndCombatGA>();
 
             ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -247,6 +248,15 @@ public class CombatSystem : Singleton<CombatSystem>
 
                     DestroyPermanentGA destroyPermanentGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(destroyPermanentGA);
+
+                    if (!AudioManager.Instance.IsValid(destroyPermanentGA.PermanentView.CardReferenceArchive.HollowDieSound))
+                    {
+                        RuntimeManager.PlayOneShot(AudioManager.Instance.HollowDieSound);
+                    }
+                    else
+                    {
+                        RuntimeManager.PlayOneShot(destroyPermanentGA.PermanentView.CardReferenceArchive.HollowDieSound);
+                    }
                 }
             }
             else
@@ -265,6 +275,15 @@ public class CombatSystem : Singleton<CombatSystem>
                     DestroyPermanentGA destroyPermanentGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(destroyPermanentGA);
 
+                    if (!AudioManager.Instance.IsValid(destroyPermanentGA.PermanentView.CardReferenceArchive.DieSound))
+                    {
+                        RuntimeManager.PlayOneShot(AudioManager.Instance.DieSound);
+                    }
+                    else
+                    {
+                        RuntimeManager.PlayOneShot(destroyPermanentGA.PermanentView.CardReferenceArchive.DieSound);
+                    }
+
                     newCardView.transform.DOScale(0, 0.01f);
                     Tween tween = newCardView.transform.DOScale(0.4f, 0.2f);
                     yield return tween.WaitForCompletion();
@@ -277,6 +296,7 @@ public class CombatSystem : Singleton<CombatSystem>
         {
             Interactable = false;
             EndGameDefeatPanel.SetActive(true);
+            AudioManager.Instance.ChangeMusic(AudioManager.Instance.DefeatMusic);
         }
     }
 
@@ -292,14 +312,23 @@ public class CombatSystem : Singleton<CombatSystem>
 
         DestroyPermanentGA destroyPermanentGA = new(null, dieEnemySlotGA.EnemySlotView);
 
+        ActionSystem.Instance.AddReaction(destroyPermanentGA);
         if (dieEnemySlotGA.EnemySlotView.IsCore)
         {
             EndCombatGA endCombatGA = new();
             ActionSystem.Instance.AddReaction(endCombatGA);
         }
-
-        ActionSystem.Instance.AddReaction(destroyPermanentGA);
-
+        else
+        {
+            if (!AudioManager.Instance.IsValid(destroyPermanentGA.enemySlotView.PermanentData.DieSound))
+            {
+                RuntimeManager.PlayOneShot(AudioManager.Instance.DieSound);
+            }
+            else
+            {
+                RuntimeManager.PlayOneShot(destroyPermanentGA.enemySlotView.PermanentData.DieSound);
+            }
+        }
         yield return null;
     }
 
@@ -333,7 +362,7 @@ public class CombatSystem : Singleton<CombatSystem>
         }
     }
 
-    public IEnumerator GlobalResetActivationPerformer(GlobalResetActivationGA globalResetActivationGA)
+    /*public IEnumerator GlobalResetActivationPerformer(GlobalResetActivationGA globalResetActivationGA)
     {
         foreach (PermanentView item in Player_Permanents)
         {
@@ -344,7 +373,7 @@ public class CombatSystem : Singleton<CombatSystem>
             item.Activated = false;
         }
         yield return null;
-    }
+    }*/
 
     public IEnumerator EndCombat(EndCombatGA endCombatGA)
     {
@@ -352,6 +381,7 @@ public class CombatSystem : Singleton<CombatSystem>
         Interactable = false;
         Win = true;
         EndGameVictoryPanel.SetActive(true);
+        AudioManager.Instance.ChangeMusic(AudioManager.Instance.VictoryMusic);
         yield return null;
     }
 

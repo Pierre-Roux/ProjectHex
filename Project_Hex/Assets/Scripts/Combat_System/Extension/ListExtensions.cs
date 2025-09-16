@@ -19,4 +19,22 @@ public static class ListExtensions
             (list[i], list[j]) = (list[j], list[i]); // swap
         }
     }
+
+    public static List<T> TakeTop<T>(this List<T> list, int amount)
+    {
+        amount = Mathf.Min(amount, list.Count);
+        List<T> result = list.GetRange(0, amount);
+        list.RemoveRange(0, amount);
+        return result;
+    }
+
+    public static void PutBottom<T>(this List<T> list, IEnumerable<T> elements)
+    {
+        list.AddRange(elements);
+    }
+
+    public static void PutTop<T>(this List<T> list, IEnumerable<T> elements)
+    {
+        list.InsertRange(0, elements);
+    }
 }

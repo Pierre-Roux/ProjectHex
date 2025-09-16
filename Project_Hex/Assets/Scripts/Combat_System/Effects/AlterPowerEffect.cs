@@ -97,6 +97,7 @@ public class AlterPowerEffect : Effect
                     if (targetMode == TargetMode.Manual)
                     {
                         EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        enemyAlterPowerGA.Actionner = Actionner;
                         StartManualTargetingGA startManualTargetingGA = new(enemyAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -142,6 +143,7 @@ public class AlterPowerEffect : Effect
                     if (targetMode == TargetMode.Manual)
                     {
                         PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        playerAlterPowerGA.Actionner = Actionner;
                         StartManualTargetingGA startManualTargetingGA = new(playerAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }

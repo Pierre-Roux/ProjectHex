@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using FMODUnity;
 public class RewardSystem : Singleton<RewardSystem>
 {
 
@@ -19,6 +20,7 @@ public class RewardSystem : Singleton<RewardSystem>
     {
         if (cardView != null)
         {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.TakeCardRewardSound);
             cardView.RewardTaken = true;
             StartCoroutine(GainCardAnim(cardView));
         }

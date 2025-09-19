@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 
 public class DrawCardsEffect : Effect
 {
@@ -10,16 +11,13 @@ public class DrawCardsEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        if (DynamicAmount != DynamicAmount.NULL)
-        {
-            drawAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-        }
-        DrawCardsGA drawCardsGA = new(drawAmount);
+        DrawCardsGA drawCardsGA = new(drawAmount,DynamicAmount);
+        if (AudioManager.Instance.IsValid(SFX)){ drawCardsGA.SFX = SFX; }
         return drawCardsGA;
     }
     public DrawCardsEffect(){}
 
-    public DrawCardsEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
+    public DrawCardsEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         drawAmount = Amount;
         Events = Event;
@@ -35,6 +33,7 @@ public class DrawCardsEffect : Effect
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
         DynamicAmount = dynamicAmount;
+        SFX = sfx;
     }
 
     public override Effect Clone()
@@ -63,7 +62,8 @@ public class DrawCardsEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            DynamicAmount
+            DynamicAmount,
+            SFX
         );
     }
 

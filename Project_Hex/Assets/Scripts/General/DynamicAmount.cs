@@ -16,5 +16,6 @@ public enum DynamicAmount
     Mana_Spent_Count,
     Permanent_HP,
     Permanent_Endurance,
+    CardsInHand_Count,
     
 }

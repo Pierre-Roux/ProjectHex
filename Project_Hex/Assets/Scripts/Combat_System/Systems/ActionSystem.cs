@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -64,14 +65,17 @@ public class ActionSystem : Singleton<ActionSystem>
         }
 
         // Vérifie l'Actionner pour aider à détecter les données corrompues
-        string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
+        //string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
         //Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
-
-        //Debug.Log("action = " + action);
 
         reactions = action.PreReactions;
         PerformSubscribers(action, preSubs);
         yield return PerformReactions();
+
+        if (AudioManager.Instance.IsValid(action.SFX))
+        {
+            RuntimeManager.PlayOneShot(action.SFX);
+        }
 
         reactions = action.PerformReactions;
         yield return PerformPerformer(action);

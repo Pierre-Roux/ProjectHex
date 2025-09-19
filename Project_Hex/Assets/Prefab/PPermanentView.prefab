@@ -255,6 +255,20 @@ MonoBehaviour:
   HealthText: {fileID: 6262918214128263930}
   ShieldVisual: {fileID: 8210921774048756653}
   UnShieldable: 0
+  DieSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  HollowDieSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
   BeingDamageSound:
     Guid:
       Data1: 1179687985

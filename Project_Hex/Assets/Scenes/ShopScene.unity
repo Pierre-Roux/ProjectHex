@@ -1092,7 +1092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MusicEmitter: {fileID: 690607427}
-  Music:
+  BackgroundMusic:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
@@ -1100,6 +1100,90 @@ MonoBehaviour:
       Data4: -1918472180
     Path: event:/Place Holder Silence
   clickSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  VictoryMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DefeatMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DiscardCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SummonPPermanentSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SummonEPermanentSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HollowDieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeCardRewardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeMoneyRewardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BuyCardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437

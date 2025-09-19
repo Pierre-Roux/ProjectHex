@@ -49,9 +49,36 @@ public class EffectSystem : Singleton<EffectSystem>
         yield return null;
     }
 
+    private IEnumerator PerformChoiceEffect(TestConditionGA testConditionGA)
+    {
+        if (true)
+        {
+            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
+        }
+        else
+        {
+            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
+        }
+        yield return null;
+    }
 
     private IEnumerator DealDamagePerformer(DealDamageGA dealDamageGA)
     {
+        if (dealDamageGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (dealDamageGA.Actionner == null)
+            {
+                dealDamageGA.Amount = TargetSystem.Instance.GetDynamicAmount(dealDamageGA.DynamicAmount, null, null);
+            }
+            else if (dealDamageGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                dealDamageGA.Amount = TargetSystem.Instance.GetDynamicAmount(dealDamageGA.DynamicAmount, dealDamageGA.Actionner.GetComponent<PermanentView>(), null);
+            }
+            else
+            {
+                dealDamageGA.Amount = TargetSystem.Instance.GetDynamicAmount(dealDamageGA.DynamicAmount, null, dealDamageGA.Actionner.GetComponent<EnemySlotView>());
+            }
+        }
         if (dealDamageGA.playerTargets != null)
         {
             foreach (var target in dealDamageGA.playerTargets)
@@ -133,6 +160,22 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator DealHealPerformer(HealGA healGA)
     {
+        if (healGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (healGA.Actionner == null)
+            {
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,null,null);
+            }
+            else if (healGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,healGA.Actionner.GetComponent<PermanentView>(),null);
+            }
+            else
+            {
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,null,healGA.Actionner.GetComponent<EnemySlotView>());
+            }    
+        }
+
         if (healGA.playerTargets != null)
         {
             foreach (var target in healGA.playerTargets)
@@ -240,6 +283,21 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator AlterPowerPerformer(AlterPowerGA alterPowerGA)
     {
+        if (alterPowerGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (alterPowerGA.Actionner == null)
+            {
+                alterPowerGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterPowerGA.DynamicAmount,null,null);
+            }
+            else if (alterPowerGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                alterPowerGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterPowerGA.DynamicAmount,alterPowerGA.Actionner.GetComponent<PermanentView>(),null);
+            }
+            else
+            {
+                alterPowerGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterPowerGA.DynamicAmount,null,alterPowerGA.Actionner.GetComponent<EnemySlotView>());
+            }    
+        }
         if (alterPowerGA.passive)
         {
             switch (alterPowerGA.targetMode)
@@ -344,6 +402,21 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator LifeLossPerformer(LifeLossGA lifeLossGA)
     {
+        if (lifeLossGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (lifeLossGA.Actionner == null)
+            {
+                lifeLossGA.Amount = TargetSystem.Instance.GetDynamicAmount(lifeLossGA.DynamicAmount,null,null);
+            }
+            else if (lifeLossGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                lifeLossGA.Amount = TargetSystem.Instance.GetDynamicAmount(lifeLossGA.DynamicAmount,lifeLossGA.Actionner.GetComponent<PermanentView>(),null);
+            }
+            else
+            {
+                lifeLossGA.Amount = TargetSystem.Instance.GetDynamicAmount(lifeLossGA.DynamicAmount,null,lifeLossGA.Actionner.GetComponent<EnemySlotView>());
+            }    
+        }
         if (lifeLossGA.playerTargets != null)
         {
             foreach (var target in lifeLossGA.playerTargets)
@@ -376,6 +449,10 @@ public class EffectSystem : Singleton<EffectSystem>
 
     private IEnumerator ScryPerformer(ScryGA scryGA)
     {
+        if (scryGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            scryGA.Amount = TargetSystem.Instance.GetDynamicAmount(scryGA.DynamicAmount);
+        }
         List<Card> topCards = CardSystem.Instance.drawPile.TakeTop(scryGA.Amount);
         if (topCards.Count == 0) yield break;
 
@@ -391,6 +468,21 @@ public class EffectSystem : Singleton<EffectSystem>
     
     private IEnumerator GainLifePerformer(GainLifeGA gainLifeGA)
     {
+        if (gainLifeGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (gainLifeGA.Actionner == null)
+            {
+                gainLifeGA.Amount = TargetSystem.Instance.GetDynamicAmount(gainLifeGA.DynamicAmount,null,null);
+            }
+            else if (gainLifeGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                gainLifeGA.Amount = TargetSystem.Instance.GetDynamicAmount(gainLifeGA.DynamicAmount,gainLifeGA.Actionner.GetComponent<PermanentView>(),null);
+            }
+            else
+            {
+                gainLifeGA.Amount = TargetSystem.Instance.GetDynamicAmount(gainLifeGA.DynamicAmount,null,gainLifeGA.Actionner.GetComponent<EnemySlotView>());
+            }    
+        }
         if (gainLifeGA.passive)
         {
             UnityEngine.Debug.Log("Passive on " + gainLifeGA.permaTypes + " of " + gainLifeGA.targetMode);

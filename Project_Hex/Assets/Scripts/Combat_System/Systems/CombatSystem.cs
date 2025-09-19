@@ -406,7 +406,7 @@ public class CombatSystem : Singleton<CombatSystem>
 
         ReffilManaGA reffilManaGA = new();
         ActionSystem.Instance.AddReaction(reffilManaGA);
-        DrawCardsGA drawCardsGA = new(5);
+        DrawCardsGA drawCardsGA = new(5,DynamicAmount.NULL);
         ActionSystem.Instance.AddReaction(drawCardsGA);
         TriggerEventGA triggerEventGA = new(Events.StartTurn);
         ActionSystem.Instance.AddReaction(triggerEventGA);

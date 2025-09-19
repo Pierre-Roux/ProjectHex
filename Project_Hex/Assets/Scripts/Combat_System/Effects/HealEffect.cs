@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using FMODUnity;
 
 public class HealEffect : Effect
 {
@@ -15,7 +16,7 @@ public class HealEffect : Effect
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
+    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -33,6 +34,7 @@ public class HealEffect : Effect
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
         DynamicAmount = dynamicAmount;
+        SFX = sfx;
     }
 
     public override GameAction GetGameAction()
@@ -40,19 +42,17 @@ public class HealEffect : Effect
         // SI CARTE
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
-            if (DynamicAmount != DynamicAmount.NULL)
-            {
-                amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-            }
             if (targetMode == TargetMode.Manual)
             {
-                HealGA healGA = new(amount, null, null);
+                HealGA healGA = new(amount, DynamicAmount, null, null);
+                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
                 StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
-                HealGA healGA = new(amount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                HealGA healGA = new(amount, DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
                 return healGA;
             }
             else
@@ -61,7 +61,8 @@ public class HealEffect : Effect
                 TargetForLinked_Player = playerTargets;
                 TargetForLinked_Enemy = enemyTargets;
 
-                HealGA healGA = new(amount, playerTargets, enemyTargets);
+                HealGA healGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
+                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
                 return healGA;
             }
         }
@@ -71,14 +72,11 @@ public class HealEffect : Effect
             // SI ENEMY
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
-                if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
-                }
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealEnemyGA healEnemyGA = new(amount, null, null);
+                    HealEnemyGA healEnemyGA = new(amount, DynamicAmount, null, null);
                     healEnemyGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ healEnemyGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -100,22 +98,20 @@ public class HealEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    HealEnemyGA healEnemyGA = new(amount, playerTargets, enemyTargets);
+                    HealEnemyGA healEnemyGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
                     healEnemyGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ healEnemyGA.SFX = SFX; }
                     return healEnemyGA;
                 }
             }
             // SI PLAYER
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
-                if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    amount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
-                }
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealPlayerGA healPlayerGA = new(amount, null, null);
+                    HealPlayerGA healPlayerGA = new(amount, DynamicAmount, null, null);
                     healPlayerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ healPlayerGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -137,8 +133,9 @@ public class HealEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    HealPlayerGA healPlayerGA = new(amount, playerTargets, enemyTargets);
+                    HealPlayerGA healPlayerGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
                     healPlayerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ healPlayerGA.SFX = SFX; }
                     return healPlayerGA;
                 }
             }
@@ -179,7 +176,8 @@ public class HealEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            DynamicAmount
+            DynamicAmount,
+            SFX
         );
     }
 }

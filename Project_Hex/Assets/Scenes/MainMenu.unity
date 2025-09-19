@@ -458,7 +458,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b0ac02ba5a1c57e4d8efb2a5b33d705f, type: 2}
   CurrentStage: 0
   Money: 0
-  MaxMana: 3
+  MaxMana: 5
   IsElite: 0
   CoreLife: 0
 --- !u!1 &115397218
@@ -3629,7 +3629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MusicEmitter: {fileID: 1083179117}
-  Music:
+  BackgroundMusic:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
@@ -3643,6 +3643,20 @@ MonoBehaviour:
       Data3: 1335451572
       Data4: -1918472180
     Path: event:/Place Holder Silence
+  VictoryMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DefeatMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   PlayCardSound:
     Guid:
       Data1: 0
@@ -3672,6 +3686,41 @@ MonoBehaviour:
       Data4: 0
     Path: 
   SummonEPermanentSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HollowDieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeCardRewardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeMoneyRewardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BuyCardSound:
     Guid:
       Data1: 0
       Data2: 0

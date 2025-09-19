@@ -5,9 +5,10 @@ public class AudioManager : Singleton<AudioManager>
 {
     [SerializeField] public StudioEventEmitter MusicEmitter;
     [SerializeField] public EventReference BackgroundMusic;
+    [SerializeField] public EventReference clickSound;
+
     [SerializeField] public EventReference VictoryMusic;
     [SerializeField] public EventReference DefeatMusic;
-    [SerializeField] public EventReference clickSound;
 
     [SerializeField] public EventReference PlayCardSound;
     [SerializeField] public EventReference DiscardCardSound;
@@ -16,6 +17,10 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] public EventReference SummonEPermanentSound;
     [SerializeField] public EventReference DieSound;
     [SerializeField] public EventReference HollowDieSound;
+
+    [SerializeField] public EventReference TakeCardRewardSound;
+    [SerializeField] public EventReference TakeMoneyRewardSound;
+    [SerializeField] public EventReference BuyCardSound;
 
     void Start()
     {
@@ -50,7 +55,12 @@ public class AudioManager : Singleton<AudioManager>
     public void PlayClickSound()
     {
         RuntimeManager.PlayOneShot(clickSound);
-    }    
+    }
+
+    public void PlayMoneyRewardSound()
+    {
+        RuntimeManager.PlayOneShot(TakeMoneyRewardSound);
+    }
     
     public bool IsValid(EventReference eventref)
     {

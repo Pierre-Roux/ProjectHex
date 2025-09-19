@@ -5,13 +5,15 @@ using UnityEngine;
 public class HealGA : GameAction
 {
     public int Amount { get; set; }
+    public DynamicAmount DynamicAmount;
     public List<PermanentView> playerTargets { get; set; }
     public List<EnemySlotView> enemyTargets { get; set; }
 
-    public HealGA(int amount, List<PermanentView> targets_Player = null, List<EnemySlotView> targets_Enemy = null)
+    public HealGA(int amount, DynamicAmount dynamicAmount, List<PermanentView> targets_Player = null, List<EnemySlotView> targets_Enemy = null)
     {
         Amount = amount;
         playerTargets = targets_Player;
         enemyTargets = targets_Enemy;
+        DynamicAmount = dynamicAmount;
     }
 }

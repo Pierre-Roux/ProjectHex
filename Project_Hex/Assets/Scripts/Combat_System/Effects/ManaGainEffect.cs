@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class ManaGainEffect : Effect
@@ -10,17 +11,13 @@ public class ManaGainEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        if (DynamicAmount != DynamicAmount.NULL)
-        {
-            GainAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-        }
-        Debug.Log("Mana");
-        GainManaGA gainManaGA = new(GainAmount);
+        GainManaGA gainManaGA = new(GainAmount,DynamicAmount);
+        if (AudioManager.Instance.IsValid(SFX)){ gainManaGA.SFX = SFX; }
         return gainManaGA;
     }
     public ManaGainEffect(){}
 
-    public ManaGainEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
+    public ManaGainEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         GainAmount = Amount;
         Events = Event;
@@ -36,6 +33,7 @@ public class ManaGainEffect : Effect
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
         DynamicAmount = dynamicAmount;
+        SFX = sfx;
     }
 
     public override Effect Clone()
@@ -64,7 +62,8 @@ public class ManaGainEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            DynamicAmount
+            DynamicAmount,
+            SFX
         );
     }
 }

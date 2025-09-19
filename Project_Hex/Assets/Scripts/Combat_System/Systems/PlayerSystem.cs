@@ -83,7 +83,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
             {
                 int DamageAmount = CalculateBonusPower(attackEnemyGA.Damage, Attacker);
 
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackEnemyGA.playerTargets, null));
+                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount,attackEnemyGA.DynamicAmount, attackEnemyGA.playerTargets, null));
 
             }
 
@@ -91,7 +91,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
             {
                 int DamageAmount = CalculateBonusPower(attackEnemyGA.Damage, Attacker);
 
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, null, attackEnemyGA.enemyTargets));
+                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount,attackEnemyGA.DynamicAmount, null, attackEnemyGA.enemyTargets));
             }
         }
     }
@@ -107,10 +107,10 @@ public class PlayerSystem : Singleton<PlayerSystem>
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
 
             if (healPlayerGA.playerTargets != null && healPlayerGA.playerTargets.Count > 0)
-                ActionSystem.Instance.AddReaction(new HealGA(healPlayerGA.HealAmount, healPlayerGA.playerTargets, null));
+                ActionSystem.Instance.AddReaction(new HealGA(healPlayerGA.HealAmount, healPlayerGA.DynamicAmount, healPlayerGA.playerTargets, null));
 
             if (healPlayerGA.enemyTargets != null && healPlayerGA.enemyTargets.Count > 0)
-                ActionSystem.Instance.AddReaction(new HealGA(healPlayerGA.HealAmount, null, healPlayerGA.enemyTargets));
+                ActionSystem.Instance.AddReaction(new HealGA(healPlayerGA.HealAmount,healPlayerGA.DynamicAmount, null, healPlayerGA.enemyTargets));
         }
     }
 
@@ -151,15 +151,15 @@ public class PlayerSystem : Singleton<PlayerSystem>
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
             if (playerAlterPowerGA.passive)
             {
-                ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, null, null, playerAlterPowerGA.targetMode));
+                ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount,playerAlterPowerGA.DynamicAmount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, null, null, playerAlterPowerGA.targetMode));
             }
             else
             {
                 if (playerAlterPowerGA.playerTargets != null && playerAlterPowerGA.playerTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, playerAlterPowerGA.playerTargets, null));
+                    ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount,playerAlterPowerGA.DynamicAmount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, playerAlterPowerGA.playerTargets, null));
 
                 if (playerAlterPowerGA.enemyTargets != null && playerAlterPowerGA.enemyTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, null, playerAlterPowerGA.enemyTargets));
+                    ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount,playerAlterPowerGA.DynamicAmount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, null, playerAlterPowerGA.enemyTargets));
             }
         }
     }
@@ -175,10 +175,10 @@ public class PlayerSystem : Singleton<PlayerSystem>
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
 
             if (playerLifeLossGA.playerTargets != null && playerLifeLossGA.playerTargets.Count > 0)
-                ActionSystem.Instance.AddReaction(new LifeLossGA(playerLifeLossGA.Amount, playerLifeLossGA.playerTargets, null));
+                ActionSystem.Instance.AddReaction(new LifeLossGA(playerLifeLossGA.Amount,playerLifeLossGA.DynamicAmount, playerLifeLossGA.playerTargets, null));
 
             if (playerLifeLossGA.enemyTargets != null && playerLifeLossGA.enemyTargets.Count > 0)
-                ActionSystem.Instance.AddReaction(new LifeLossGA(playerLifeLossGA.Amount, null, playerLifeLossGA.enemyTargets));
+                ActionSystem.Instance.AddReaction(new LifeLossGA(playerLifeLossGA.Amount,playerLifeLossGA.DynamicAmount, null, playerLifeLossGA.enemyTargets));
         }
     }
 
@@ -193,15 +193,15 @@ public class PlayerSystem : Singleton<PlayerSystem>
             Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
             if (playerGainLifeGA.passive)
             {
-                ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, null, null, playerGainLifeGA.targetMode));
+                ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount,playerGainLifeGA.DynamicAmount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, null, null, playerGainLifeGA.targetMode));
             }
             else
             {
                 if (playerGainLifeGA.playerTargets != null && playerGainLifeGA.playerTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, playerGainLifeGA.playerTargets, null));
+                    ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount,playerGainLifeGA.DynamicAmount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, playerGainLifeGA.playerTargets, null));
 
                 if (playerGainLifeGA.enemyTargets != null && playerGainLifeGA.enemyTargets.Count > 0)
-                    ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, null, playerGainLifeGA.enemyTargets));
+                    ActionSystem.Instance.AddReaction(new GainLifeGA(playerGainLifeGA.Amount,playerGainLifeGA.DynamicAmount, playerGainLifeGA.passive, playerGainLifeGA.permaTypes, null, playerGainLifeGA.enemyTargets));
             }
         }
     }

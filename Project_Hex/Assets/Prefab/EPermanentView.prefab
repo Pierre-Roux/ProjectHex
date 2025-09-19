@@ -56,7 +56,7 @@ MonoBehaviour:
   ShieldVisual: {fileID: 7187490083757521750}
   UnShieldable: 0
   isInvoc: 0
-  SummonEPermanentSound:
+  DieSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437

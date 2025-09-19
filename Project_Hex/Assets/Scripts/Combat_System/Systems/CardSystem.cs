@@ -69,6 +69,10 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
+        if (drawCardsGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            drawCardsGA.Amount = TargetSystem.Instance.GetDynamicAmount(drawCardsGA.DynamicAmount);
+        }
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
         int notDrawAmount = drawCardsGA.Amount - actualAmount;
         for (int i = 0; i < actualAmount; i++)

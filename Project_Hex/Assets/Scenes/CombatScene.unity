@@ -1566,6 +1566,7 @@ Transform:
   - {fileID: 1532826291}
   - {fileID: 1838150385}
   - {fileID: 880012911}
+  - {fileID: 1708626976}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &552204762
@@ -3802,6 +3803,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1349372754}
+        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+        m_MethodName: PlayMoneyRewardSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &895121126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4844,6 +4857,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1349372754}
+        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+        m_MethodName: PlayClickSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1299501554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5053,26 +5078,26 @@ MonoBehaviour:
   MusicEmitter: {fileID: 1349372753}
   BackgroundMusic:
     Guid:
-      Data1: -1553389401
-      Data2: 1270679182
-      Data3: 1556566658
-      Data4: -654338292
-    Path: event:/Place Holder Sound
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  clickSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
   VictoryMusic:
     Guid:
-      Data1: -1553389401
-      Data2: 1270679182
-      Data3: 1556566658
-      Data4: -654338292
-    Path: event:/Place Holder Sound
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
   DefeatMusic:
-    Guid:
-      Data1: -1553389401
-      Data2: 1270679182
-      Data3: 1556566658
-      Data4: -654338292
-    Path: event:/Place Holder Sound
-  clickSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
@@ -5128,6 +5153,27 @@ MonoBehaviour:
       Data3: 1335451572
       Data4: -1918472180
     Path: event:/Place Holder Silence
+  TakeCardRewardSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  TakeMoneyRewardSound:
+    Guid:
+      Data1: 1179687985
+      Data2: 1325015437
+      Data3: 1335451572
+      Data4: -1918472180
+    Path: event:/Place Holder Silence
+  BuyCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!1 &1461848483
 GameObject:
   m_ObjectHideFlags: 0
@@ -6052,6 +6098,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620495355}
   m_CullTransparentMesh: 1
+--- !u!1 &1708626975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1708626976}
+  - component: {fileID: 1708626977}
+  m_Layer: 0
+  m_Name: ConditionSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1708626976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708626975}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 538636557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1708626977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708626975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058f810ef2f984449a180fd990500d9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1764177191
 GameObject:
   m_ObjectHideFlags: 0
@@ -6383,8 +6473,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaUI: {fileID: 422571700}
-  MAX_MANA: 5
-  currentMana: 5
+  MAX_MANA: 0
+  currentMana: 0
   Mana_Spent_Count: 0
 --- !u!1 &1871844032
 GameObject:

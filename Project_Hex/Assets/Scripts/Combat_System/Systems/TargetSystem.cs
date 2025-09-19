@@ -756,6 +756,9 @@ public class TargetSystem : Singleton<TargetSystem>
                     FinalAmount = 0;
                 }
                 break;
+            case DynamicAmount.CardsInHand_Count:
+                FinalAmount = CardSystem.Instance.hand.Count;
+                break;
 
             case DynamicAmount.NULL:
                 break;

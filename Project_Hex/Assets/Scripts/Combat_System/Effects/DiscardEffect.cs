@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class DiscardEffect : Effect
@@ -9,30 +10,36 @@ public class DiscardEffect : Effect
     [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public bool DiscardAll;
 
-
+    private bool ConditionTested = false;
     public override GameAction GetGameAction()
     {
         if (DiscardAll)
         {
-            Debug.Log("Here " + DiscardAmount);
             DiscardAllCardsGA discardAllCardsGA = new(true);
+            if (AudioManager.Instance.IsValid(SFX)){ discardAllCardsGA.SFX = SFX; }
             return discardAllCardsGA;
         }
         else
         {
-            if (DynamicAmount != DynamicAmount.NULL)
+            if (!ConditionTested)
             {
-                DiscardAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-            }
-            if (DiscardAmount >= CardSystem.Instance.hand.Count)
-            {
-                Debug.Log("Here " + DiscardAmount);
-                DiscardAllCardsGA discardAllCardsGA = new(true);
-                return discardAllCardsGA;
+                DiscardEffect DiscardallEffect = (DiscardEffect)this.Clone();
+                DiscardallEffect.DiscardAll = true;
+
+                DiscardEffect DiscardManuEffect = (DiscardEffect)this.Clone();
+                DiscardManuEffect.ConditionTested = true;
+
+                TestConditionGA testConditionGA = new(DynamicCondition.ValueSupOrEqualsToDynamicAmount,DiscardallEffect,DiscardManuEffect, DiscardAmount,DynamicAmount.CardsInHand_Count);
+                return testConditionGA;
             }
             else
             {
+                if (DynamicAmount != DynamicAmount.NULL)
+                {
+                    DiscardAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
+                }
                 DiscardCardGA discardCardGA = new(new List<CardView>());
+                if (AudioManager.Instance.IsValid(SFX)){ discardCardGA.SFX = SFX; }
                 StartCardTargetingGA startCardTargetingGA = new(discardCardGA,DiscardAmount);
                 return startCardTargetingGA;
             }
@@ -40,7 +47,7 @@ public class DiscardEffect : Effect
     }
     public DiscardEffect(){}
 
-    public DiscardEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll)
+    public DiscardEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll, EventReference sfx, bool conditionTested)
     {
         DiscardAmount = Amount;
         Events = Event;
@@ -57,6 +64,8 @@ public class DiscardEffect : Effect
         TargetForLinked_Enemy = targetForLinked_Enemy;
         DynamicAmount = dynamicAmount;
         DiscardAll = discardAll;
+        SFX = sfx;
+        ConditionTested = conditionTested;
     }
 
     public override Effect Clone()
@@ -86,7 +95,9 @@ public class DiscardEffect : Effect
             clonedPlayerTargets,
             clonedEnemyTargets,
             DynamicAmount,
-            DiscardAll
+            DiscardAll,
+            SFX,
+            ConditionTested
         );
     }
 }

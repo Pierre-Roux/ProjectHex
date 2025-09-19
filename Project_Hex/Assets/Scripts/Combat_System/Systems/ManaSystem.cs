@@ -32,7 +32,10 @@ public class ManaSystem : Singleton<ManaSystem>
 
     private IEnumerator GainManaPerformer(GainManaGA gainManaGA)
     {
-        Debug.Log("Mana2");
+        if (gainManaGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            gainManaGA.GainAmount = TargetSystem.Instance.GetDynamicAmount(gainManaGA.DynamicAmount);
+        }
         currentMana += gainManaGA.GainAmount;
         manaUI.UpdateManaText(currentMana);
         yield return null;

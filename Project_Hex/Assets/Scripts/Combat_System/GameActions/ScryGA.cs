@@ -5,9 +5,11 @@ using UnityEngine;
 public class ScryGA : GameAction
 {
     public int Amount { get; set; }
+    public DynamicAmount DynamicAmount;
 
-    public ScryGA(int amount)
+    public ScryGA(int amount, DynamicAmount dynamicAmount)
     {
         Amount = amount;
+        DynamicAmount = dynamicAmount;
     }
 }

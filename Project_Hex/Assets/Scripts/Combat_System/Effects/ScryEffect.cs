@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class ScryEffect : Effect
@@ -10,16 +11,13 @@ public class ScryEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        if (DynamicAmount != DynamicAmount.NULL)
-        {
-            ScryAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-        }
-        ScryGA scryGA = new(ScryAmount);
+        ScryGA scryGA = new(ScryAmount,DynamicAmount);
+        if (AudioManager.Instance.IsValid(SFX)){ scryGA.SFX = SFX; }
         return scryGA;
     }
     public ScryEffect(){}
 
-    public ScryEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount)
+    public ScryEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         ScryAmount = Amount;
         Events = Event;
@@ -35,6 +33,7 @@ public class ScryEffect : Effect
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
         DynamicAmount = dynamicAmount;
+        SFX = sfx;
     }
 
     public override Effect Clone()
@@ -63,7 +62,8 @@ public class ScryEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            DynamicAmount
+            DynamicAmount,
+            SFX
         );
     }
 }

@@ -11,7 +11,7 @@ public abstract class Effect
     [SerializeField] public ActionnerType actionnerType;
     [SerializeField] public Events Events;
     [SerializeField] public bool HollowEffect;
-    [SerializeField] private EventReference EffectSound;
+    [SerializeField] public EventReference SFX;
 
     [Header("Enemy_Only")]
     [SerializeField] public String Intent_Title;

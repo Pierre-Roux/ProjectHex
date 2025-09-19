@@ -30,6 +30,125 @@ MonoBehaviour:
   <Effects>k__BackingField:
   - rid: 1273756766327799808
   - rid: 8456800823964860418
+  PlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DiscardCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SummonPPermanentSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HollowDieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BeingDamageSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BeingHealSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BeingShieldSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  LoseShieldSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  GainPowerSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  LosePowerSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeLifeLossSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BuffLifeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DebuffLifeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SelectedSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  UnSelectedSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   references:
     version: 2
     RefIds:
@@ -41,6 +160,13 @@ MonoBehaviour:
         actionnerType: 2
         Events: 0
         HollowEffect: 0
+        SFX:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
         Intent_Title: None
         number: 
         Duration: 0
@@ -59,6 +185,13 @@ MonoBehaviour:
         actionnerType: 2
         Events: 0
         HollowEffect: 0
+        SFX:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
         Intent_Title: 
         number: 
         Duration: 0

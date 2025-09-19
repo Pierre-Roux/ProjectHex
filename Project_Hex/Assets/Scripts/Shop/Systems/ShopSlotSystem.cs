@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using FMODUnity;
 
 public class ShopSlotSystem : Singleton<ShopSlotSystem>
 {
@@ -101,6 +102,7 @@ public class ShopSlotSystem : Singleton<ShopSlotSystem>
         DataBase.Instance.Money = CurrentMoney;
         Money_Manager.Instance.UpdateMoneyText();
 
+        RuntimeManager.PlayOneShot(AudioManager.Instance.BuyCardSound);
         CardView newCardView = CardViewCreator.Instance.CreateCardViewRewardUI(cardView.Card,cardView.shopSlot.CardParent.transform.position,cardView.shopSlot.CardParent.transform.rotation, cardView.shopSlot ,cardView.shopSlot.CardParent.gameObject.transform);
         newCardView.shopSlot = cardView.shopSlot;
 

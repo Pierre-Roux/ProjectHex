@@ -5,8 +5,10 @@ using UnityEngine;
 public class GainManaGA : GameAction
 {
     public int GainAmount { get; set; }
-    public GainManaGA(int amount)
+    public DynamicAmount DynamicAmount;
+    public GainManaGA(int amount, DynamicAmount dynamicAmount)
     {
         GainAmount = amount;
+        DynamicAmount = dynamicAmount;
     }
 }

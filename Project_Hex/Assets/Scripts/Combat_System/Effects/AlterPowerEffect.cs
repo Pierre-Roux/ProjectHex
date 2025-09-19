@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 public class AlterPowerEffect : Effect
@@ -17,7 +18,7 @@ public class AlterPowerEffect : Effect
 
     public AlterPowerEffect() { }
 
-    public AlterPowerEffect(int AlterAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount)
+    public AlterPowerEffect(int AlterAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
     {
         alterAmount = AlterAmount;
         targetMode = TargetMode;
@@ -37,32 +38,32 @@ public class AlterPowerEffect : Effect
         TargetForLinked_Enemy = targetForLinked_Enemy;
         permaTypes = PermaTypes;
         DynamicAmount = dynamicAmount;
+        SFX = sfx;
     }
 
     public override GameAction GetGameAction()
     {
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
-            if (DynamicAmount != DynamicAmount.NULL)
-            {
-                alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-            }
             if (passive)
             {
-                AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                AlterPowerGA alterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null, null, targetMode);
+                if (AudioManager.Instance.IsValid(SFX)){ alterPowerGA.SFX = SFX; }
                 return alterPowerGA;
             }
             else
             {
                 if (targetMode == TargetMode.Manual)
                 {
-                    AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, null);
+                    AlterPowerGA alterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null);
+                    if (AudioManager.Instance.IsValid(SFX)){ alterPowerGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(alterPowerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else if (targetMode == TargetMode.EffectParent_Targets)
                 {
-                    AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                    AlterPowerGA alterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                    if (AudioManager.Instance.IsValid(SFX)){ alterPowerGA.SFX = SFX; }
                     return alterPowerGA;
                 }
                 else
@@ -72,7 +73,8 @@ public class AlterPowerEffect : Effect
                     TargetForLinked_Player = playerTargets;
                     TargetForLinked_Enemy = enemyTargets;
 
-                    AlterPowerGA alterPowerGA = new(alterAmount, passive, permaTypes, playerTargets, enemyTargets);
+                    AlterPowerGA alterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
+                    if (AudioManager.Instance.IsValid(SFX)){ alterPowerGA.SFX = SFX; }
                     return alterPowerGA;
                 }
             }
@@ -82,22 +84,20 @@ public class AlterPowerEffect : Effect
         {
             if (actionnerType == ActionnerType.ENEMY && Actionner != null)
             {
-                if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
-                }
                 if (passive)
                 {
-                    EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                    EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null, null, targetMode);
                     enemyAlterPowerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ enemyAlterPowerGA.SFX = SFX; }
                     return enemyAlterPowerGA;
                 }
                 else
                 {
                     if (targetMode == TargetMode.Manual)
                     {
-                        EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null, null, targetMode);
                         enemyAlterPowerGA.Actionner = Actionner;
+                        if (AudioManager.Instance.IsValid(SFX)){ enemyAlterPowerGA.SFX = SFX; }
                         StartManualTargetingGA startManualTargetingGA = new(enemyAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -119,8 +119,9 @@ public class AlterPowerEffect : Effect
                             TargetForLinked_Enemy = enemyTargets;
                         }
 
-                        EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, passive, permaTypes, playerTargets, enemyTargets);
+                        EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
                         enemyAlterPowerGA.Actionner = Actionner;
+                        if (AudioManager.Instance.IsValid(SFX)){ enemyAlterPowerGA.SFX = SFX; }
                         return enemyAlterPowerGA;
                     }
                 }
@@ -128,22 +129,20 @@ public class AlterPowerEffect : Effect
             }
             else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
             {
-                if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    alterAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
-                }
                 if (passive)
                 {
-                    PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                    PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null, null, targetMode);
                     playerAlterPowerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ playerAlterPowerGA.SFX = SFX; }
                     return playerAlterPowerGA;
                 }
                 else
                 {
                     if (targetMode == TargetMode.Manual)
                     {
-                        PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, null, null, targetMode);
+                        PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, null, null, targetMode);
                         playerAlterPowerGA.Actionner = Actionner;
+                        if (AudioManager.Instance.IsValid(SFX)){ playerAlterPowerGA.SFX = SFX; }
                         StartManualTargetingGA startManualTargetingGA = new(playerAlterPowerGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -165,8 +164,9 @@ public class AlterPowerEffect : Effect
                             TargetForLinked_Enemy = enemyTargets;
                         }
 
-                        PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, passive, permaTypes, playerTargets, enemyTargets);
+                        PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount,DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
                         playerAlterPowerGA.Actionner = Actionner;
+                        if (AudioManager.Instance.IsValid(SFX)){ playerAlterPowerGA.SFX = SFX; }
                         return playerAlterPowerGA;
                     }
                 }
@@ -209,7 +209,8 @@ public class AlterPowerEffect : Effect
             clonedPlayerTargets,
             clonedEnemyTargets,
             permaTypes,
-            DynamicAmount
+            DynamicAmount,
+            SFX
         );
     }
 }

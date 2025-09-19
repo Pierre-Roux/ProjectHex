@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using FMODUnity;
 
 public class ShieldEffect : Effect
 {
@@ -13,7 +14,7 @@ public class ShieldEffect : Effect
 
     public ShieldEffect(){}
 
-    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy)
+    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
     {
         targetMode = TargetMode;
         targetNumber = TargetNumber;
@@ -29,6 +30,7 @@ public class ShieldEffect : Effect
         LinkedEffect = linkedEffect;
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
+        SFX = sfx;
     }
 
     public override GameAction GetGameAction()
@@ -39,12 +41,14 @@ public class ShieldEffect : Effect
             if (targetMode == TargetMode.Manual)
             {
                 ShieldGA shieldGA = new(null, null);
+                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
                 StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
                 ShieldGA shieldGA = new(ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
                 return shieldGA;
             }
             else
@@ -54,6 +58,7 @@ public class ShieldEffect : Effect
                 TargetForLinked_Enemy = enemyTargets;
 
                 ShieldGA shieldGA = new(playerTargets, enemyTargets);
+                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
                 return shieldGA;
             }
         }
@@ -67,6 +72,7 @@ public class ShieldEffect : Effect
                 {
                     ShieldEnemyGA shieldEnemyGA = new(null, null);
                     shieldEnemyGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ shieldEnemyGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber,this);
                     return startManualTargetingGA;
                 }
@@ -89,6 +95,7 @@ public class ShieldEffect : Effect
 
                     ShieldEnemyGA shieldEnemyGA = new(playerTargets, enemyTargets);
                     shieldEnemyGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ shieldEnemyGA.SFX = SFX; }
                     return shieldEnemyGA;
                 }
             }
@@ -99,6 +106,7 @@ public class ShieldEffect : Effect
                 {
                     ShieldPlayerGA shieldPlayerGA = new(null, null);
                     shieldPlayerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ shieldPlayerGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber,this);
                     return startManualTargetingGA;
                 }
@@ -121,6 +129,7 @@ public class ShieldEffect : Effect
 
                     ShieldPlayerGA shieldPlayerGA = new(playerTargets, enemyTargets);
                     shieldPlayerGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)){ shieldPlayerGA.SFX = SFX; }
                     return shieldPlayerGA;
                 }
             }
@@ -159,7 +168,8 @@ public class ShieldEffect : Effect
             TriggerOnDurationEnd,
             clonedLinked,
             clonedPlayerTargets,
-            clonedEnemyTargets
+            clonedEnemyTargets,
+            SFX
         );
     }
 

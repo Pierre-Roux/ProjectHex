@@ -37,7 +37,7 @@ public class PermanentSystem : Singleton<PermanentSystem>
             RuntimeManager.PlayOneShot(cardToSummon.PlayCardSound);
         }
 
-        PermanentView permanentView = PermanentViewCreator.Instance.CreatePermanentViewCreator(cardToSummon, cardToSummon.permanentType);
+        PermanentView permanentView = PermanentViewCreator.Instance.CreatePermanentViewCreator(cardToSummon, cardToSummon.permanentArea);
         CombatSystem.Instance.Player_Permanents.Add(permanentView);
 
         yield return cardSystem.DestroyCard(cardView);
@@ -48,8 +48,8 @@ public class PermanentSystem : Singleton<PermanentSystem>
         foreach (var effect in summonGA.cardToInvoke.Effects)
         {
             // Vérifie Hollow
-            bool canApply = (permanentView.isHollow && effect.HollowEffect)
-                        || (!permanentView.isHollow && !effect.HollowEffect);
+            bool canApply = (permanentView.permaTypes.Contains(PermaTypes.Hollow) && effect.HollowEffect)
+                        || (!permanentView.permaTypes.Contains(PermaTypes.Hollow) && !effect.HollowEffect);
             if (!canApply) continue;
 
             // On démarre par l’effet cloné

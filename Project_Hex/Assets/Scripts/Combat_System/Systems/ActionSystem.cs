@@ -41,18 +41,26 @@ public class ActionSystem : Singleton<ActionSystem>
 
     public void AddReaction(GameAction gameAction)
     {
-        reactions?.Add(gameAction);
+        if (gameAction != null)
+            reactions?.Add(gameAction);
     }
 
     public IEnumerator RunAction(GameAction action)
     {
         if (action == null) yield break;
 
+        // On utilise une pile temporaire locale
+        var savedReactions = reactions; 
+        reactions = new List<GameAction>();
+
         IsPerforming = true;
         yield return Flow(action, () =>
         {
             IsPerforming = false;
         });
+
+        // On restaure les réactions existantes
+        reactions = savedReactions;
     }
 
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)

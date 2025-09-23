@@ -2,10 +2,18 @@ public enum DynamicCondition
 {
     NULL,
 
-    NoCardsInHands,
-
     ValueSupOrEqualsToDynamicAmount,
     ValueInfOrEqualsToDynamicAmount,
+    ValueSupToDynamicAmount,
+    ValueInfToDynamicAmount,
+
+    isHollow,
+    isDecay,
+    isInvoc,
+    isArtillery,
+
+    NoCardsInHands,
+    
 
     
 }

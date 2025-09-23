@@ -9,18 +9,18 @@ public class EnemySlotViewCreator : Singleton<EnemySlotViewCreator>
     [HideInInspector] public EnemyZoneView WeaponZone;
     [HideInInspector] public EnemyZoneView ShieldZone;
     [HideInInspector] public EnemyZoneView SupportZone;
-    public EnemySlotView CreateEnemySlotViewCreator(EnemyPermanentData data, PermanentType type, bool setup = false, EnemyView enemyView = null)
+    public EnemySlotView CreateEnemySlotViewCreator(EnemyPermanentData data, PermanentArea type, bool setup = false, EnemyView enemyView = null)
     {
         GameObject Parent = null;
         switch (type)
         {
-            case PermanentType.Weapon:
+            case PermanentArea.Weapon:
                 Parent = WeaponZone.gameObject;
                 break;
-            case PermanentType.Shield:
+            case PermanentArea.Shield:
                 Parent = ShieldZone.gameObject;
                 break;
-            case PermanentType.Support:
+            case PermanentArea.Support:
                 Parent = SupportZone.gameObject;
                 break;
             default:

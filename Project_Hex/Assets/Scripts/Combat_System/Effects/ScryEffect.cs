@@ -11,16 +11,38 @@ public class ScryEffect : Effect
 
     public override GameAction GetGameAction()
     {
+        if (DynamicCondition != DynamicCondition.NULL)
+        {
+            if (Actionner == null)
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                {
+                    return null;
+                }                
+            }
+        }
         ScryGA scryGA = new(ScryAmount,DynamicAmount);
         if (AudioManager.Instance.IsValid(SFX)){ scryGA.SFX = SFX; }
         return scryGA;
     }
     public ScryEffect(){}
 
-    public ScryEffect(int Amount, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public ScryEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         ScryAmount = Amount;
         Events = Event;
+        TestValue = testValue;
+        TestDynamicAmount = testDynamicAmount;
+        DynamicCondition = dynamicCondition;
+        TestType = testType;
+        CancelOnDeath = cancelOnDeath;
         actionnerType = ActionnerType;
         Actionner = actionner;
         CardActionner = cardActionner;
@@ -50,8 +72,13 @@ public class ScryEffect : Effect
 
         return new ScryEffect(
             ScryAmount,
+            TestValue,
+            DynamicCondition,
+            TestDynamicAmount,
+            TestType,
             actionnerType,
             Events,
+            CancelOnDeath,
             Actionner,
             CardActionner,
             Intent_Title,

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: Slime
+  m_Name: Slime DelayEvent
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Slime
-  <Description>k__BackingField: EndTurn deal 3 to RDM and lose 1 life
+  <Title>k__BackingField: Sup Slime
+  <Description>k__BackingField: Deal 2 RDM for 3 turn
   <cost>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
   <Money_Cost>k__BackingField: 30
-  <life>k__BackingField: 5
+  <life>k__BackingField: 10
   <DecayCounter>k__BackingField: 0
   <Durability>k__BackingField: 1
   <MaxDurability>k__BackingField: 1
@@ -157,7 +157,7 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
-        Events: 9
+        Events: 3
         HollowEffect: 0
         SFX:
           Guid:
@@ -168,13 +168,13 @@ MonoBehaviour:
           Path: 
         Intent_Title: 
         number: 
-        Duration: 0
-        DurationType: 0
+        Duration: 3
+        DurationType: 3
         TriggerOnDurationEnd: 0
-        CancelOnDeath: 0
-        DynamicCondition: 2
-        TestValue: 1
-        TestDynamicAmount: 12
+        CancelOnDeath: 1
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
         TestType: 0
         LinkedEffect:
           rid: -2

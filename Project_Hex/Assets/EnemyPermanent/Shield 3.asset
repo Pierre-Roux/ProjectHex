@@ -9,48 +9,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: Slime
+  m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
+  m_Name: Shield 3
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Slime
-  <Description>k__BackingField: EndTurn deal 3 to RDM and lose 1 life
-  <cost>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <Money_Cost>k__BackingField: 30
-  <life>k__BackingField: 5
-  <DecayCounter>k__BackingField: 0
-  <Durability>k__BackingField: 1
-  <MaxDurability>k__BackingField: 1
-  <PermanentImage>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <permanentArea>k__BackingField: 1
-  UnShieldable: 0
-  isInvoc: 0
-  isArtillery: 0
-  <IsSpell>k__BackingField: 0
-  <Effects>k__BackingField:
-  - rid: 8456800823964860421
-  PlayCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  DiscardCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  DrawCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  SummonPPermanentSound:
+  PermanentImage: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
+  PermanentLife: 10
+  IsCore: 0
+  IsInvoc: 0
+  UnShieldable: 1
+  permanentArea: 2
+  DecayCounter: 0
+  <PossibleIntent>k__BackingField:
+  - rid: 2382742888600829953
+  - rid: 6225437435346026499
+  RDMSequence: 0
+  <IntentSequence>k__BackingField: []
+  LoopingSequence: 0
+  SummonEPermanentSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -58,13 +33,6 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DieSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  HollowDieSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -153,11 +121,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8456800823964860421
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+    - rid: 2382742888600829953
+      type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
       data:
-        actionnerType: 0
-        Events: 9
+        actionnerType: 1
+        Events: 0
         HollowEffect: 0
         SFX:
           Guid:
@@ -172,17 +140,38 @@ MonoBehaviour:
         DurationType: 0
         TriggerOnDurationEnd: 0
         CancelOnDeath: 0
-        DynamicCondition: 2
-        TestValue: 1
-        TestDynamicAmount: 12
-        TestType: 0
         LinkedEffect:
           rid: -2
         Actionner: {fileID: 0}
-        CardActionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 2
+        targetMode: 14
+        targetNumber: 0
+    - rid: 6225437435346026499
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 1
+        Events: 8
+        HollowEffect: 0
+        SFX:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 0
+        TriggerOnDurationEnd: 0
+        CancelOnDeath: 0
+        LinkedEffect:
+          rid: -2
+        Actionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        damageAmount: 1
         DynamicAmount: 0
-        targetMode: 5
+        targetMode: 15
         targetNumber: 0

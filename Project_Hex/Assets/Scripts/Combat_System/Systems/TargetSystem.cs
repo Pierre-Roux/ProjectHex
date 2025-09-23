@@ -113,15 +113,21 @@ public class TargetSystem : Singleton<TargetSystem>
                 PermanentView TestIfPlayerPermanent = actionner.GetComponent<PermanentView>();
                 if (TestIfPlayerPermanent)
                 {
-                    var self = actionner.GetComponent<PermanentView>();
-                    if (self != null)
-                        playerTargets.Add(self);
+                    if (actionner != null)
+                    {
+                        var self = actionner.GetComponent<PermanentView>();
+                        if (self != null)
+                            playerTargets.Add(self);
+                    }
                 }
                 else
                 {
-                    var self = actionner.GetComponent<EnemySlotView>();
-                    if (self != null)
-                        enemyTargets.Add(self);
+                    if (actionner != null)
+                    {
+                        var self = actionner.GetComponent<EnemySlotView>();
+                        if (self != null)
+                            enemyTargets.Add(self);
+                    }
                 }
                 break;
 
@@ -252,7 +258,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Weapon)
+                    if (perm.permanentArea == PermanentArea.Weapon)
                     {
                         playerTargets.Add(perm);
                     }
@@ -268,7 +274,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Shield)
+                    if (perm.permanentArea == PermanentArea.Shield)
                     {
                         playerTargets.Add(perm);
                     }
@@ -284,7 +290,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Support)
+                    if (perm.permanentArea == PermanentArea.Support)
                     {
                         playerTargets.Add(perm);
                     }
@@ -300,7 +306,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Weapon)
+                    if (perm.permanentArea == PermanentArea.Weapon)
                     {
                         enemyTargets.Add(perm);
                     }
@@ -316,7 +322,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Shield)
+                    if (perm.permanentArea == PermanentArea.Shield)
                     {
                         enemyTargets.Add(perm);
                     }
@@ -332,7 +338,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Support)
+                    if (perm.permanentArea == PermanentArea.Support)
                     {
                         enemyTargets.Add(perm);
                     }
@@ -349,7 +355,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Weapon)
+                    if (perm.permanentArea == PermanentArea.Weapon)
                     {
                         TampontargetsP.Add(perm);
                     }
@@ -371,7 +377,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Shield)
+                    if (perm.permanentArea == PermanentArea.Shield)
                     {
                         TampontargetsP.Add(perm);
                     }
@@ -393,7 +399,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in playerPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Support)
+                    if (perm.permanentArea == PermanentArea.Support)
                     {
                         TampontargetsP.Add(perm);
                     }
@@ -415,7 +421,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Weapon)
+                    if (perm.permanentArea == PermanentArea.Weapon)
                     {
                         TampontargetsE.Add(perm);
                     }
@@ -437,7 +443,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Shield)
+                    if (perm.permanentArea == PermanentArea.Shield)
                     {
                         TampontargetsE.Add(perm);
                     }
@@ -459,7 +465,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 foreach (var perm in enemyPermanents)
                 {
                     if (!perm.Targetable) continue;
-                    if (perm.permanentType == PermanentType.Support)
+                    if (perm.permanentArea == PermanentArea.Support)
                     {
                         TampontargetsE.Add(perm);
                     }
@@ -624,7 +630,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 {
                     if (!enemyView.Activated)
                     {
-                        TriggerEnemyEventGA triggerEnemyEventGA = new(enemyView, Events.OnActivate);
+                        TriggerEventGA triggerEnemyEventGA = new(Events.OnActivate,null,null,enemyView);
                         ActionSystem.Instance.Perform(triggerEnemyEventGA);
                     }
 
@@ -633,7 +639,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 {
                     if (!permanentView.Activated)
                     {
-                        TriggerPermanentEventGA triggerPermanentEventGA = new(permanentView, Events.OnActivate);
+                        TriggerEventGA triggerPermanentEventGA = new(Events.OnActivate,null,permanentView,null);
                         ActionSystem.Instance.Perform(triggerPermanentEventGA);
                     }
                 }
@@ -690,7 +696,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case DynamicAmount.Artiley_Count:
                 foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
                 {
-                    if (item.isArtillery)
+                    if (item.permaTypes.Contains(PermaTypes.Artillery))
                     {
                         FinalAmount++;
                     }
@@ -700,7 +706,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case DynamicAmount.Decay_Count:
                 foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
                 {
-                    if (item.isDecay)
+                    if (item.permaTypes.Contains(PermaTypes.Decay))
                     {
                         FinalAmount++;
                     }
@@ -710,7 +716,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case DynamicAmount.Hollow_Count:
                 foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
                 {
-                    if (item.isHollow)
+                    if (item.permaTypes.Contains(PermaTypes.Hollow))
                     {
                         FinalAmount++;
                     }
@@ -720,7 +726,7 @@ public class TargetSystem : Singleton<TargetSystem>
             case DynamicAmount.Invoc_Count:
                 foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
                 {
-                    if (item.isInvoc)
+                    if (item.permaTypes.Contains(PermaTypes.Invoc))
                     {
                         FinalAmount++;
                     }

@@ -100,7 +100,7 @@ public class CardSystem : Singleton<CardSystem>
         UpdatePiles();
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
-        TriggerEventGA triggerEventGA = new(Events.OnDraw, cardView.Card);
+        TriggerEventGA triggerEventGA = new(Events.OnDraw, cardView);
         ActionSystem.Instance.AddReaction(triggerEventGA);
 
 
@@ -137,7 +137,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         if (countAsDiscard_INGAME)
         {
-            TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView.Card);
+            TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView);
             ActionSystem.Instance.AddReaction(triggerEventGA);      
         }
 

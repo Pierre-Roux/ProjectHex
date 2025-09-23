@@ -7,13 +7,19 @@ public class TestConditionGA : GameAction
     public Effect EffectOnTrue;
     public Effect EffectOnFalse;
     public int Value;
-    public DynamicAmount DynamicAmount;
-    public TestConditionGA(DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse, int value = 0, DynamicAmount dynamicAmount = DynamicAmount.NULL)
+    public DynamicAmount TestDynamicAmount;
+    public CardView TestCardview;
+    public PermanentView TestPermanentView;
+    public EnemySlotView TestEnemySlotView;
+    public TestConditionGA(DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse, int value = 0, DynamicAmount dynamicAmount = DynamicAmount.NULL, CardView cardView = null, PermanentView permanentView = null, EnemySlotView enemySlotView = null)
     {
         DynamicCondition = dynamicCondition;
         EffectOnTrue = effectOnTrue;
         EffectOnFalse = effectOnFalse;
         Value = value;
-        DynamicAmount = dynamicAmount;
+        TestDynamicAmount = dynamicAmount;
+        TestCardview = cardView;
+        TestPermanentView = permanentView;
+        TestEnemySlotView = enemySlotView;
     }
 }

@@ -18,14 +18,19 @@ public class GainHPEffect : Effect
 
     public GainHPEffect() { }
 
-    public GainHPEffect(int gainAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
+    public GainHPEffect(int gainAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
     {
         GainAmount = gainAmount;
         targetMode = TargetMode;
+        TestValue = testValue;
+        TestDynamicAmount = testDynamicAmount;
+        DynamicCondition = dynamicCondition;
+        TestType = testType;
         targetNumber = TargetNumber;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
         Events = Event;
+        CancelOnDeath = cancelOnDeath;
         Actionner = actionner;
         Intent_Title = intent_Title;
         number = Number;
@@ -43,12 +48,29 @@ public class GainHPEffect : Effect
 
     public override GameAction GetGameAction()
     {
+        if (DynamicCondition != DynamicCondition.NULL)
+        {
+            if (Actionner == null)
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                {
+                    return null;
+                }                
+            }
+        }
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
             if (passive)
             {
                 GainLifeGA gainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null, targetMode);
-                if (AudioManager.Instance.IsValid(SFX)){ gainLifeGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { gainLifeGA.SFX = SFX; }
                 return gainLifeGA;
             }
             else
@@ -56,14 +78,14 @@ public class GainHPEffect : Effect
                 if (targetMode == TargetMode.Manual)
                 {
                     GainLifeGA gainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null);
-                    if (AudioManager.Instance.IsValid(SFX)){ gainLifeGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { gainLifeGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(gainLifeGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else if (targetMode == TargetMode.EffectParent_Targets)
                 {
                     GainLifeGA gainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
-                    if (AudioManager.Instance.IsValid(SFX)){ gainLifeGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { gainLifeGA.SFX = SFX; }
                     return gainLifeGA;
                 }
                 else
@@ -74,7 +96,7 @@ public class GainHPEffect : Effect
                     TargetForLinked_Enemy = enemyTargets;
 
                     GainLifeGA gainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
-                    if (AudioManager.Instance.IsValid(SFX)){ gainLifeGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { gainLifeGA.SFX = SFX; }
                     return gainLifeGA;
                 }
             }
@@ -82,13 +104,13 @@ public class GainHPEffect : Effect
         }
         else
         {
-            if (actionnerType == ActionnerType.ENEMY && Actionner != null)
+            if (actionnerType == ActionnerType.ENEMY)
             {
                 if (passive)
                 {
                     EnemyGainLifeGA enemyGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null, targetMode);
                     enemyGainLifeGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ enemyGainLifeGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { enemyGainLifeGA.SFX = SFX; }
                     return enemyGainLifeGA;
                 }
                 else
@@ -97,7 +119,7 @@ public class GainHPEffect : Effect
                     {
                         EnemyGainLifeGA enemyGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null);
                         enemyGainLifeGA.Actionner = Actionner;
-                        if (AudioManager.Instance.IsValid(SFX)){ enemyGainLifeGA.SFX = SFX; }
+                        if (AudioManager.Instance.IsValid(SFX)) { enemyGainLifeGA.SFX = SFX; }
                         StartManualTargetingGA startManualTargetingGA = new(enemyGainLifeGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -121,19 +143,19 @@ public class GainHPEffect : Effect
 
                         EnemyGainLifeGA enemyGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
                         enemyGainLifeGA.Actionner = Actionner;
-                        if (AudioManager.Instance.IsValid(SFX)){ enemyGainLifeGA.SFX = SFX; }
+                        if (AudioManager.Instance.IsValid(SFX)) { enemyGainLifeGA.SFX = SFX; }
                         return enemyGainLifeGA;
                     }
                 }
 
             }
-            else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
+            else if (actionnerType == ActionnerType.PLAYER)
             {
                 if (passive)
                 {
                     PlayerGainLifeGA playerGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null, targetMode);
                     playerGainLifeGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ playerGainLifeGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { playerGainLifeGA.SFX = SFX; }
                     return playerGainLifeGA;
                 }
                 else
@@ -142,7 +164,7 @@ public class GainHPEffect : Effect
                     {
                         PlayerGainLifeGA playerGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null);
                         playerGainLifeGA.Actionner = Actionner;
-                        if (AudioManager.Instance.IsValid(SFX)){ playerGainLifeGA.SFX = SFX; }
+                        if (AudioManager.Instance.IsValid(SFX)) { playerGainLifeGA.SFX = SFX; }
                         StartManualTargetingGA startManualTargetingGA = new(playerGainLifeGA, targetNumber, this);
                         return startManualTargetingGA;
                     }
@@ -166,7 +188,7 @@ public class GainHPEffect : Effect
 
                         PlayerGainLifeGA playerGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, playerTargets, enemyTargets);
                         playerGainLifeGA.Actionner = Actionner;
-                        if (AudioManager.Instance.IsValid(SFX)){ playerGainLifeGA.SFX = SFX; }
+                        if (AudioManager.Instance.IsValid(SFX)) { playerGainLifeGA.SFX = SFX; }
                         return playerGainLifeGA;
                     }
                 }
@@ -193,10 +215,15 @@ public class GainHPEffect : Effect
 
         return new GainHPEffect(
             GainAmount,
+            TestValue,
+            DynamicCondition,
+            TestDynamicAmount,
+            TestType,
             targetMode,
             targetNumber,
             actionnerType,
             Events,
+            CancelOnDeath,
             Actionner,
             CardActionner,
             Intent_Title,

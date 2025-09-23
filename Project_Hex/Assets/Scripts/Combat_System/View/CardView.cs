@@ -155,15 +155,15 @@ public class CardView : MonoBehaviour
                         if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
                         {
                             GameObject Parent = null;
-                            switch (Card.permanentType)
+                            switch (Card.permanentArea)
                             {
-                                case PermanentType.Weapon:
+                                case PermanentArea.Weapon:
                                     Parent = CombatSystem.Instance.PlayerWeaponZone.gameObject;
                                     break;
-                                case PermanentType.Shield:
+                                case PermanentArea.Shield:
                                     Parent = CombatSystem.Instance.PlayerShieldZone.gameObject;
                                     break;
-                                case PermanentType.Support:
+                                case PermanentArea.Support:
                                     Parent = CombatSystem.Instance.PlayerSupportZone.gameObject;
                                     break;
                                 default:

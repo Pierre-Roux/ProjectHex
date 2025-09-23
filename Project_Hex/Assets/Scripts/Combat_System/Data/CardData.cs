@@ -20,7 +20,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Durability { get; private set; }
     [field: SerializeField] public int MaxDurability { get; private set; }
     [field: SerializeField] public Sprite PermanentImage { get; private set; }
-    [field: SerializeField] public PermanentType permanentType { get; private set; }
+    [field: SerializeField] public PermanentArea permanentArea { get; private set; }
     [field: SerializeField] public bool UnShieldable;
     [field: SerializeField] public bool isInvoc;
     [field: SerializeField] public bool isArtillery;

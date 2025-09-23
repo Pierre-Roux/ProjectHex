@@ -5,11 +5,15 @@ using UnityEngine;
 public class TriggerEventGA : GameAction
 {
     public Events gameEvent;
-    public Card card;
+    public CardView cardview;
+    public PermanentView permanentView;
+    public EnemySlotView enemySlotView;
 
-    public TriggerEventGA(Events events, Card Card = null)
+    public TriggerEventGA(Events events, CardView Card = null, PermanentView PermanentView = null, EnemySlotView EnemySlotView = null)
     {
         gameEvent = events;
-        card = Card;
+        cardview = Card;
+        permanentView = PermanentView;
+        enemySlotView = EnemySlotView;
     }
 }

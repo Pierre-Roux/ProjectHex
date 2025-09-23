@@ -1,4 +1,4 @@
-public enum PermanentType
+public enum PermanentArea
 {
     none,
     Weapon,

@@ -14,12 +14,17 @@ public class ShieldEffect : Effect
 
     public ShieldEffect(){}
 
-    public ShieldEffect(TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
+    public ShieldEffect(TargetMode TargetMode, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
     {
         targetMode = TargetMode;
         targetNumber = TargetNumber;
         actionnerType = ActionnerType;
         Events = Event;
+        TestValue = testValue;
+        TestDynamicAmount = testDynamicAmount;
+        DynamicCondition = dynamicCondition;
+        TestType = testType;
+        CancelOnDeath = cancelOnDeath;
         Actionner = actionner;
         CardActionner = cardActionner;
         Intent_Title = intent_Title;
@@ -35,20 +40,37 @@ public class ShieldEffect : Effect
 
     public override GameAction GetGameAction()
     {
+        if (DynamicCondition != DynamicCondition.NULL)
+        {
+            if (Actionner == null)
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                {
+                    return null;
+                }                
+            }
+        }
         // SI CARTE
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
             if (targetMode == TargetMode.Manual)
             {
                 ShieldGA shieldGA = new(null, null);
-                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,this);
+                if (AudioManager.Instance.IsValid(SFX)) { shieldGA.SFX = SFX; }
+                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
                 ShieldGA shieldGA = new(ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
-                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { shieldGA.SFX = SFX; }
                 return shieldGA;
             }
             else
@@ -58,7 +80,7 @@ public class ShieldEffect : Effect
                 TargetForLinked_Enemy = enemyTargets;
 
                 ShieldGA shieldGA = new(playerTargets, enemyTargets);
-                if (AudioManager.Instance.IsValid(SFX)){ shieldGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { shieldGA.SFX = SFX; }
                 return shieldGA;
             }
         }
@@ -72,8 +94,8 @@ public class ShieldEffect : Effect
                 {
                     ShieldEnemyGA shieldEnemyGA = new(null, null);
                     shieldEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ shieldEnemyGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber,this);
+                    if (AudioManager.Instance.IsValid(SFX)) { shieldEnemyGA.SFX = SFX; }
+                    StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -95,7 +117,7 @@ public class ShieldEffect : Effect
 
                     ShieldEnemyGA shieldEnemyGA = new(playerTargets, enemyTargets);
                     shieldEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ shieldEnemyGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { shieldEnemyGA.SFX = SFX; }
                     return shieldEnemyGA;
                 }
             }
@@ -106,8 +128,8 @@ public class ShieldEffect : Effect
                 {
                     ShieldPlayerGA shieldPlayerGA = new(null, null);
                     shieldPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ shieldPlayerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber,this);
+                    if (AudioManager.Instance.IsValid(SFX)) { shieldPlayerGA.SFX = SFX; }
+                    StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
                 else
@@ -129,7 +151,7 @@ public class ShieldEffect : Effect
 
                     ShieldPlayerGA shieldPlayerGA = new(playerTargets, enemyTargets);
                     shieldPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ shieldPlayerGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { shieldPlayerGA.SFX = SFX; }
                     return shieldPlayerGA;
                 }
             }
@@ -156,9 +178,14 @@ public class ShieldEffect : Effect
 
         return new ShieldEffect(
             targetMode,
+            TestValue,
+            DynamicCondition,
+            TestDynamicAmount,
+            TestType,
             targetNumber,
             actionnerType,
             Events,
+            CancelOnDeath,
             Actionner,
             CardActionner,
             Intent_Title,

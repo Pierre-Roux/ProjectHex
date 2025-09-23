@@ -49,19 +49,6 @@ public class EffectSystem : Singleton<EffectSystem>
         yield return null;
     }
 
-    private IEnumerator PerformChoiceEffect(TestConditionGA testConditionGA)
-    {
-        if (true)
-        {
-            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
-        }
-        else
-        {
-            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
-        }
-        yield return null;
-    }
-
     private IEnumerator DealDamagePerformer(DealDamageGA dealDamageGA)
     {
         if (dealDamageGA.DynamicAmount != DynamicAmount.NULL)
@@ -485,7 +472,7 @@ public class EffectSystem : Singleton<EffectSystem>
         }
         if (gainLifeGA.passive)
         {
-            UnityEngine.Debug.Log("Passive on " + gainLifeGA.permaTypes + " of " + gainLifeGA.targetMode);
+            //UnityEngine.Debug.Log("Passive on " + gainLifeGA.permaTypes + " of " + gainLifeGA.targetMode);
             switch (gainLifeGA.targetMode)
             {
                 case TargetMode.All_All:

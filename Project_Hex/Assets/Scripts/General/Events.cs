@@ -16,6 +16,8 @@ public enum Events
     OnActivate,
     OnDamaged,
     OnDestroy,
+    OnKill,
+    WhenPermaDie,
 
     //Card Event (ON DrawThis, onDiscardThis ...)
     Null,

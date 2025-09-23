@@ -10,8 +10,6 @@ public class GameEventSystem : Singleton<GameEventSystem>
     void OnEnable()
     {
         ActionSystem.AttachPerformer<TriggerEventGA>(TriggerEvent);
-        ActionSystem.AttachPerformer<TriggerPermanentEventGA>(TriggerPermanentEventPerformer);
-        ActionSystem.AttachPerformer<TriggerEnemyEventGA>(TriggerEnemyEventPerformer);
 
         ActionSystem.SubscribeReaction<TriggerEventGA>(UpdateDurationReaction, ReactionTiming.POST);
 
@@ -20,8 +18,6 @@ public class GameEventSystem : Singleton<GameEventSystem>
     void OnDisable()
     {
         ActionSystem.DetachPerformer<TriggerEventGA>();
-        ActionSystem.DetachPerformer<TriggerPermanentEventGA>();
-        ActionSystem.DetachPerformer<TriggerEnemyEventGA>();
 
         ActionSystem.UnsubscribeReaction<TriggerEventGA>(UpdateDurationReaction, ReactionTiming.POST);
     }
@@ -46,41 +42,75 @@ public class GameEventSystem : Singleton<GameEventSystem>
 
     public IEnumerator TriggerEvent(TriggerEventGA triggerEventGA)
     {
-        //List<Effect> effectsToRemove = new();
+        if (!effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var effectList))
+            yield break;
 
-        if (effectsByEvent.TryGetValue(triggerEventGA.gameEvent, out var list))
+        Debug.Log("Event déclenché " + triggerEventGA.gameEvent);
+
+        foreach (var effect in new List<Effect>(effectList))
         {
-            foreach (var effect in new List<Effect>(list))
+            bool isActionnerMatch = false;
+            // Cas 1 : Permanent
+            if (triggerEventGA.permanentView != null)
             {
-                bool isCardMatch = triggerEventGA.card == null || triggerEventGA.card == effect.CardActionner;
+                if (effect.Actionner != null)
+                    isActionnerMatch = effect.Actionner.GetComponent<PermanentView>() == triggerEventGA.permanentView;
+            }
 
-                if (effect.Events == Events.OnDeath)
+            // Cas 2 : Enemy
+            else if (triggerEventGA.enemySlotView != null)
+            {
+                if (effect.Actionner != null)
+                    isActionnerMatch = effect.Actionner.GetComponent<EnemySlotView>() == triggerEventGA.enemySlotView;
+            }
+
+            // Cas 3 : Card
+            else if (triggerEventGA.cardview != null)
+            {
+                if (effect.CardActionner != null)
+                    isActionnerMatch = effect.CardActionner.Card == triggerEventGA.cardview.Card;
+            }
+
+            // Cas 4 : Aucun actionner attendu (par ex. événements de carte globale)
+            else
+            {
+                // Si on n'attend pas de Permanent ni Enemy,
+                // alors on considère que ça matche même si effect.Actionner est null
+                isActionnerMatch = true;
+            }
+
+            if (isActionnerMatch)
+            {
+                // Activation des permanents / ennemis si événement OnActivate
+                if (triggerEventGA.gameEvent == Events.OnActivate)
                 {
-                    Debug.Log("here");
+                    if (triggerEventGA.permanentView != null)
+                        triggerEventGA.permanentView.Activated = true;
+                    else if (triggerEventGA.enemySlotView != null)
+                        triggerEventGA.enemySlotView.Activated = true;
                 }
 
-                if (isCardMatch)
+                // Gestion des effets avec durée
+                if (effect.TriggerOnDurationEnd)
+                {
+                    if (effect.Duration == 1)
                     {
-                        if (effect.TriggerOnDurationEnd)
-                        {
-                            if (effect.Duration == 1)
-                            {
-                                GameAction ga = effect.GetGameAction();
-                                if (ga != null)
-                                    ActionSystem.Instance.AddReaction(ga);
-                            }
-                        }
-                        else
-                        {
-                            GameAction ga = effect.GetGameAction();
-                            if (ga != null)
-                                ActionSystem.Instance.AddReaction(ga);
-                        }
+                        GameAction ga = effect.GetGameAction();
+                        if (ga != null)
+                            ActionSystem.Instance.AddReaction(ga);
                     }
+                }
+                else
+                {
+                    Debug.Log("Effet déclenché " + triggerEventGA.gameEvent);
+                    GameAction ga = effect.GetGameAction();
+                    if (ga != null)
+                        ActionSystem.Instance.AddReaction(ga);
+                }
             }
-        }
 
-        yield return null;
+            yield return null;
+        }
     }
 
     public void ClearAllEvents()
@@ -96,7 +126,7 @@ public class GameEventSystem : Singleton<GameEventSystem>
         }
     }
 
-    public void RemoveEffectByActionner(GameObject GOToSuppr)
+    public void RemoveEffectsByActionner(GameObject GOToSuppr)
     {
         GameObject actionnerToRemove = GOToSuppr;
         var eventsToCleanUp = new List<Events>();
@@ -110,7 +140,11 @@ public class GameEventSystem : Singleton<GameEventSystem>
             {
                 if (effectList[i].Actionner == actionnerToRemove)
                 {
-                    effectList.RemoveAt(i);
+                    // si l'effet se détruit quand l'Actionner meurt on l'enlève sinon il reste même après la mort 
+                    if (effectList[i].CancelOnDeath)
+                    {
+                        effectList.RemoveAt(i);
+                    }
                 }
             }
 
@@ -127,61 +161,8 @@ public class GameEventSystem : Singleton<GameEventSystem>
         }
     }
 
-    public IEnumerator TriggerPermanentEventPerformer(TriggerPermanentEventGA triggerPermanentEventGA)
-    {
-        //Debug.Log("TriggerPermanentEvent : " + triggerPermanentEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
-
-        if (!effectsByEvent.TryGetValue(triggerPermanentEventGA.gameEvent, out var effectList))
-            yield break;
-
-        if (triggerPermanentEventGA.permanentView != null)
-        {
-            if (triggerPermanentEventGA.gameEvent == Events.OnActivate)
-            {
-                triggerPermanentEventGA.permanentView.Activated = true;
-            }
-            foreach (var effect in effectList)
-                {
-                    Debug.Log(effect);
-                    if (effect.Actionner.GetComponent<PermanentView>() == triggerPermanentEventGA.permanentView)
-                    {
-                        GameAction ga = effect.GetGameAction();
-                        if (ga != null)
-                            ActionSystem.Instance.AddReaction(ga);
-                    }
-                    yield return null;
-                }
-        }
-    }
-
-    public IEnumerator TriggerEnemyEventPerformer(TriggerEnemyEventGA triggerEnemyEventGA)
-    {
-        //Debug.Log("TriggerEnnemy : " + triggerEnemyEventGA.gameEvent + " at " + Time.timeSinceLevelLoad);
-
-        if (!effectsByEvent.TryGetValue(triggerEnemyEventGA.gameEvent, out var effectList))
-            yield break;
-
-        if (triggerEnemyEventGA.enemySlotView != null)
-        {
-            if (triggerEnemyEventGA.gameEvent == Events.OnActivate)
-            {
-                triggerEnemyEventGA.enemySlotView.Activated = true;
-            }
-            foreach (var effect in effectList)
-            {
-                if (effect.Actionner.GetComponent<EnemySlotView>() == triggerEnemyEventGA.enemySlotView)
-                {
-                    GameAction ga = effect.GetGameAction();
-                    if (ga != null)
-                        ActionSystem.Instance.AddReaction(ga);
-                }
-                yield return null;
-            }
-        }
-    }
-
     // REACTIONS
-    
+
     private void UpdateDurationReaction(TriggerEventGA triggerEventGA)
     {
         List<Effect> effectsToRemove = new();
@@ -208,6 +189,6 @@ public class GameEventSystem : Singleton<GameEventSystem>
         foreach (var effect in effectsToRemove)
         {
             RemoveEffect(effect);
-        }   
+        }
     }
 }

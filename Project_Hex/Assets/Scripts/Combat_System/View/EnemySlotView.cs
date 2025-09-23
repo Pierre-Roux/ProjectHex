@@ -9,14 +9,11 @@ public class EnemySlotView : MonoBehaviour
 {
     [SerializeField] public List<Effect> PossibleIntent;
     [SerializeField] public EnemyPermanentData PermanentData;
-
     [SerializeField] public TMP_Text LifeText;
     [SerializeField] public TMP_Text IntentText;
-
     [SerializeField] public SpriteRenderer spriteRenderer;
-    [SerializeField] public GameObject ShieldVisual ;
+    [SerializeField] public GameObject ShieldVisual;
     [SerializeField] public bool UnShieldable;
-    [SerializeField] public bool isInvoc;
 
     [SerializeField] public EventReference DieSound;
     [SerializeField] public EventReference BeingDamageSound;
@@ -37,19 +34,19 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public int MaxLife { get; set; }
     [HideInInspector] public bool IsCore { get; set; }
     [HideInInspector] public bool IsDead = false;
-    [HideInInspector] public bool isDecay = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
     [HideInInspector] public int DecayCounter { get; set; }
     [HideInInspector] public int BonusPower { get; set; }
     [HideInInspector] public int CurrentHPBonus { get; set; }
+    [HideInInspector] public PermanentArea permanentArea;
 
-    [HideInInspector] public PermanentType permanentType;
+    [HideInInspector] public List<PermaTypes> permaTypes = new List<PermaTypes>();
 
-    [HideInInspector] public List<PermanentView> PlayerShielder;
-    [HideInInspector] public List<EnemySlotView> EnemyShielder ;
-    [HideInInspector] public List<PermanentView> PlayerShielded;
-    [HideInInspector] public List<EnemySlotView> EnemyShielded ;
-    
+    [HideInInspector] public List<PermanentView> PlayerShielder = new();
+    [HideInInspector] public List<EnemySlotView> EnemyShielder = new();
+    [HideInInspector] public List<PermanentView> PlayerShielded = new();
+    [HideInInspector] public List<EnemySlotView> EnemyShielded = new();
+
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
     [HideInInspector] public bool Activated;
@@ -57,9 +54,7 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public bool RDMSequence;
     [HideInInspector] public List<string> IntentSequence = new List<string>();
     [HideInInspector] public bool LoopingSequence;
-
     private int sequenceIndex = 0;
-
     public void setup()
     {
         PossibleIntent = PermanentData.PossibleIntent;
@@ -69,21 +64,23 @@ public class EnemySlotView : MonoBehaviour
         currentLife = MaxLife; 
         IsCore = PermanentData.IsCore;
         UnShieldable = PermanentData.UnShieldable;
-        isInvoc = PermanentData.IsInvoc;
         ShieldVisual.SetActive(false);
         Targetable = true;
         RDMSequence = PermanentData.RDMSequence;
         IntentSequence = PermanentData.IntentSequence;
         LoopingSequence = PermanentData.LoopingSequence;
         DecayCounter = PermanentData.DecayCounter;
-        if (DecayCounter > 0) isDecay = true;
+
+        if (PermanentData.IsInvoc) permaTypes.Add(PermaTypes.Invoc);
+        if (PermanentData.DecayCounter > 0) permaTypes.Add(PermaTypes.Decay);
+
         if (IsCore)
         {
-            permanentType = PermanentType.none;
+            permanentArea = PermanentArea.none;
         }
         else
         {
-            permanentType = PermanentData.permanentType;
+            permanentArea = PermanentData.permanentArea;
         }
 
         //Audio
@@ -204,58 +201,54 @@ public class EnemySlotView : MonoBehaviour
 
     public int CalculateBonusPower(int BaseAmount)
     {
-        int PassiveBonus = 0;
-
-        if (isInvoc)
+        int passiveBonus = 0;
+        foreach (var type in permaTypes)
         {
-            PassiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;
+            switch (type)
+            {
+                case PermaTypes.Invoc:
+                    passiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralPower + CombatSystem.Instance.Invoc_GeneralPower;
+                    break;
+                case PermaTypes.Decay:
+                    passiveBonus += CombatSystem.Instance.Decay_EnemyGeneralPower + CombatSystem.Instance.Decay_GeneralPower;
+                    break;
+                case PermaTypes.Hollow:
+                    passiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralPower + CombatSystem.Instance.Hollow_GeneralPower;
+                    break;
+                case PermaTypes.Artillery:
+                    passiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralPower + CombatSystem.Instance.Artillery_GeneralPower;
+                    break;
+            }
         }
-        if (isDecay)
-        {
-            PassiveBonus += CombatSystem.Instance.Decay_EnemyGeneralPower + CombatSystem.Instance.Decay_GeneralPower;
-        }
-        /*if (isHollow)
-        {
-            PassiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralPower + CombatSystem.Instance.Hollow_GeneralPower;
-        }
-        if (isArtillery)
-        {
-            PassiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralPower + CombatSystem.Instance.Artillery_GeneralPower;
-        }*/
 
-
-        int finalDMG = 0;
-        finalDMG = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower;;
-        if (finalDMG < 0) finalDMG = 0;
-        return finalDMG;
+        int finalDMG = BaseAmount + BonusPower + passiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower;
+        return Mathf.Max(0, finalDMG);
     }
 
     public int CalculateBonusLife(int BaseAmount)
     {
-        int PassiveBonus = 0;
-
-        if (isInvoc)
+        int passiveBonus = 0;
+        foreach (var type in permaTypes)
         {
-            PassiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
+            switch (type)
+            {
+                case PermaTypes.Invoc:
+                    passiveBonus += CombatSystem.Instance.Invoc_EnemyGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
+                    break;
+                case PermaTypes.Decay:
+                    passiveBonus += CombatSystem.Instance.Decay_EnemyGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
+                    break;
+                case PermaTypes.Hollow:
+                    passiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
+                    break;
+                case PermaTypes.Artillery:
+                    passiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
+                    break;
+            }
         }
-        if (isDecay)
-        {
-            PassiveBonus += CombatSystem.Instance.Decay_EnemyGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
-        }
-        /*if (isHollow)
-        {
-            PassiveBonus += CombatSystem.Instance.Hollow_EnemyGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
-        }
-        if (isArtillery)
-        {
-            PassiveBonus += CombatSystem.Instance.Artillery_EnemyGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
-        }*/
 
-
-        int finalHPGain = 0;
-        finalHPGain = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralHPGain + CombatSystem.Instance.GeneralHPGain; ;
-        if (finalHPGain < 0) finalHPGain = 0;
-        return finalHPGain;
+        int finalHP = BaseAmount + BonusPower + passiveBonus + CombatSystem.Instance.EnemyGeneralHPGain + CombatSystem.Instance.GeneralHPGain;
+        return Mathf.Max(0, finalHP);
     }
 
     public void UpdateLife()
@@ -288,7 +281,7 @@ public class EnemySlotView : MonoBehaviour
         if (!IsDead)
         {
             transform.DOShakePosition(0.2f, 0.5f);
-            TriggerEnemyEventGA triggerEventGA = new(this, Events.OnDamaged);
+            TriggerEventGA triggerEventGA = new(Events.OnDamaged,null,null,this);
             ActionSystem.Instance.AddReaction(triggerEventGA);
         }
 
@@ -404,7 +397,7 @@ public class EnemySlotView : MonoBehaviour
         if (Amount <= 0) return;
 
         transform.DOShakePosition(0.2f, 0.5f);
-        TriggerEnemyEventGA triggerEventGA = new(this, Events.OnDamaged);
+        TriggerEventGA triggerEventGA = new(Events.OnDamaged,null,null,this);
         ActionSystem.Instance.AddReaction(triggerEventGA);
         
 

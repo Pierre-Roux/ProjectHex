@@ -80,7 +80,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.AttachPerformer<DiePermanentGA>(DiePermanentPerformer);
             ActionSystem.AttachPerformer<DieEnemySlotGA>(DieEnemySlotView);
             ActionSystem.AttachPerformer<DestroyPermanentGA>(DestroyPerformer);
-            //ActionSystem.AttachPerformer<GlobalResetActivationGA>(GlobalResetActivationPerformer);
+            ActionSystem.AttachPerformer<GlobalResetActivationGA>(GlobalResetActivationPerformer);
             ActionSystem.AttachPerformer<EndCombatGA>(EndCombat);
 
             ActionSystem.SubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -100,7 +100,7 @@ public class CombatSystem : Singleton<CombatSystem>
             ActionSystem.DetachPerformer<DiePermanentGA>();
             ActionSystem.DetachPerformer<DieEnemySlotGA>();
             ActionSystem.DetachPerformer<DestroyPermanentGA>();
-            //ActionSystem.DetachPerformer<GlobalResetActivationGA>();
+            ActionSystem.DetachPerformer<GlobalResetActivationGA>();
             ActionSystem.DetachPerformer<EndCombatGA>();
 
             ActionSystem.UnsubscribeReaction<StartFightGA>(StartFightPreReaction, ReactionTiming.PRE);
@@ -217,6 +217,7 @@ public class CombatSystem : Singleton<CombatSystem>
                     }
                     clonedEffect.Actionner = enemySlotView.gameObject;
                     clonedEffect = clonedEffect.LinkedEffect;
+                    
                 }
             }
         }
@@ -234,14 +235,17 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         if (!diePermanentGA.IsCore)
         {
-            if (diePermanentGA.Durability == 0 || diePermanentGA.PermanentView.isInvoc)
+            if (diePermanentGA.Durability == 0 || diePermanentGA.PermanentView.permaTypes.Contains(PermaTypes.Invoc))
             {
                 if (diePermanentGA.PermanentView != null)
                 {
                     LoseShieldGA loseShieldGA = new(diePermanentGA.PermanentView, null);
                     ActionSystem.Instance.AddReaction(loseShieldGA);
 
-                    TriggerPermanentEventGA triggerPermanentEventGA = new(diePermanentGA.PermanentView, Events.OnDestroy);
+                    TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,diePermanentGA.PermanentView, null);
+                    ActionSystem.Instance.AddReaction(triggerEventGA);
+
+                    TriggerEventGA triggerPermanentEventGA = new(Events.OnDestroy,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
 
                     CombatSystem.Instance.Player_Permanents.Remove(diePermanentGA.PermanentView);
@@ -269,7 +273,10 @@ public class CombatSystem : Singleton<CombatSystem>
                     diePermanentGA.CardReferenceArchive.Durability -= 1;
                     CardView newCardView = CardViewCreator.Instance.CreateCardView(diePermanentGA.CardReferenceArchive, diePermanentGA.PermanentView.transform.position, diePermanentGA.PermanentView.transform.rotation);
 
-                    TriggerPermanentEventGA triggerPermanentEventGA = new(diePermanentGA.PermanentView, Events.OnDeath);
+                    TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,null,null);
+                    ActionSystem.Instance.AddReaction(triggerEventGA);
+
+                    TriggerEventGA triggerPermanentEventGA = new(Events.OnDeath,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
 
                     DestroyPermanentGA destroyPermanentGA = new(diePermanentGA.PermanentView, null);
@@ -305,7 +312,10 @@ public class CombatSystem : Singleton<CombatSystem>
         LoseShieldGA loseShieldGA = new(null, dieEnemySlotGA.EnemySlotView);
         ActionSystem.Instance.AddReaction(loseShieldGA);
 
-        TriggerEnemyEventGA triggerEnemyEventGA = new(dieEnemySlotGA.EnemySlotView, Events.OnDeath);
+        TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,null, dieEnemySlotGA.EnemySlotView);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
+
+        TriggerEventGA triggerEnemyEventGA = new(Events.OnDeath,null,null,dieEnemySlotGA.EnemySlotView);
         ActionSystem.Instance.AddReaction(triggerEnemyEventGA);
 
         CombatSystem.Instance.Enemy_Permanents.Remove(dieEnemySlotGA.EnemySlotView);
@@ -337,8 +347,8 @@ public class CombatSystem : Singleton<CombatSystem>
         yield return null;
         if (destroyPermanentGA.enemySlotView != null)
         {
-            GameEventSystem.Instance.RemoveEffectByActionner(destroyPermanentGA.enemySlotView.gameObject);
-            CombatSystem.Instance.Enemy_Permanents.Remove(destroyPermanentGA.enemySlotView);
+            GameEventSystem.Instance.RemoveEffectsByActionner(destroyPermanentGA.enemySlotView.gameObject);
+            Enemy_Permanents.Remove(destroyPermanentGA.enemySlotView);
             Destroy(destroyPermanentGA.enemySlotView.gameObject);
 
             yield return null;
@@ -350,8 +360,8 @@ public class CombatSystem : Singleton<CombatSystem>
 
         if (destroyPermanentGA.PermanentView != null)
         {
-            GameEventSystem.Instance.RemoveEffectByActionner(destroyPermanentGA.PermanentView.gameObject);
-            CombatSystem.Instance.Player_Permanents.Remove(destroyPermanentGA.PermanentView);
+            GameEventSystem.Instance.RemoveEffectsByActionner(destroyPermanentGA.PermanentView.gameObject);
+            Player_Permanents.Remove(destroyPermanentGA.PermanentView);
             Destroy(destroyPermanentGA.PermanentView.gameObject);
 
             yield return null;
@@ -362,7 +372,7 @@ public class CombatSystem : Singleton<CombatSystem>
         }
     }
 
-    /*public IEnumerator GlobalResetActivationPerformer(GlobalResetActivationGA globalResetActivationGA)
+    public IEnumerator GlobalResetActivationPerformer(GlobalResetActivationGA globalResetActivationGA)
     {
         foreach (PermanentView item in Player_Permanents)
         {
@@ -373,7 +383,7 @@ public class CombatSystem : Singleton<CombatSystem>
             item.Activated = false;
         }
         yield return null;
-    }*/
+    }
 
     public IEnumerator EndCombat(EndCombatGA endCombatGA)
     {

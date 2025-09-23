@@ -9,18 +9,18 @@ public class PermanentViewCreator : Singleton<PermanentViewCreator>
     [SerializeField] public ZoneView ShieldZone;
     [SerializeField] public ZoneView SupportZone;
 
-    public PermanentView CreatePermanentViewCreator(Card cardReference, PermanentType type)
+    public PermanentView CreatePermanentViewCreator(Card cardReference, PermanentArea type)
     {
         GameObject Parent = null;
         switch (type)
         {
-            case PermanentType.Weapon:
+            case PermanentArea.Weapon:
                 Parent = WeaponZone.gameObject;
                 break;
-            case PermanentType.Shield:
+            case PermanentArea.Shield:
                 Parent = ShieldZone.gameObject;
                 break;
-            case PermanentType.Support:
+            case PermanentArea.Support:
                 Parent = SupportZone.gameObject;
                 break;
             default:

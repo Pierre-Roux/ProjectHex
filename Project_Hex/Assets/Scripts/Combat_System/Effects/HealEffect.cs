@@ -16,13 +16,18 @@ public class HealEffect : Effect
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         amount = Amount;
         targetMode = TargetMode;
+        TestValue = testValue;
+        TestDynamicAmount = testDynamicAmount;
+        DynamicCondition = dynamicCondition;
+        TestType = testType;
         targetNumber = TargetNumber;
         actionnerType = ActionnerType;
         Events = Event;
+        CancelOnDeath = cancelOnDeath;
         Actionner = actionner;
         CardActionner = cardActionner;
         Intent_Title = intent_Title;
@@ -39,20 +44,37 @@ public class HealEffect : Effect
 
     public override GameAction GetGameAction()
     {
+        if (DynamicCondition != DynamicCondition.NULL)
+        {
+            if (Actionner == null)
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                {
+                    return null;
+                }                
+            }
+        }
         // SI CARTE
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
             if (targetMode == TargetMode.Manual)
             {
                 HealGA healGA = new(amount, DynamicAmount, null, null);
-                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
                 StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
                 HealGA healGA = new(amount, DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
-                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
                 return healGA;
             }
             else
@@ -62,7 +84,7 @@ public class HealEffect : Effect
                 TargetForLinked_Enemy = enemyTargets;
 
                 HealGA healGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
-                if (AudioManager.Instance.IsValid(SFX)){ healGA.SFX = SFX; }
+                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
                 return healGA;
             }
         }
@@ -70,13 +92,13 @@ public class HealEffect : Effect
         else
         {
             // SI ENEMY
-            if (actionnerType == ActionnerType.ENEMY && Actionner != null)
+            if (actionnerType == ActionnerType.ENEMY)
             {
                 if (targetMode == TargetMode.Manual)
                 {
                     HealEnemyGA healEnemyGA = new(amount, DynamicAmount, null, null);
                     healEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ healEnemyGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { healEnemyGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -100,18 +122,18 @@ public class HealEffect : Effect
 
                     HealEnemyGA healEnemyGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
                     healEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ healEnemyGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { healEnemyGA.SFX = SFX; }
                     return healEnemyGA;
                 }
             }
             // SI PLAYER
-            else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
+            else if (actionnerType == ActionnerType.PLAYER)
             {
                 if (targetMode == TargetMode.Manual)
                 {
                     HealPlayerGA healPlayerGA = new(amount, DynamicAmount, null, null);
                     healPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ healPlayerGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { healPlayerGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -135,7 +157,7 @@ public class HealEffect : Effect
 
                     HealPlayerGA healPlayerGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
                     healPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ healPlayerGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { healPlayerGA.SFX = SFX; }
                     return healPlayerGA;
                 }
             }
@@ -162,10 +184,15 @@ public class HealEffect : Effect
 
         return new HealEffect(
             amount,
+            TestValue,
+            DynamicCondition,
+            TestDynamicAmount,
+            TestType,
             targetMode,
             targetNumber,
             actionnerType,
             Events,
+            CancelOnDeath,
             Actionner,
             CardActionner,
             Intent_Title,

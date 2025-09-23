@@ -12,7 +12,7 @@ public class EnemyPermanentData : ScriptableObject
     [field: SerializeField] public bool IsCore;
     [field: SerializeField] public bool IsInvoc;
     [field: SerializeField] public bool UnShieldable;
-    [field: SerializeField] public PermanentType permanentType;
+    [field: SerializeField] public PermanentArea permanentArea;
     [field: SerializeField] public int DecayCounter;
 
     [field: Header("Effects")]

@@ -17,14 +17,19 @@ public class DealDamageEffect : Effect
 
     public DealDamageEffect(){}
 
-    public DealDamageEffect(int DamageAmount, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         damageAmount = DamageAmount;
         targetMode = TargetMode;
+        TestValue = testValue;
+        TestDynamicAmount = testDynamicAmount;
+        DynamicCondition = dynamicCondition;
+        TestType = testType;
         targetNumber = TargetNumber;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
         Events = Event;
+        CancelOnDeath = cancelOnDeath;
         Actionner = actionner;
         Intent_Title = intent_Title;
         number = Number;
@@ -40,23 +45,37 @@ public class DealDamageEffect : Effect
 
     public override GameAction GetGameAction()
     {
+        if (DynamicCondition != DynamicCondition.NULL)
+        {
+            if (Actionner == null)
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                {
+                    return null;
+                }                
+            }
+        }
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
-            /*if (DynamicAmount != DynamicAmount.NULL)
-            {
-                damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount);
-            }*/
+
             if (targetMode == TargetMode.Manual)
             {
-                DealDamageGA dealDamageGA = new(damageAmount,DynamicAmount,null, null);
-                if (AudioManager.Instance.IsValid(SFX)){ dealDamageGA.SFX = SFX; }
+                DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, null, null);
+                if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
-                DealDamageGA dealDamageGA = new(damageAmount,DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
-                if (AudioManager.Instance.IsValid(SFX)){ dealDamageGA.SFX = SFX; }
+                DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 return dealDamageGA;
             }
             else
@@ -65,24 +84,20 @@ public class DealDamageEffect : Effect
                 TargetForLinked_Player = playerTargets;
                 TargetForLinked_Enemy = enemyTargets;
 
-                DealDamageGA dealDamageGA = new(damageAmount,DynamicAmount, playerTargets, enemyTargets);
-                if (AudioManager.Instance.IsValid(SFX)){ dealDamageGA.SFX = SFX; }
+                DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, playerTargets, enemyTargets);
+                if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 return dealDamageGA;
             }
         }
         else
         {
-            if (actionnerType == ActionnerType.ENEMY && Actionner != null)
+            if (actionnerType == ActionnerType.ENEMY)
             {
-                /*if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,null,Actionner.GetComponent<EnemySlotView>());
-                }*/
                 if (targetMode == TargetMode.Manual)
                 {
-                    AttackPlayerGA attackPlayerGA = new(damageAmount,DynamicAmount, null, null);
+                    AttackPlayerGA attackPlayerGA = new(damageAmount, DynamicAmount, null, null);
                     attackPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ attackPlayerGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { attackPlayerGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(attackPlayerGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -104,23 +119,19 @@ public class DealDamageEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    AttackPlayerGA attackPlayerGA = new(damageAmount,DynamicAmount, playerTargets, enemyTargets);
+                    AttackPlayerGA attackPlayerGA = new(damageAmount, DynamicAmount, playerTargets, enemyTargets);
                     attackPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ attackPlayerGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { attackPlayerGA.SFX = SFX; }
                     return attackPlayerGA;
                 }
             }
-            else if (actionnerType == ActionnerType.PLAYER && Actionner != null)
+            else if (actionnerType == ActionnerType.PLAYER)
             {
-                /*if (DynamicAmount != DynamicAmount.NULL)
-                {
-                    damageAmount = TargetSystem.Instance.GetDynamicAmount(DynamicAmount,Actionner.GetComponent<PermanentView>(),null);
-                }*/
                 if (targetMode == TargetMode.Manual)
                 {
-                    AttackEnemyGA attackEnemyGA = new(damageAmount,DynamicAmount, null, null);
+                    AttackEnemyGA attackEnemyGA = new(damageAmount, DynamicAmount, null, null);
                     attackEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ attackEnemyGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { attackEnemyGA.SFX = SFX; }
                     StartManualTargetingGA startManualTargetingGA = new(attackEnemyGA, targetNumber, this);
                     return startManualTargetingGA;
                 }
@@ -142,9 +153,9 @@ public class DealDamageEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    AttackEnemyGA attackEnemyGA = new(damageAmount,DynamicAmount, playerTargets, enemyTargets);
+                    AttackEnemyGA attackEnemyGA = new(damageAmount, DynamicAmount, playerTargets, enemyTargets);
                     attackEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)){ attackEnemyGA.SFX = SFX; }
+                    if (AudioManager.Instance.IsValid(SFX)) { attackEnemyGA.SFX = SFX; }
                     return attackEnemyGA;
                 }
             }
@@ -170,10 +181,15 @@ public class DealDamageEffect : Effect
 
         return new DealDamageEffect(
             damageAmount,
+            TestValue,
+            DynamicCondition,
+            TestDynamicAmount,
+            TestType,
             targetMode,
             targetNumber,
             actionnerType,
             Events,
+            CancelOnDeath,
             Actionner,
             CardActionner,
             Intent_Title,

@@ -22,11 +22,18 @@ public abstract class Effect
     [SerializeField] public int Duration;
     [SerializeField] public Events DurationType;
     [SerializeField] public bool TriggerOnDurationEnd;
+    [SerializeField] public bool CancelOnDeath;
+
+    [Header("On Condition Effect")]
+    public DynamicCondition DynamicCondition;
+    public int TestValue;
+    public DynamicAmount TestDynamicAmount;
+    public PermaTypes TestType;
 
     [field: SerializeReference, SR] public Effect LinkedEffect;
 
     [HideInInspector] public GameObject Actionner;
-    [HideInInspector] public Card CardActionner;
+    [HideInInspector] public CardView CardActionner;
     [HideInInspector] public List<PermanentView> TargetForLinked_Player;
     [HideInInspector] public List<EnemySlotView> TargetForLinked_Enemy;
     [HideInInspector] public Effect ParentEffect;

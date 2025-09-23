@@ -37,7 +37,7 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public Card CardReferenceArchive;
     [HideInInspector] public bool IsDead = false;
     [HideInInspector] public Vector3 InitialPosition { get; set; }
-    [HideInInspector] public PermanentType permanentType;
+    [HideInInspector] public PermanentArea permanentArea;
 
     [HideInInspector] public List<PermanentView> PlayerShielder;
     [HideInInspector] public List<EnemySlotView> EnemyShielder;
@@ -46,10 +46,8 @@ public class PermanentView : MonoBehaviour
     [HideInInspector] public bool Targetable = true;
     [HideInInspector] public bool Shielded;
     [HideInInspector] public bool Activated;
-    [HideInInspector] public bool isHollow;
-    [HideInInspector] public bool isInvoc;
-    [HideInInspector] public bool isDecay;
-    [HideInInspector] public bool isArtillery;
+
+    [HideInInspector] public List<PermaTypes> permaTypes = new List<PermaTypes>();
 
     public void Setup(Card cardReference)
     {
@@ -60,31 +58,26 @@ public class PermanentView : MonoBehaviour
         baseLife = cardReference.data.life;
         MaxLife = CalculateBonusLife(baseLife);
         currentLife = MaxLife;
-        isInvoc = cardReference.data.isInvoc;
-        isArtillery = cardReference.data.isArtillery;
-        permanentType = cardReference.data.permanentType;
+        MaxDurability = cardReference.MaxDurability;
+        Durability = cardReference.Durability;
+        permanentArea = cardReference.data.permanentArea;
         UnShieldable = cardReference.UnShieldable;
         DecayCounter = cardReference.DecayCounter;
-        if (DecayCounter > 0) isDecay = true;
+
+        // Gère les types
+        permaTypes.Clear();
+        if (cardReference.data.isInvoc) permaTypes.Add(PermaTypes.Invoc);
+        if (DecayCounter > 0) permaTypes.Add(PermaTypes.Decay);
+        if (cardReference.MaxDurability > 0 && cardReference.Durability == 0) permaTypes.Add(PermaTypes.Hollow);
+        if (cardReference.data.isArtillery) permaTypes.Add(PermaTypes.Artillery);
+
         ShieldVisual.SetActive(false);
         UpdateLifeText();
 
-        MaxDurability = cardReference.MaxDurability;
-        Durability = cardReference.Durability;
-        if (MaxDurability > 0)
-        {
-            if (Durability == 0)
-            {
-                isHollow = true;
-            }
-        }
-
         // affichage graphique du hollow
-        if (isHollow)
+        if (permaTypes.Contains(PermaTypes.Hollow))
         {
-            Color c = PermanentSpriteRenderer.color;
-            c.a = 0.5f;
-            PermanentSpriteRenderer.color = c;
+            UpdateHollowVisual();
         }
 
         //Audio
@@ -113,7 +106,7 @@ public class PermanentView : MonoBehaviour
         Targetable = true;
         IsCore = true;
         PermanentSpriteRenderer.sprite = CoreData.CoreImage;
-        permanentType = PermanentType.none;
+        permanentArea = PermanentArea.none;
         baseLife = CoreData.CoreHealth;
         MaxLife = CalculateBonusLife(baseLife);
         currentLife = MaxLife; 
@@ -126,60 +119,45 @@ public class PermanentView : MonoBehaviour
     {
         HealthText.text = currentLife.ToString();
     }
-    
-    public int CalculateBonusPower(int BaseAmount)
+
+    public void UpdateHollowVisual()
     {
-        int PassiveBonus = 0;
-
-        if (isInvoc)
-        {
-            PassiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralPower;
-        }
-        if (isDecay)
-        {
-            PassiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralPower;
-        }
-        if (isHollow)
-        {
-            PassiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralPower;
-        }
-        if (isArtillery)
-        {
-            PassiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralPower;
-        }
-
-
-        int finalDMG = 0;
-        finalDMG = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower; ;
-        if (finalDMG < 0) finalDMG = 0;
-        return finalDMG;
+        Color c = PermanentSpriteRenderer.color;
+        c.a = 0.5f;
+        PermanentSpriteRenderer.color = c;        
     }
-    public int CalculateBonusLife(int BaseAmount)
+    
+    public int CalculateBonusPower(int baseAmount)
     {
-        int PassiveBonus = 0;
+        int passiveBonus = 0;
 
-        if (isInvoc)
-        {
-            PassiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
-        }
-        if (isDecay)
-        {
-            PassiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
-        }
-        if (isHollow)
-        {
-            PassiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
-        }
-        if (isArtillery)
-        {
-            PassiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
-        }
+        if (permaTypes.Contains(PermaTypes.Invoc))
+            passiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralPower;
+        if (permaTypes.Contains(PermaTypes.Decay))
+            passiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralPower;
+        if (permaTypes.Contains(PermaTypes.Hollow))
+            passiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralPower;
+        if (permaTypes.Contains(PermaTypes.Artillery))
+            passiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralPower;
 
+        int finalDMG = baseAmount + BonusPower + passiveBonus + CombatSystem.Instance.EnemyGeneralPower + CombatSystem.Instance.GeneralPower;
+        return Mathf.Max(0, finalDMG);
+    }
+    public int CalculateBonusLife(int baseAmount)
+    {
+        int passiveBonus = 0;
 
-        int finalHPGain = 0;
-        finalHPGain = BaseAmount + BonusPower + PassiveBonus + CombatSystem.Instance.PlayerGeneralHPGain + CombatSystem.Instance.GeneralHPGain; ;
-        if (finalHPGain < 0) finalHPGain = 0;
-        return finalHPGain;
+        if (permaTypes.Contains(PermaTypes.Invoc))
+            passiveBonus += CombatSystem.Instance.Invoc_PlayerGeneralHPGain + CombatSystem.Instance.Invoc_GeneralHPGain;
+        if (permaTypes.Contains(PermaTypes.Decay))
+            passiveBonus += CombatSystem.Instance.Decay_PlayerGeneralHPGain + CombatSystem.Instance.Decay_GeneralHPGain;
+        if (permaTypes.Contains(PermaTypes.Hollow))
+            passiveBonus += CombatSystem.Instance.Hollow_PlayerGeneralHPGain + CombatSystem.Instance.Hollow_GeneralHPGain;
+        if (permaTypes.Contains(PermaTypes.Artillery))
+            passiveBonus += CombatSystem.Instance.Artillery_PlayerGeneralHPGain + CombatSystem.Instance.Artillery_GeneralHPGain;
+
+        int finalHP = baseAmount + passiveBonus + CombatSystem.Instance.PlayerGeneralHPGain + CombatSystem.Instance.GeneralHPGain;
+        return Mathf.Max(0, finalHP);
     }
 
     public void UpdateLife()
@@ -216,7 +194,7 @@ public class PermanentView : MonoBehaviour
         if (!IsDead)
         {
             transform.DOShakePosition(0.2f, 0.5f);
-            TriggerPermanentEventGA triggerPermanentEventGA = new(this, Events.OnDamaged);
+            TriggerEventGA triggerPermanentEventGA = new(Events.OnDamaged,null,this,null);
             ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
         }
 
@@ -328,7 +306,7 @@ public class PermanentView : MonoBehaviour
         if (Amount <= 0) return;
 
         transform.DOShakePosition(0.2f, 0.5f);
-        TriggerPermanentEventGA triggerEventGA = new(this, Events.OnDamaged);
+        TriggerEventGA triggerEventGA = new(Events.OnDamaged,null,this,null);
         ActionSystem.Instance.AddReaction(triggerEventGA);
         
 

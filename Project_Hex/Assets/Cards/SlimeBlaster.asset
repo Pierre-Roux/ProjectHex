@@ -172,17 +172,17 @@ MonoBehaviour:
         DurationType: 0
         TriggerOnDurationEnd: 0
         CancelOnDeath: 0
-        DynamicCondition: 0
+        DynamicCondition: 13
         TestValue: 0
         TestDynamicAmount: 0
-        TestType: 0
+        TestType: 1
         LinkedEffect:
           rid: -2
         Actionner: {fileID: 0}
-        CardActionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 3
+        BypassEntryCondition: 0
+        damageAmount: 100
         DynamicAmount: 0
         targetMode: 5
         targetNumber: 0

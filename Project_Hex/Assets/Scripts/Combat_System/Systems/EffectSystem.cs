@@ -66,9 +66,10 @@ public class EffectSystem : Singleton<EffectSystem>
                 dealDamageGA.Amount = TargetSystem.Instance.GetDynamicAmount(dealDamageGA.DynamicAmount, null, dealDamageGA.Actionner.GetComponent<EnemySlotView>());
             }
         }
+
         if (dealDamageGA.playerTargets != null)
         {
-            foreach (var target in dealDamageGA.playerTargets)
+            foreach (PermanentView target in dealDamageGA.playerTargets)
             {
                 if (target.Shielded)
                 {
@@ -78,28 +79,28 @@ public class EffectSystem : Singleton<EffectSystem>
                         var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
                         if (Random.Range(0, 1) == 0)
                         {
-                            newtargetP.TakeDamage(dealDamageGA.Amount);
+                            newtargetP.TakeDamage(dealDamageGA.Amount, dealDamageGA.CardActionner, dealDamageGA.Actionner);
                         }
                         else
                         {
-                            newtargetE.TakeDamage(dealDamageGA.Amount);
+                            newtargetE.TakeDamage(dealDamageGA.Amount, dealDamageGA.CardActionner, dealDamageGA.Actionner);
                         }
                     }
                     else if (target.EnemyShielder.Count != 0)
                     {
                         var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
-                        newtargetE.TakeDamage(dealDamageGA.Amount);
+                        newtargetE.TakeDamage(dealDamageGA.Amount, dealDamageGA.CardActionner, dealDamageGA.Actionner);
                     }
                     else if (target.PlayerShielder.Count != 0)
                     {
                         var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
-                        newtargetP.TakeDamage(dealDamageGA.Amount);
+                        newtargetP.TakeDamage(dealDamageGA.Amount, dealDamageGA.CardActionner, dealDamageGA.Actionner);
                     }
                     yield return new WaitForSeconds(AnimDelay);
                 }
                 else
                 {
-                    target.TakeDamage(dealDamageGA.Amount);
+                    target.TakeDamage(dealDamageGA.Amount, dealDamageGA.CardActionner, dealDamageGA.Actionner);
                     yield return new WaitForSeconds(AnimDelay);
                 }
             }
@@ -107,7 +108,7 @@ public class EffectSystem : Singleton<EffectSystem>
 
         if (dealDamageGA.enemyTargets != null)
         {
-            foreach (var target in dealDamageGA.enemyTargets)
+            foreach (EnemySlotView target in dealDamageGA.enemyTargets)
             {
                 if (target.Shielded)
                 {
@@ -117,28 +118,28 @@ public class EffectSystem : Singleton<EffectSystem>
                         var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
                         if (Random.Range(0, 1) == 0)
                         {
-                            newtargetP.TakeDamage(dealDamageGA.Amount);
+                            newtargetP.TakeDamage(dealDamageGA.Amount,dealDamageGA.CardActionner,dealDamageGA.Actionner);
                         }
                         else
                         {
-                            newtargetE.TakeDamage(dealDamageGA.Amount);
+                            newtargetE.TakeDamage(dealDamageGA.Amount,dealDamageGA.CardActionner,dealDamageGA.Actionner);
                         }
                     }
                     else if (target.EnemyShielder.Count != 0)
                     {
                         var newtargetE = target.EnemyShielder[Random.Range(0, target.EnemyShielder.Count)];
-                        newtargetE.TakeDamage(dealDamageGA.Amount);
+                        newtargetE.TakeDamage(dealDamageGA.Amount,dealDamageGA.CardActionner,dealDamageGA.Actionner);
                     }
                     else if (target.PlayerShielder.Count != 0)
                     {
                         var newtargetP = target.PlayerShielder[Random.Range(0, target.PlayerShielder.Count)];
-                        newtargetP.TakeDamage(dealDamageGA.Amount);
+                        newtargetP.TakeDamage(dealDamageGA.Amount,dealDamageGA.CardActionner,dealDamageGA.Actionner);
                     }
                     yield return new WaitForSeconds(AnimDelay);
                 }
                 else
                 {
-                    target.TakeDamage(dealDamageGA.Amount);
+                    target.TakeDamage(dealDamageGA.Amount,dealDamageGA.CardActionner,dealDamageGA.Actionner);
                     yield return new WaitForSeconds(AnimDelay);
                 }
             }
@@ -151,16 +152,16 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             if (healGA.Actionner == null)
             {
-                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,null,null);
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount, null, null);
             }
             else if (healGA.Actionner.GetComponent<PermanentView>() != null)
             {
-                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,healGA.Actionner.GetComponent<PermanentView>(),null);
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount, healGA.Actionner.GetComponent<PermanentView>(), null);
             }
             else
             {
-                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount,null,healGA.Actionner.GetComponent<EnemySlotView>());
-            }    
+                healGA.Amount = TargetSystem.Instance.GetDynamicAmount(healGA.DynamicAmount, null, healGA.Actionner.GetComponent<EnemySlotView>());
+            }
         }
 
         if (healGA.playerTargets != null)

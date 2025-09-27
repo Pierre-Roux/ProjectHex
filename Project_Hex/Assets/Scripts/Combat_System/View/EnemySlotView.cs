@@ -275,7 +275,7 @@ public class EnemySlotView : MonoBehaviour
         UpdateLifeText();
     }
 
-    public void TakeDamage(int Amount)
+    public void TakeDamage(int Amount, Card CardActionner = null, GameObject Actionner = null)
     {
         if (Amount <= 0) return;
         if (!IsDead)
@@ -292,6 +292,7 @@ public class EnemySlotView : MonoBehaviour
             {
                 DieEnemySlotGA dieEnemySlotGA = new(this);
                 ActionSystem.Instance.AddReaction(dieEnemySlotGA);
+                OnKillTrigger(CardActionner, Actionner);
                 IsDead = true;
             }
         }
@@ -301,6 +302,29 @@ public class EnemySlotView : MonoBehaviour
         }
 
         UpdateLifeText();
+    }
+
+    public void OnKillTrigger(Card CardActionner, GameObject Actionner)
+    {
+        Debug.Log("OnKill ? " + CardActionner);
+        if (Actionner != null)
+        {
+            if (Actionner.GetComponent<PermanentView>() != null)
+            {
+                TriggerEventGA triggerEventGA = new(Events.OnKill, null, Actionner.GetComponent<PermanentView>(), null);
+                ActionSystem.Instance.AddReaction(triggerEventGA);
+            }
+            else if (Actionner.GetComponent<EnemySlotView>())
+            {
+                TriggerEventGA triggerEventGA = new(Events.OnKill, null, null, Actionner.GetComponent<EnemySlotView>());
+                ActionSystem.Instance.AddReaction(triggerEventGA);
+            }
+        }
+        else if (CardActionner != null)
+        {
+            TriggerEventGA triggerEventGA = new(Events.OnKill, CardActionner, null, null);
+            ActionSystem.Instance.AddReaction(triggerEventGA);
+        }
     }
 
     public void TakeHeal(int Amount)

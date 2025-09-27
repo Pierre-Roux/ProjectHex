@@ -16,7 +16,7 @@ public class HealEffect : Effect
 
     public HealEffect(){}
 
-    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -44,21 +44,24 @@ public class HealEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        if (DynamicCondition != DynamicCondition.NULL)
+        if (!BypassEntryCondition)
         {
-            if (Actionner == null)
+            if (DynamicCondition != DynamicCondition.NULL)
             {
-                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                if (Actionner == null)
                 {
-                    return null;
+                    if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                    {
+                        return null;
+                    }
                 }
-            }
-            else
-            {
-                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                else
                 {
-                    return null;
-                }                
+                    if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                    {
+                        return null;
+                    }
+                }
             }
         }
         // SI CARTE

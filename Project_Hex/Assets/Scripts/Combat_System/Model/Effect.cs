@@ -33,10 +33,12 @@ public abstract class Effect
     [field: SerializeReference, SR] public Effect LinkedEffect;
 
     [HideInInspector] public GameObject Actionner;
-    [HideInInspector] public CardView CardActionner;
+    [HideInInspector] public Card CardActionner;
     [HideInInspector] public List<PermanentView> TargetForLinked_Player;
     [HideInInspector] public List<EnemySlotView> TargetForLinked_Enemy;
     [HideInInspector] public Effect ParentEffect;
+
+    [HideInInspector] public bool BypassEntryCondition = false;
 
     public abstract GameAction GetGameAction();
 

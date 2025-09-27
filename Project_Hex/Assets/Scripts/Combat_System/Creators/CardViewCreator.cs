@@ -14,7 +14,7 @@ public class CardViewCreator : Singleton<CardViewCreator>
         cardView.Setup(Card);
         foreach (Effect effect in Card.Effects)
         {
-            effect.CardActionner = cardView;
+            effect.CardActionner = Card;
         }
         return cardView;
     }

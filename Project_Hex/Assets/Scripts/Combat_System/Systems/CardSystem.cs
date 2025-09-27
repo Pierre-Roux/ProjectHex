@@ -100,7 +100,7 @@ public class CardSystem : Singleton<CardSystem>
         UpdatePiles();
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
-        TriggerEventGA triggerEventGA = new(Events.OnDraw, cardView);
+        TriggerEventGA triggerEventGA = new(Events.OnDraw, cardView.Card);
         ActionSystem.Instance.AddReaction(triggerEventGA);
 
 
@@ -137,7 +137,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         if (countAsDiscard_INGAME)
         {
-            TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView);
+            TriggerEventGA triggerEventGA = new(Events.OnDiscard, cardView.Card);
             ActionSystem.Instance.AddReaction(triggerEventGA);      
         }
 
@@ -193,6 +193,7 @@ public class CardSystem : Singleton<CardSystem>
             // On clone l’effet de base pour éviter les références partagées
             Effect clonedEffect = effect.Clone();
             clonedEffect.Actionner = null;
+            clonedEffect.CardActionner = playCardGA.CardActionner;
 
             while (clonedEffect != null)
             {
@@ -208,8 +209,7 @@ public class CardSystem : Singleton<CardSystem>
                         clonedEffect.Events != Events.OnDestroy &&
                         clonedEffect.Events != Events.OnDamaged &&
                         clonedEffect.Events != Events.OnActivate &&
-                        clonedEffect.Events != Events.EnemyTurn &&
-                        clonedEffect.Events != Events.Instant)
+                        clonedEffect.Events != Events.EnemyTurn)
                     {
                         GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
                     }

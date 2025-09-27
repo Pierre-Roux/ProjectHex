@@ -6,6 +6,7 @@ using FMODUnity;
 public abstract class GameAction
 {
     [HideInInspector] public GameObject Actionner;
+    [HideInInspector] public Card CardActionner;
 
     public List<GameAction> PreReactions { get; private set; } = new();
     public List<GameAction> PerformReactions { get; private set; } = new();

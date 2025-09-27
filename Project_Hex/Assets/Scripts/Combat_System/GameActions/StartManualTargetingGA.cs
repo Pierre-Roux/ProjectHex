@@ -11,6 +11,7 @@ public class StartManualTargetingGA : GameAction
     public StartManualTargetingGA(GameAction actionToRealiseAfterTargetting, int targetNumber, Effect effectRef = null)
     {
         ActionToRealiseAfterTargetting = actionToRealiseAfterTargetting;
+        Actionner = actionToRealiseAfterTargetting.Actionner;
         TargetNumber = targetNumber;
         EffectRef = effectRef;
     }

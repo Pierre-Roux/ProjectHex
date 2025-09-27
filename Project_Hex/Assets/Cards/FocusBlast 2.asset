@@ -9,22 +9,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
-  m_Name: Weapon 1
+  m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
+  m_Name: FocusBlast 2
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: eeae6e620c49fd1449d6c8043182fa14, type: 3}
-  PermanentLife: 10
-  IsCore: 0
-  IsInvoc: 0
+  <Title>k__BackingField: FocusBlast
+  <Description>k__BackingField: Inflict 3 damage target
+  <cost>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 21300000, guid: bb7b6ce2f1a61144083daba5680fbcfe, type: 3}
+  <Money_Cost>k__BackingField: 50
+  <life>k__BackingField: 0
+  <DecayCounter>k__BackingField: 0
+  <Durability>k__BackingField: 0
+  <MaxDurability>k__BackingField: 0
+  <PermanentImage>k__BackingField: {fileID: 0}
+  <permanentArea>k__BackingField: 0
   UnShieldable: 0
-  permanentArea: 1
-  DecayCounter: 0
-  <PossibleIntent>k__BackingField:
-  - rid: 1273757063170490374
-  RDMSequence: 1
-  <IntentSequence>k__BackingField: []
-  LoopingSequence: 0
-  SummonEPermanentSound:
+  isInvoc: 0
+  isArtillery: 0
+  <IsSpell>k__BackingField: 1
+  <Effects>k__BackingField:
+  - rid: 1273756882910052352
+  - rid: 6225437435346026502
+  PlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DiscardCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SummonPPermanentSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -32,6 +59,13 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HollowDieSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -120,11 +154,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 1273757063170490374
+    - rid: 1273756882910052352
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
-        actionnerType: 1
-        Events: 1
+        actionnerType: 2
+        Events: 0
         HollowEffect: 0
         SFX:
           Guid:
@@ -133,8 +167,8 @@ MonoBehaviour:
             Data3: 0
             Data4: 0
           Path: 
-        Intent_Title: Deal 5 dmg to rdm
-        number: A
+        Intent_Title: None
+        number: 
         Duration: 0
         DurationType: 0
         TriggerOnDurationEnd: 0
@@ -149,7 +183,40 @@ MonoBehaviour:
         CardActionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 5
+        BypassEntryCondition: 0
+        damageAmount: 100
         DynamicAmount: 0
-        targetMode: 1
-        targetNumber: 0
+        targetMode: 5
+        targetNumber: 1
+    - rid: 6225437435346026502
+      type: {class: ManaGainEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 0
+        Events: 12
+        HollowEffect: 0
+        SFX:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 0
+        TriggerOnDurationEnd: 0
+        CancelOnDeath: 0
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
+        LinkedEffect:
+          rid: -2
+        Actionner: {fileID: 0}
+        CardActionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        BypassEntryCondition: 0
+        GainAmount: 1
+        DynamicAmount: 0

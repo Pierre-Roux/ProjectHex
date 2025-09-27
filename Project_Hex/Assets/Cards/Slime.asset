@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Slime
   m_EditorClassIdentifier: 
   <Title>k__BackingField: Slime
-  <Description>k__BackingField: EndTurn deal 3 to RDM and lose 1 life
+  <Description>k__BackingField: FFF
   <cost>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
   <Money_Cost>k__BackingField: 30
@@ -22,13 +22,14 @@ MonoBehaviour:
   <Durability>k__BackingField: 1
   <MaxDurability>k__BackingField: 1
   <PermanentImage>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <permanentArea>k__BackingField: 1
+  <permanentArea>k__BackingField: 3
   UnShieldable: 0
   isInvoc: 0
   isArtillery: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
   - rid: 8456800823964860421
+  - rid: 6225437435346026501
   PlayCardSound:
     Guid:
       Data1: 0
@@ -153,11 +154,44 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 6225437435346026501
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+      data:
+        actionnerType: 0
+        Events: 12
+        HollowEffect: 0
+        SFX:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
+        Intent_Title: 
+        number: 
+        Duration: 0
+        DurationType: 0
+        TriggerOnDurationEnd: 0
+        CancelOnDeath: 1
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
+        LinkedEffect:
+          rid: -2
+        Actionner: {fileID: 0}
+        TargetForLinked_Player: []
+        TargetForLinked_Enemy: []
+        BypassEntryCondition: 0
+        damageAmount: 100
+        DynamicAmount: 0
+        targetMode: 24
+        targetNumber: 1
     - rid: 8456800823964860421
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
-        Events: 9
+        Events: 8
         HollowEffect: 0
         SFX:
           Guid:
@@ -172,17 +206,17 @@ MonoBehaviour:
         DurationType: 0
         TriggerOnDurationEnd: 0
         CancelOnDeath: 0
-        DynamicCondition: 2
-        TestValue: 1
-        TestDynamicAmount: 12
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
         TestType: 0
         LinkedEffect:
           rid: -2
         Actionner: {fileID: 0}
-        CardActionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        damageAmount: 2
+        BypassEntryCondition: 0
+        damageAmount: 100
         DynamicAmount: 0
         targetMode: 5
-        targetNumber: 0
+        targetNumber: 1

@@ -273,7 +273,7 @@ public class CombatSystem : Singleton<CombatSystem>
                     diePermanentGA.CardReferenceArchive.Durability -= 1;
                     CardView newCardView = CardViewCreator.Instance.CreateCardView(diePermanentGA.CardReferenceArchive, diePermanentGA.PermanentView.transform.position, diePermanentGA.PermanentView.transform.rotation);
 
-                    TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,null,null);
+                    TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerEventGA);
 
                     TriggerEventGA triggerPermanentEventGA = new(Events.OnDeath,null,diePermanentGA.PermanentView,null);

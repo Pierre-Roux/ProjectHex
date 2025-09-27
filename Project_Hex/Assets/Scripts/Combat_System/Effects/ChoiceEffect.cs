@@ -18,7 +18,7 @@ public class ChoiceEffect : Effect
 
     public ChoiceEffect() { }
 
-    public ChoiceEffect(int value,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx, DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse)
+    public ChoiceEffect(int value,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx, DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse)
     {
         Events = Event;
         TestValue = value;

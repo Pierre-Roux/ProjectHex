@@ -54,7 +54,10 @@ public class GameEventSystem : Singleton<GameEventSystem>
             if (triggerEventGA.permanentView != null)
             {
                 if (effect.Actionner != null)
+                {
                     isActionnerMatch = effect.Actionner.GetComponent<PermanentView>() == triggerEventGA.permanentView;
+                }
+                    
             }
 
             // Cas 2 : Enemy
@@ -65,23 +68,20 @@ public class GameEventSystem : Singleton<GameEventSystem>
             }
 
             // Cas 3 : Card
-            else if (triggerEventGA.cardview != null)
+            else if (triggerEventGA.Card != null)
             {
                 if (effect.CardActionner != null)
-                    isActionnerMatch = effect.CardActionner.Card == triggerEventGA.cardview.Card;
+                    isActionnerMatch = effect.CardActionner == triggerEventGA.Card;
             }
 
             // Cas 4 : Aucun actionner attendu (par ex. événements de carte globale)
             else
             {
-                // Si on n'attend pas de Permanent ni Enemy,
-                // alors on considère que ça matche même si effect.Actionner est null
                 isActionnerMatch = true;
             }
 
-            if (isActionnerMatch)
+            if (triggerEventGA.gameEvent != Events.WhenPermaDie && isActionnerMatch)
             {
-                // Activation des permanents / ennemis si événement OnActivate
                 if (triggerEventGA.gameEvent == Events.OnActivate)
                 {
                     if (triggerEventGA.permanentView != null)
@@ -102,15 +102,33 @@ public class GameEventSystem : Singleton<GameEventSystem>
                 }
                 else
                 {
-                    Debug.Log("Effet déclenché " + triggerEventGA.gameEvent);
                     GameAction ga = effect.GetGameAction();
                     if (ga != null)
                         ActionSystem.Instance.AddReaction(ga);
                 }
             }
 
-            yield return null;
+            if (triggerEventGA.gameEvent == Events.WhenPermaDie && !isActionnerMatch)
+            {
+                if (effect.DynamicCondition != DynamicCondition.NULL)
+                {
+                    if (ConditionSystem.Instance.TestCondition(effect.DynamicCondition, effect.TestDynamicAmount, effect.TestValue, triggerEventGA.Card, triggerEventGA.permanentView, triggerEventGA.enemySlotView, effect.TestType))
+                    {
+                        effect.BypassEntryCondition = true;
+                        GameAction ga = effect.GetGameAction();
+                        if (ga != null)
+                            ActionSystem.Instance.AddReaction(ga);
+                    }
+                }
+                else
+                {
+                    GameAction ga = effect.GetGameAction();
+                    if (ga != null)
+                        ActionSystem.Instance.AddReaction(ga);
+                }
+            }
         }
+        yield return null;
     }
 
     public void ClearAllEvents()

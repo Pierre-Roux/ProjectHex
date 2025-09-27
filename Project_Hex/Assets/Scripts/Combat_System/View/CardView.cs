@@ -142,6 +142,7 @@ public class CardView : MonoBehaviour
                         {
                             isDragging = false;
                             PlayCardGA playCardGA = new(Card);
+                            playCardGA.CardActionner = Card;
                             ActionSystem.Instance.Perform(playCardGA);
                             CombatSystem.Instance.SpellCast_This_Turn++;
                         }

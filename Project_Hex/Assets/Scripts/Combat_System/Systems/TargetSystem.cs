@@ -33,6 +33,7 @@ public class TargetSystem : Singleton<TargetSystem>
 
     public IEnumerator GetTargetsManualPerformer(StartManualTargetingGA startManualTargetingGA)
     {
+        Debug.Log("CardAAAOUCtionner : " + startManualTargetingGA.CardActionner);
         List<PermanentView> playerTargets = new();
         List<EnemySlotView> enemyTargets = new();
         TargetingNumber = InitTargetingNumber = startManualTargetingGA.TargetNumber;

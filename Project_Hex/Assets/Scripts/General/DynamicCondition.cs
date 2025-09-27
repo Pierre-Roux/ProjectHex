@@ -12,7 +12,15 @@ public enum DynamicCondition
     isInvoc,
     isArtillery,
 
+    ifYouControlHollow,
+    ifYouControlDecay,
+    ifYouControlInvoc,
+    ifYouControlArtillery,
+    
+    ifEventPermanentIsTypeOfTestType,
+
     NoCardsInHands,
+
     
 
     

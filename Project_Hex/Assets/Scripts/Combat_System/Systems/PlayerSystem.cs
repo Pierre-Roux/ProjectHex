@@ -82,15 +82,17 @@ public class PlayerSystem : Singleton<PlayerSystem>
             if (attackEnemyGA.playerTargets != null && attackEnemyGA.playerTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackEnemyGA.Damage, Attacker);
-
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackEnemyGA.DynamicAmount, attackEnemyGA.playerTargets, null));
+                DealDamageGA dealDamageGA =  new (DamageAmount, attackEnemyGA.DynamicAmount, attackEnemyGA.playerTargets, null);
+                dealDamageGA.Actionner = attackEnemyGA.Actionner;
+                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
 
             if (attackEnemyGA.enemyTargets != null && attackEnemyGA.enemyTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackEnemyGA.Damage, Attacker);
-
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackEnemyGA.DynamicAmount, null, attackEnemyGA.enemyTargets));
+                DealDamageGA dealDamageGA =  new (DamageAmount, attackEnemyGA.DynamicAmount, null, attackEnemyGA.enemyTargets);
+                dealDamageGA.Actionner = attackEnemyGA.Actionner;
+                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
         // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort

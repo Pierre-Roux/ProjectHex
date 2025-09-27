@@ -41,8 +41,7 @@ public class ActionSystem : Singleton<ActionSystem>
 
     public void AddReaction(GameAction gameAction)
     {
-        if (gameAction != null)
-            reactions?.Add(gameAction);
+        reactions?.Add(gameAction);
     }
 
     public IEnumerator RunAction(GameAction action)
@@ -50,7 +49,7 @@ public class ActionSystem : Singleton<ActionSystem>
         if (action == null) yield break;
 
         // On utilise une pile temporaire locale
-        var savedReactions = reactions; 
+        var savedReactions = reactions;
         reactions = new List<GameAction>();
 
         IsPerforming = true;
@@ -58,8 +57,6 @@ public class ActionSystem : Singleton<ActionSystem>
         {
             IsPerforming = false;
         });
-
-        // On restaure les réactions existantes
         reactions = savedReactions;
     }
 
@@ -71,10 +68,6 @@ public class ActionSystem : Singleton<ActionSystem>
             Debug.LogError("[Flow] action == null (référence C# nulle)");
             yield break;
         }
-
-        // Vérifie l'Actionner pour aider à détecter les données corrompues
-        //string actionnerName = action.Actionner != null ? action.Actionner.name : "NULL_ACTIONNER";
-        //Debug.Log($"[Flow] {actionnerName} do {action.GetType().Name} At {Time.timeSinceLevelLoad}");
 
         reactions = action.PreReactions;
         PerformSubscribers(action, preSubs);

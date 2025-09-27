@@ -70,6 +70,50 @@ public class ConditionSystem : Singleton<ConditionSystem>
                         ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
                     }
                     break;
+                case DynamicCondition.ifYouControlHollow:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Hollow))
+                        {
+                            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
+                            break;
+                        }
+                    }
+                    ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
+                    break;
+                case DynamicCondition.ifYouControlDecay:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Decay))
+                        {
+                            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
+                            break;
+                        }
+                    }
+                    ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
+                    break;
+                case DynamicCondition.ifYouControlInvoc:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Invoc))
+                        {
+                            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
+                            break;
+                        }
+                    }
+                    ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
+                    break;
+                case DynamicCondition.ifYouControlArtillery:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Artillery))
+                        {
+                            ActionSystem.Instance.AddReaction(testConditionGA.EffectOnTrue.GetGameAction());
+                            break;
+                        }
+                    }
+                    ActionSystem.Instance.AddReaction(testConditionGA.EffectOnFalse.GetGameAction());
+                    break;
                 case DynamicCondition.ValueSupToDynamicAmount:
                     Amount = TargetSystem.Instance.GetDynamicAmount(testConditionGA.TestDynamicAmount);
                     if (testConditionGA.Value > Amount)
@@ -127,7 +171,7 @@ public class ConditionSystem : Singleton<ConditionSystem>
         yield return null;
     }
 
-    public bool TestCondition(DynamicCondition TestDynamicCondition,DynamicAmount TestDynamicAmount,int TestValue,CardView TestcardView = null, PermanentView TestpermanentView = null, EnemySlotView TestenemySlotView = null)
+    public bool TestCondition(DynamicCondition TestDynamicCondition, DynamicAmount TestDynamicAmount, int TestValue, Card TestCard = null, PermanentView TestpermanentView = null, EnemySlotView TestenemySlotView = null, PermaTypes TestType = PermaTypes.NULL)
     {
         int Amount = 0;
         if (TestDynamicCondition != DynamicCondition.NULL)
@@ -143,8 +187,8 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
-                    
+
+
                 case DynamicCondition.isHollow:
                     if (TestpermanentView != null)
                     {
@@ -173,8 +217,8 @@ public class ConditionSystem : Singleton<ConditionSystem>
                         return false;
                     }
 
-                    
-                    
+
+
                 case DynamicCondition.isDecay:
                     if (TestpermanentView != null)
                     {
@@ -182,7 +226,7 @@ public class ConditionSystem : Singleton<ConditionSystem>
                         {
                             return true;
                         }
-                        else 
+                        else
                         {
                             return false;
                         }
@@ -202,8 +246,8 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
-                    
+
+
                 case DynamicCondition.isInvoc:
                     if (TestpermanentView != null)
                     {
@@ -231,8 +275,8 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
-                    
+
+
                 case DynamicCondition.isArtillery:
                     if (TestpermanentView != null)
                     {
@@ -260,8 +304,78 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
-                    
+
+                case DynamicCondition.ifYouControlHollow:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Hollow))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+
+
+                case DynamicCondition.ifYouControlDecay:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Decay))
+                        {
+                            return true;
+
+                        }
+                    }
+                    return false;
+
+                case DynamicCondition.ifYouControlInvoc:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Invoc))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+
+                case DynamicCondition.ifYouControlArtillery:
+                    foreach (PermanentView item in CombatSystem.Instance.Player_Permanents)
+                    {
+                        if (item.permaTypes.Contains(PermaTypes.Artillery))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+
+                case DynamicCondition.ifEventPermanentIsTypeOfTestType:
+                    if (TestpermanentView != null)
+                    {
+                        if (TestpermanentView.permaTypes.Contains(TestType))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else if (TestenemySlotView != null)
+                    {
+                        if (TestenemySlotView.permaTypes.Contains(TestType))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+
                 case DynamicCondition.ValueSupToDynamicAmount:
                     Amount = TargetSystem.Instance.GetDynamicAmount(TestDynamicAmount);
                     if (TestValue > Amount)
@@ -272,8 +386,8 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
-                    
+
+
                 case DynamicCondition.ValueInfToDynamicAmount:
                     Amount = TargetSystem.Instance.GetDynamicAmount(TestDynamicAmount);
                     if (TestValue < Amount)
@@ -284,7 +398,7 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
+
 
                 case DynamicCondition.ValueSupOrEqualsToDynamicAmount:
                     Amount = TargetSystem.Instance.GetDynamicAmount(TestDynamicAmount);
@@ -296,7 +410,7 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
+
 
                 case DynamicCondition.ValueInfOrEqualsToDynamicAmount:
                     Amount = TargetSystem.Instance.GetDynamicAmount(TestDynamicAmount);
@@ -308,7 +422,7 @@ public class ConditionSystem : Singleton<ConditionSystem>
                     {
                         return false;
                     }
-                    
+
                 default:
                     return false;
             }

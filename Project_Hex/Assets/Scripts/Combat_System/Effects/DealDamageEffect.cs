@@ -15,9 +15,9 @@ public class DealDamageEffect : Effect
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
 
-    public DealDamageEffect(){}
+    public DealDamageEffect() { }
 
-    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, CardView cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         damageAmount = DamageAmount;
         targetMode = TargetMode;
@@ -45,36 +45,43 @@ public class DealDamageEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        if (DynamicCondition != DynamicCondition.NULL)
+        if (!BypassEntryCondition)
         {
-            if (Actionner == null)
+            if (DynamicCondition != DynamicCondition.NULL)
             {
-                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                if (Actionner == null)
                 {
-                    return null;
+                    if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, null, null))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
+                    {
+                        return null;
+                    }
                 }
             }
-            else
-            {
-                if (!ConditionSystem.Instance.TestCondition(DynamicCondition, TestDynamicAmount, TestValue, CardActionner, Actionner.GetComponent<PermanentView>(), Actionner.GetComponent<EnemySlotView>()))
-                {
-                    return null;
-                }                
-            }
         }
+
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
 
             if (targetMode == TargetMode.Manual)
             {
                 DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, null, null);
+                dealDamageGA.CardActionner = CardActionner;
                 if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this);
+                //startManualTargetingGA.CardActionner = CardActionner;
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
                 DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                dealDamageGA.CardActionner = CardActionner;
                 if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 return dealDamageGA;
             }
@@ -85,6 +92,7 @@ public class DealDamageEffect : Effect
                 TargetForLinked_Enemy = enemyTargets;
 
                 DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, playerTargets, enemyTargets);
+                dealDamageGA.CardActionner = CardActionner;
                 if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
                 return dealDamageGA;
             }

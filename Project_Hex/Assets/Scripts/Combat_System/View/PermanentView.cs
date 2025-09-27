@@ -185,7 +185,7 @@ public class PermanentView : MonoBehaviour
         UpdateLifeText();
     }
 
-    public void TakeDamage(int Amount)
+    public void TakeDamage(int Amount, Card CardActionner = null, GameObject Actionner = null)
     {
         if (Amount <= 0) return;
         currentLife -= Amount;
@@ -204,12 +204,35 @@ public class PermanentView : MonoBehaviour
             {
                 DiePermanentGA diePermanentGA = new(IsCore, Durability, CardReferenceArchive, this);
                 ActionSystem.Instance.AddReaction(diePermanentGA);
+                OnKillTrigger(CardActionner, Actionner);
                 IsDead = true;
             }
         }
         else
         {
             RuntimeManager.PlayOneShot(BeingDamageSound);
+        }
+    }
+
+    public void OnKillTrigger(Card CardActionner, GameObject Actionner)
+    {
+        if (Actionner != null)
+        {
+            if (Actionner.GetComponent<PermanentView>() != null)
+            {
+                TriggerEventGA triggerEventGA = new(Events.OnKill, null, Actionner.GetComponent<PermanentView>(), null);
+                ActionSystem.Instance.AddReaction(triggerEventGA);
+            }
+            else if (Actionner.GetComponent<EnemySlotView>())
+            {
+                TriggerEventGA triggerEventGA = new(Events.OnKill, null, null, Actionner.GetComponent<EnemySlotView>());
+                ActionSystem.Instance.AddReaction(triggerEventGA);
+            }
+        }
+        else if (CardActionner != null)
+        {
+            TriggerEventGA triggerEventGA = new(Events.OnKill, CardActionner, null, null);
+            ActionSystem.Instance.AddReaction(triggerEventGA);
         }
     }
 

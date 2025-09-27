@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -52,20 +53,29 @@ public class EnemySystem : Singleton<EnemySystem>
     // Performers
     private IEnumerator EnemyTurnPerformer(EnemyTurnGA enemyTurnGA)
     {
-        foreach (var enemySlotView in CombatSystem.Instance.Enemy_Permanents)
+        var intents = CombatSystem.Instance.Enemy_Permanents
+            .Where(e => e.IntentAction != null && e.IntentAction.Events == Events.EnemyTurn)
+            .Select(e => e.IntentAction)
+            .ToList();
+
+        foreach (var intent in intents)
         {
-            if (enemySlotView.IntentAction == null) continue;
-            if (enemySlotView.IntentAction.Events == Events.EnemyTurn)
+            // Vérifier que l’ennemi existe encore et est valide
+            var enemySlotViewGO = intent.Actionner;
+            EnemySlotView enemySlotView = null;
+            if (enemySlotViewGO != null)
             {
-                // Exécuter séquentiellement l’action
-                GameAction action = enemySlotView.IntentAction.GetGameAction();
-
-                // On lance directement le Flow pour attendre la fin
-                yield return StartCoroutine(ActionSystem.Instance.RunAction(action));
-
-                // Une fois terminé, on met à jour l’intention
-                enemySlotView.UpdateIntent();
+                enemySlotView = enemySlotViewGO.GetComponent<EnemySlotView>();
             }
+            if (enemySlotView == null || !CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
+                    continue;
+
+            // Exécuter action
+            GameAction action = intent.GetGameAction();
+            yield return StartCoroutine(ActionSystem.Instance.RunAction(action));
+
+            if (CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
+                enemySlotView.UpdateIntent();
         }
 
         EndEnemyTurnGA endEnemyTurnGA = new();
@@ -106,13 +116,17 @@ public class EnemySystem : Singleton<EnemySystem>
             if (attackPlayerGA.playerTargets != null && attackPlayerGA.playerTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackPlayerGA.Damage, Attacker);
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackPlayerGA.DynamicAmount, attackPlayerGA.playerTargets, null));
+                DealDamageGA dealDamageGA =  new (DamageAmount, attackPlayerGA.DynamicAmount, attackPlayerGA.playerTargets, null);
+                dealDamageGA.Actionner = attackPlayerGA.Actionner;
+                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
 
             if (attackPlayerGA.enemyTargets != null && attackPlayerGA.enemyTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackPlayerGA.Damage, Attacker);
-                ActionSystem.Instance.AddReaction(new DealDamageGA(DamageAmount, attackPlayerGA.DynamicAmount, null, attackPlayerGA.enemyTargets));
+                DealDamageGA dealDamageGA =  new (DamageAmount, attackPlayerGA.DynamicAmount, null, attackPlayerGA.enemyTargets);
+                dealDamageGA.Actionner = attackPlayerGA.Actionner;
+                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
         // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort

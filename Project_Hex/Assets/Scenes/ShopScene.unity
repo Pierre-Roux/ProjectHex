@@ -1067,7 +1067,7 @@ MonoBehaviour:
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -1098,14 +1098,14 @@ MonoBehaviour:
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   clickSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   VictoryMusic:
     Guid:
       Data1: 0
@@ -1189,7 +1189,7 @@ MonoBehaviour:
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
 --- !u!1 &753086380
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using FMODUnity;
+using SerializeReferenceEditor;
 using UnityEngine;
 
 public class LifeLossEffect : Effect
@@ -14,10 +15,11 @@ public class LifeLossEffect : Effect
 
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
+    [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
 
-    public LifeLossEffect(){}
+    public LifeLossEffect() { }
 
-    public LifeLossEffect(int lifeLossAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public LifeLossEffect(int lifeLossAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         LifeLossAmount = lifeLossAmount;
         targetMode = TargetMode;
@@ -26,6 +28,7 @@ public class LifeLossEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
         Events = Event;
@@ -71,7 +74,7 @@ public class LifeLossEffect : Effect
             {
                 LifeLossGA lifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                 if (AudioManager.Instance.IsValid(SFX)) { lifeLossGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber, this);
+                StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -100,7 +103,7 @@ public class LifeLossEffect : Effect
                     EnemyLifeLossGA enemyLifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                     enemyLifeLossGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { enemyLifeLossGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber, this);
+                    StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -134,7 +137,7 @@ public class LifeLossEffect : Effect
                     PlayerLifeLossGA playerLifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                     playerLifeLossGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { playerLifeLossGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber, this);
+                    StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -188,6 +191,7 @@ public class LifeLossEffect : Effect
             TestDynamicAmount,
             TestType,
             targetMode,
+            targetLimitations,
             targetNumber,
             actionnerType,
             Events,

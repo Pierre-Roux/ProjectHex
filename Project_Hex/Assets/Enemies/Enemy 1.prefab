@@ -388,9 +388,57 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: DieSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
       propertyPath: PermanentData
       value: 
       objectReference: {fileID: 11400000, guid: 89f054356598fe94e984e8d6b8d98a1c, type: 2}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: BuffLifeSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: SelectedSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: BeingHealSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: GainPowerSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: LosePowerSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: DebuffLifeSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: LoseShieldSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: UnSelectedSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: BeingDamageSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: BeingShieldSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
+    - target: {fileID: 6647762482860982016, guid: 739a6da466d80c44eb76449eff2d8745, type: 3}
+      propertyPath: TakeLifeLossSound.Path
+      value: event:/Place Holder/Place Holder Silence
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

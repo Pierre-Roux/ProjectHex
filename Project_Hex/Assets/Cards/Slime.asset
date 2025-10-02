@@ -191,7 +191,7 @@ MonoBehaviour:
       type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
-        Events: 8
+        Events: 11
         HollowEffect: 0
         SFX:
           Guid:
@@ -219,4 +219,4 @@ MonoBehaviour:
         damageAmount: 100
         DynamicAmount: 0
         targetMode: 5
-        targetNumber: 1
+        targetNumber: 0

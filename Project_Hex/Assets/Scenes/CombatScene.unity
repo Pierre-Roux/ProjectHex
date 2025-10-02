@@ -2082,7 +2082,7 @@ MonoBehaviour:
       Data4: 0
     Path: 
   IsDead: 0
-  permanentType: 0
+  permanentArea: 0
   PlayerShielder: []
   EnemyShielder: []
   PlayerShielded: []
@@ -2090,10 +2090,7 @@ MonoBehaviour:
   Targetable: 0
   Shielded: 0
   Activated: 0
-  isHollow: 0
-  isInvoc: 0
-  isDecay: 0
-  isArtillery: 0
+  permaTypes: 
 --- !u!65 &637965886
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5051,7 +5048,7 @@ MonoBehaviour:
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -5082,91 +5079,91 @@ MonoBehaviour:
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   clickSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   VictoryMusic:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   DefeatMusic:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   PlayCardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   DiscardCardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   DrawCardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   SummonPPermanentSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   SummonEPermanentSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   DieSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   HollowDieSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   TakeCardRewardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   TakeMoneyRewardSound:
     Guid:
       Data1: 1179687985
       Data2: 1325015437
       Data3: 1335451572
       Data4: -1918472180
-    Path: event:/Place Holder Silence
+    Path: event:/Place Holder/Place Holder Silence
   BuyCardSound:
     Guid:
       Data1: 0

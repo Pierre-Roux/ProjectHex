@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FMODUnity;
+using SerializeReferenceEditor;
 using UnityEngine;
 
 public class AlterPowerEffect : Effect
@@ -15,10 +16,11 @@ public class AlterPowerEffect : Effect
 
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
+    [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
 
     public AlterPowerEffect() { }
 
-    public AlterPowerEffect(int AlterAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType,TargetMode TargetMode, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
+    public AlterPowerEffect(int AlterAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType,TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
     {
         alterAmount = AlterAmount;
         targetMode = TargetMode;
@@ -27,6 +29,7 @@ public class AlterPowerEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
         Events = Event;
@@ -82,7 +85,7 @@ public class AlterPowerEffect : Effect
                 {
                     AlterPowerGA alterPowerGA = new(alterAmount, DynamicAmount, passive, permaTypes, null);
                     if (AudioManager.Instance.IsValid(SFX)) { alterPowerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(alterPowerGA, targetNumber, this);
+                    StartManualTargetingGA startManualTargetingGA = new(alterPowerGA, targetNumber, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else if (targetMode == TargetMode.EffectParent_Targets)
@@ -123,7 +126,7 @@ public class AlterPowerEffect : Effect
                         EnemyAlterPowerGA enemyAlterPowerGA = new(alterAmount, DynamicAmount, passive, permaTypes, null, null, targetMode);
                         enemyAlterPowerGA.Actionner = Actionner;
                         if (AudioManager.Instance.IsValid(SFX)) { enemyAlterPowerGA.SFX = SFX; }
-                        StartManualTargetingGA startManualTargetingGA = new(enemyAlterPowerGA, targetNumber, this);
+                        StartManualTargetingGA startManualTargetingGA = new(enemyAlterPowerGA, targetNumber, this,targetLimitations);
                         return startManualTargetingGA;
                     }
                     else
@@ -168,7 +171,7 @@ public class AlterPowerEffect : Effect
                         PlayerAlterPowerGA playerAlterPowerGA = new(alterAmount, DynamicAmount, passive, permaTypes, null, null, targetMode);
                         playerAlterPowerGA.Actionner = Actionner;
                         if (AudioManager.Instance.IsValid(SFX)) { playerAlterPowerGA.SFX = SFX; }
-                        StartManualTargetingGA startManualTargetingGA = new(playerAlterPowerGA, targetNumber, this);
+                        StartManualTargetingGA startManualTargetingGA = new(playerAlterPowerGA, targetNumber, this,targetLimitations);
                         return startManualTargetingGA;
                     }
                     else
@@ -223,6 +226,7 @@ public class AlterPowerEffect : Effect
             TestDynamicAmount,
             TestType,
             targetMode,
+            targetLimitations,
             targetNumber,
             actionnerType,
             Events,

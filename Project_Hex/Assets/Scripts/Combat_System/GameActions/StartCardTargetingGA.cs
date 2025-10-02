@@ -6,9 +6,12 @@ public class StartCardTargetingGA : GameAction
 {
     public GameAction ActionToRealiseAfterTargetting;
     public int TargetNumber;
-    public StartCardTargetingGA(GameAction actionToRealiseAfterTargetting, int targetNumber)
+    public List<TargetLimitationInfo> TargetLimitations;
+
+    public StartCardTargetingGA(GameAction actionToRealiseAfterTargetting, int targetNumber, List<TargetLimitationInfo> targetLimitations = null)
     {
         ActionToRealiseAfterTargetting = actionToRealiseAfterTargetting;
         TargetNumber = targetNumber;
+        TargetLimitations = targetLimitations;
     }
 }

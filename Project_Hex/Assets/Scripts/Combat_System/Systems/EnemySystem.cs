@@ -17,6 +17,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<EnemyAlterPowerGA>(AlterEnemyPerformer);
         ActionSystem.AttachPerformer<EnemyLifeLossGA>(LifeLossEnemyPerformer);
         ActionSystem.AttachPerformer<EnemyGainLifeGA>(GainHPEnemyPerformer);
+        ActionSystem.AttachPerformer<InvocEGA>(InvocEPerformer);
+        ActionSystem.AttachPerformer<SacEGA>(SacEPerformer);
 
         ActionSystem.AttachPerformer<SpawnConstructGA>(PerformIntentConstructPerformer);
 
@@ -26,6 +28,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.SubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<InvocEGA>(BeforeInvocEPerformerPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<SacEGA>(BeforeSacEPerformerPreReaction, ReactionTiming.PRE);
 
     }
 
@@ -38,6 +42,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<EnemyAlterPowerGA>();
         ActionSystem.DetachPerformer<EnemyLifeLossGA>();
         ActionSystem.DetachPerformer<EnemyGainLifeGA>();
+        ActionSystem.DetachPerformer<InvocEGA>();
+        ActionSystem.DetachPerformer<SacEGA>();
 
         ActionSystem.DetachPerformer<SpawnConstructGA>();
 
@@ -47,6 +53,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.UnsubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<InvocEGA>(BeforeInvocEPerformerPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<SacEGA>(BeforeSacEPerformerPreReaction, ReactionTiming.PRE);
     }
 
 
@@ -68,7 +76,7 @@ public class EnemySystem : Singleton<EnemySystem>
                 enemySlotView = enemySlotViewGO.GetComponent<EnemySlotView>();
             }
             if (enemySlotView == null || !CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
-                    continue;
+                continue;
 
             // Exécuter action
             GameAction action = intent.GetGameAction();
@@ -116,7 +124,7 @@ public class EnemySystem : Singleton<EnemySystem>
             if (attackPlayerGA.playerTargets != null && attackPlayerGA.playerTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackPlayerGA.Damage, Attacker);
-                DealDamageGA dealDamageGA =  new (DamageAmount, attackPlayerGA.DynamicAmount, attackPlayerGA.playerTargets, null);
+                DealDamageGA dealDamageGA = new(DamageAmount, attackPlayerGA.DynamicAmount, attackPlayerGA.playerTargets, null);
                 dealDamageGA.Actionner = attackPlayerGA.Actionner;
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
@@ -124,7 +132,7 @@ public class EnemySystem : Singleton<EnemySystem>
             if (attackPlayerGA.enemyTargets != null && attackPlayerGA.enemyTargets.Count > 0)
             {
                 int DamageAmount = CalculateBonusPower(attackPlayerGA.Damage, Attacker);
-                DealDamageGA dealDamageGA =  new (DamageAmount, attackPlayerGA.DynamicAmount, null, attackPlayerGA.enemyTargets);
+                DealDamageGA dealDamageGA = new(DamageAmount, attackPlayerGA.DynamicAmount, null, attackPlayerGA.enemyTargets);
                 dealDamageGA.Actionner = attackPlayerGA.Actionner;
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
@@ -355,6 +363,50 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return null;
     }
 
+    private IEnumerator InvocEPerformer(InvocEGA invocEGA)
+    {
+        if (invocEGA.Actionner != null)
+        {
+            EnemySlotView Attacker = invocEGA.Actionner.GetComponent<EnemySlotView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y - 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+
+            InvocGA invocGA = new(invocEGA.Amount, invocEGA.DynamicAmount, null, invocEGA.EnemyToInvoc);
+            ActionSystem.Instance.AddReaction(invocGA);
+        }
+        // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort
+        else
+        {
+            InvocGA invocGA = new(invocEGA.Amount, invocEGA.DynamicAmount, null, invocEGA.EnemyToInvoc);
+            ActionSystem.Instance.AddReaction(invocGA);
+        }
+        yield return null;
+    }
+
+    private IEnumerator SacEPerformer(SacEGA sacEGA)
+    {
+        if (sacEGA.Actionner != null)
+        {
+            EnemySlotView Attacker = sacEGA.Actionner.GetComponent<EnemySlotView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y - 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+
+            SacGA sacGA = new(sacEGA.playerTargets,sacEGA.enemyTargets);
+            ActionSystem.Instance.AddReaction(sacGA);
+        }
+        // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort
+        else
+        {
+            SacGA sacGA = new(sacEGA.playerTargets,sacEGA.enemyTargets);
+            ActionSystem.Instance.AddReaction(sacGA);
+        }
+        yield return null;
+    }
+
     // REACTIONS
 
     private void BeforeAttackPreReaction(AttackPlayerGA attackPlayerGA)
@@ -407,6 +459,24 @@ public class EnemySystem : Singleton<EnemySystem>
         if (enemyGainLifeGA.Actionner != null)
         {
             EnemySlotView Attacker = enemyGainLifeGA.Actionner.GetComponent<EnemySlotView>();
+            Attacker.SetPosition(Attacker.transform.position);
+        }
+    }
+
+    private void BeforeInvocEPerformerPreReaction(InvocEGA invocEGA)
+    {
+        if (invocEGA.Actionner != null)
+        {
+            EnemySlotView Attacker = invocEGA.Actionner.GetComponent<EnemySlotView>();
+            Attacker.SetPosition(Attacker.transform.position);
+        }
+    }
+    
+    private void BeforeSacEPerformerPreReaction(SacEGA sacEGA)
+    {
+        if (sacEGA.Actionner != null)
+        {
+            EnemySlotView Attacker = sacEGA.Actionner.GetComponent<EnemySlotView>();
             Attacker.SetPosition(Attacker.transform.position);
         }
     }

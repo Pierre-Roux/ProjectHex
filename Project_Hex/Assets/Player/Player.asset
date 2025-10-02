@@ -18,14 +18,14 @@ MonoBehaviour:
   CoreImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
   deckData:
   - {fileID: 11400000, guid: eac2f14d78a280446a1605c320991224, type: 2}
-  - {fileID: 11400000, guid: 541420be6e8e5bb4194d22d83b202038, type: 2}
-  - {fileID: 11400000, guid: 6a1cfdbff6ba64941acacbf16450696c, type: 2}
-  - {fileID: 11400000, guid: 91e8aa0ab1dcd10479e8620d35181d7d, type: 2}
-  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 2c22241c0b421fd4d9f343453290535b, type: 2}
+  - {fileID: 11400000, guid: 2c22241c0b421fd4d9f343453290535b, type: 2}
+  - {fileID: 11400000, guid: 0cf461ea35b3cc048bcf28ef16189921, type: 2}
+  - {fileID: 11400000, guid: 0cf461ea35b3cc048bcf28ef16189921, type: 2}
   - {fileID: 11400000, guid: db29ec9ef79b7264ebcc930097c8a153, type: 2}
-  - {fileID: 11400000, guid: 6a1cfdbff6ba64941acacbf16450696c, type: 2}
-  - {fileID: 11400000, guid: eac2f14d78a280446a1605c320991224, type: 2}
-  - {fileID: 11400000, guid: eac2f14d78a280446a1605c320991224, type: 2}
-  - {fileID: 11400000, guid: f4fbde4358561e24c8188d5462d59dea, type: 2}
-  - {fileID: 11400000, guid: f4fbde4358561e24c8188d5462d59dea, type: 2}
-  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 3c89998b4031cf74f90ce5581a1bc3c8, type: 2}
+  - {fileID: 11400000, guid: 8f5ed321d13706b41acc9b42a694e6b0, type: 2}
+  - {fileID: 11400000, guid: 8f5ed321d13706b41acc9b42a694e6b0, type: 2}
+  - {fileID: 11400000, guid: 96451dabc8852c34fb1e01b05bfb921f, type: 2}
+  - {fileID: 11400000, guid: 96451dabc8852c34fb1e01b05bfb921f, type: 2}
+  - {fileID: 11400000, guid: 3c89998b4031cf74f90ce5581a1bc3c8, type: 2}

@@ -33,10 +33,11 @@ public class TargetSystem : Singleton<TargetSystem>
 
     public IEnumerator GetTargetsManualPerformer(StartManualTargetingGA startManualTargetingGA)
     {
-        Debug.Log("CardAAAOUCtionner : " + startManualTargetingGA.CardActionner);
         List<PermanentView> playerTargets = new();
         List<EnemySlotView> enemyTargets = new();
         TargetingNumber = InitTargetingNumber = startManualTargetingGA.TargetNumber;
+
+
 
         StartManualTargeting();
         while (TargetingActive)
@@ -631,7 +632,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 {
                     if (!enemyView.Activated)
                     {
-                        TriggerEventGA triggerEnemyEventGA = new(Events.OnActivate,null,null,enemyView);
+                        TriggerEventGA triggerEnemyEventGA = new(Events.OnActivate, null, null, enemyView);
                         ActionSystem.Instance.Perform(triggerEnemyEventGA);
                     }
 
@@ -640,7 +641,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 {
                     if (!permanentView.Activated)
                     {
-                        TriggerEventGA triggerPermanentEventGA = new(Events.OnActivate,null,permanentView,null);
+                        TriggerEventGA triggerPermanentEventGA = new(Events.OnActivate, null, permanentView, null);
                         ActionSystem.Instance.Perform(triggerPermanentEventGA);
                     }
                 }
@@ -776,4 +777,42 @@ public class TargetSystem : Singleton<TargetSystem>
 
         return FinalAmount;
     }
+    
+public bool CheckTargetLimitation(TargetLimitationInfo info, CardView cardView = null, PermanentView permanent = null, EnemySlotView enemySlot = null)
+{
+    switch (info.targetLimitations)
+    {
+        case TargetLimitations.NULL:
+            return true; // aucune contrainte
+
+
+
+        case TargetLimitations.OnlyPlayerPermanent:
+            return permanent != null && CombatSystem.Instance.Player_Permanents.Contains(permanent);
+
+        case TargetLimitations.OnlyEnemyPermanent:
+            return enemySlot != null && CombatSystem.Instance.Enemy_Permanents.Contains(enemySlot);
+
+        case TargetLimitations.OnlyTypePermanent:
+            if (permanent != null)
+                return permanent.permaTypes.Contains(info.PermaType);
+            if (enemySlot != null)
+                return enemySlot.permaTypes.Contains(info.PermaType);
+            return false;
+
+
+
+        case TargetLimitations.CardCostValue:
+            return cardView != null && cardView.Card.cost == info.IntValue;
+
+        case TargetLimitations.CardCostMoreThanValue:
+            return cardView != null && cardView.Card.cost > info.IntValue;
+
+        case TargetLimitations.CardCostLessThanValue:
+            return cardView != null && cardView.Card.cost < info.IntValue;
+
+        default:
+            return false;
+    }
+}
 }

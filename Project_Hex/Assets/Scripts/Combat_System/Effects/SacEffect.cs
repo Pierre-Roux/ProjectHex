@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using FMODUnity;
+using System;
 using SerializeReferenceEditor;
 
-public class HealEffect : Effect
+public class SacEffect : Effect
 {
     [Header("Effect Param")]
-    [SerializeField] public int amount;
-    [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
     [SerializeField] private int targetNumber;
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
 
-    public HealEffect() { }
+    public SacEffect() { }
 
-    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public SacEffect(int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
     {
-        amount = Amount;
         targetMode = TargetMode;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -41,7 +38,6 @@ public class HealEffect : Effect
         LinkedEffect = linkedEffect;
         TargetForLinked_Player = targetForLinked_Player;
         TargetForLinked_Enemy = targetForLinked_Enemy;
-        DynamicAmount = dynamicAmount;
         SFX = sfx;
     }
 
@@ -72,16 +68,16 @@ public class HealEffect : Effect
         {
             if (targetMode == TargetMode.Manual)
             {
-                HealGA healGA = new(amount, DynamicAmount, null, null);
-                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this,targetLimitations);
+                SacGA sacGA = new(null, null);
+                if (AudioManager.Instance.IsValid(SFX)) { sacGA.SFX = SFX; }
+                StartManualTargetingGA startManualTargetingGA = new(sacGA, targetNumber, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
             {
-                HealGA healGA = new(amount, DynamicAmount, ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
-                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
-                return healGA;
+                SacGA sacGA = new(ParentEffect.TargetForLinked_Player, ParentEffect.TargetForLinked_Enemy);
+                if (AudioManager.Instance.IsValid(SFX)) { sacGA.SFX = SFX; }
+                return sacGA;
             }
             else
             {
@@ -89,9 +85,9 @@ public class HealEffect : Effect
                 TargetForLinked_Player = playerTargets;
                 TargetForLinked_Enemy = enemyTargets;
 
-                HealGA healGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
-                if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
-                return healGA;
+                SacGA sacGA = new(playerTargets, enemyTargets);
+                if (AudioManager.Instance.IsValid(SFX)) { sacGA.SFX = SFX; }
+                return sacGA;
             }
         }
         // SI PERMANENT
@@ -102,10 +98,10 @@ public class HealEffect : Effect
             {
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealEnemyGA healEnemyGA = new(amount, DynamicAmount, null, null);
-                    healEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)) { healEnemyGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this,targetLimitations);
+                    SacEGA sacEGA = new(null, null);
+                    sacEGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)) { sacEGA.SFX = SFX; }
+                    StartManualTargetingGA startManualTargetingGA = new(sacEGA, targetNumber, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -126,10 +122,10 @@ public class HealEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    HealEnemyGA healEnemyGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
-                    healEnemyGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)) { healEnemyGA.SFX = SFX; }
-                    return healEnemyGA;
+                    SacEGA sacEGA = new(playerTargets, enemyTargets);
+                    sacEGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)) { sacEGA.SFX = SFX; }
+                    return sacEGA;
                 }
             }
             // SI PLAYER
@@ -137,10 +133,10 @@ public class HealEffect : Effect
             {
                 if (targetMode == TargetMode.Manual)
                 {
-                    HealPlayerGA healPlayerGA = new(amount, DynamicAmount, null, null);
-                    healPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)) { healPlayerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this,targetLimitations);
+                    SacPGA sacPGA = new(null, null);
+                    sacPGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)) { sacPGA.SFX = SFX; }
+                    StartManualTargetingGA startManualTargetingGA = new(sacPGA, targetNumber, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -161,10 +157,10 @@ public class HealEffect : Effect
                         TargetForLinked_Enemy = enemyTargets;
                     }
 
-                    HealPlayerGA healPlayerGA = new(amount, DynamicAmount, playerTargets, enemyTargets);
-                    healPlayerGA.Actionner = Actionner;
-                    if (AudioManager.Instance.IsValid(SFX)) { healPlayerGA.SFX = SFX; }
-                    return healPlayerGA;
+                    SacPGA sacPGA = new(playerTargets, enemyTargets);
+                    sacPGA.Actionner = Actionner;
+                    if (AudioManager.Instance.IsValid(SFX)) { sacPGA.SFX = SFX; }
+                    return sacPGA;
                 }
             }
             // NEVER
@@ -188,8 +184,7 @@ public class HealEffect : Effect
 
         Effect clonedLinked = LinkedEffect != null ? LinkedEffect.Clone() : null;
 
-        return new HealEffect(
-            amount,
+        return new SacEffect(
             TestValue,
             DynamicCondition,
             TestDynamicAmount,
@@ -210,7 +205,6 @@ public class HealEffect : Effect
             clonedLinked,
             clonedPlayerTargets,
             clonedEnemyTargets,
-            DynamicAmount,
             SFX
         );
     }

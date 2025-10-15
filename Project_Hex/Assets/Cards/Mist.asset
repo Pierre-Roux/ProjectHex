@@ -10,26 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: Slime
+  m_Name: Mist
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Slime
-  <Description>k__BackingField: FFF
-  <cost>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <Money_Cost>k__BackingField: 30
-  <life>k__BackingField: 5
+  <Title>k__BackingField: Mist
+  <Description>k__BackingField: shield all
+  <cost>k__BackingField: 2
+  <Image>k__BackingField: {fileID: 21300000, guid: 6e62f4595d41c4a40b3f894d584f89a0, type: 3}
+  <Money_Cost>k__BackingField: 0
+  <life>k__BackingField: 8
   <DecayCounter>k__BackingField: 0
   <Durability>k__BackingField: 1
   <MaxDurability>k__BackingField: 1
-  <PermanentImage>k__BackingField: {fileID: 21300000, guid: c4aad028314f29145a02b20f712f72c1, type: 3}
-  <permanentArea>k__BackingField: 3
-  UnShieldable: 0
+  <PermanentImage>k__BackingField: {fileID: 21300000, guid: 6e62f4595d41c4a40b3f894d584f89a0, type: 3}
+  <permanentArea>k__BackingField: 2
+  UnShieldable: 1
   isInvoc: 0
   isArtillery: 0
   <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
-  - rid: 8456800823964860421
-  - rid: 6225437435346026501
+  - rid: 3469642179070132228
   PlayCardSound:
     Guid:
       Data1: 0
@@ -154,44 +153,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 6225437435346026501
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+    - rid: 3469642179070132228
+      type: {class: ShieldEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
-        Events: 12
-        HollowEffect: 0
-        SFX:
-          Guid:
-            Data1: 0
-            Data2: 0
-            Data3: 0
-            Data4: 0
-          Path: 
-        Intent_Title: 
-        number: 
-        Duration: 0
-        DurationType: 0
-        TriggerOnDurationEnd: 0
-        CancelOnDeath: 1
-        DynamicCondition: 0
-        TestValue: 0
-        TestDynamicAmount: 0
-        TestType: 0
-        LinkedEffect:
-          rid: -2
-        Actionner: {fileID: 0}
-        TargetForLinked_Player: []
-        TargetForLinked_Enemy: []
-        BypassEntryCondition: 0
-        damageAmount: 100
-        DynamicAmount: 0
-        targetMode: 24
-        targetNumber: 1
-    - rid: 8456800823964860421
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
-      data:
-        actionnerType: 0
-        Events: 11
+        Events: 0
         HollowEffect: 0
         SFX:
           Guid:
@@ -216,7 +182,6 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
-        damageAmount: 100
-        DynamicAmount: 0
-        targetMode: 5
+        targetMode: 15
         targetNumber: 0
+        targetLimitations: []

@@ -14,12 +14,18 @@ public class LifeLossEffect : Effect
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public LifeLossEffect() { }
 
-    public LifeLossEffect(int lifeLossAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public LifeLossEffect(int lifeLossAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         LifeLossAmount = lifeLossAmount;
         targetMode = TargetMode;
@@ -28,6 +34,7 @@ public class LifeLossEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
@@ -74,7 +81,7 @@ public class LifeLossEffect : Effect
             {
                 LifeLossGA lifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                 if (AudioManager.Instance.IsValid(SFX)) { lifeLossGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber, this,targetLimitations);
+                StartManualTargetingGA startManualTargetingGA = new(lifeLossGA, targetNumber,TargetUpTo, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -103,7 +110,7 @@ public class LifeLossEffect : Effect
                     EnemyLifeLossGA enemyLifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                     enemyLifeLossGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { enemyLifeLossGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(enemyLifeLossGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -137,7 +144,7 @@ public class LifeLossEffect : Effect
                     PlayerLifeLossGA playerLifeLossGA = new(LifeLossAmount, DynamicAmount, null, null);
                     playerLifeLossGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { playerLifeLossGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(playerLifeLossGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -193,6 +200,7 @@ public class LifeLossEffect : Effect
             targetMode,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

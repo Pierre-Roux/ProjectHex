@@ -13,7 +13,9 @@ public class TargetSystem : Singleton<TargetSystem>
     private bool TargetingActive;
     public bool CardTargetingActive;
     private int InitTargetingNumber;
+    private bool TargetingUpTo;
     private int TargetingNumber;
+    private List<TargetLimitationInfo> CurrentLimitations;
     private List<EnemySlotView> enemySlots = new();
     private List<PermanentView> permanents = new();
     private List<CardView> CardTargets = new();
@@ -36,8 +38,15 @@ public class TargetSystem : Singleton<TargetSystem>
         List<PermanentView> playerTargets = new();
         List<EnemySlotView> enemyTargets = new();
         TargetingNumber = InitTargetingNumber = startManualTargetingGA.TargetNumber;
-
-
+        TargetingUpTo = startManualTargetingGA.TargetUpTo;
+        if (startManualTargetingGA.TargetLimitations != null)
+        {
+            CurrentLimitations = startManualTargetingGA.TargetLimitations;
+        }
+        else
+        {
+            CurrentLimitations = null;
+        }
 
         StartManualTargeting();
         while (TargetingActive)
@@ -45,8 +54,8 @@ public class TargetSystem : Singleton<TargetSystem>
 
         (enemyTargets, playerTargets) = EndManualTargeting();
 
-        startManualTargetingGA.EffectRef.TargetForLinked_Player = playerTargets;
-        startManualTargetingGA.EffectRef.TargetForLinked_Enemy = enemyTargets;
+        startManualTargetingGA.EffectRef.TargetForLinked_Player = new List<PermanentView>(playerTargets);
+        startManualTargetingGA.EffectRef.TargetForLinked_Enemy = new List<EnemySlotView>(enemyTargets);
 
         var action = startManualTargetingGA.ActionToRealiseAfterTargetting;
         var type = action.GetType();
@@ -70,15 +79,33 @@ public class TargetSystem : Singleton<TargetSystem>
 
     public IEnumerator GetCardTargetsPerformer(StartCardTargetingGA startCardTargetingGA)
     {
-        List<CardView> cardTargets = new();
+        List<CardView> cardViewTargets = new();
         TargetingNumber = InitTargetingNumber = startCardTargetingGA.TargetNumber;
+        TargetingUpTo = startCardTargetingGA.TargetUpTo;
         CombatSystem.Instance.Interactable = false;
+
+        if (startCardTargetingGA.TargetLimitations != null)
+        {
+            CurrentLimitations = startCardTargetingGA.TargetLimitations;
+        }
+        else
+        {
+            CurrentLimitations = null;
+        }
+
         StartCardTargeting();
 
         while (CardTargetingActive)
             yield return null;
 
-        cardTargets = EndCardTargeting();
+        cardViewTargets = EndCardTargeting();
+
+        List<Card> CardTargets = new();
+        foreach (CardView item in cardViewTargets)
+        {
+            CardTargets.Add(item.Card);
+        }
+        startCardTargetingGA.EffectRef.TargetForLinked_Card = new List<Card>(CardTargets);
 
         // Vérifie qu'il y a bien les propriétés attendues
         var action = startCardTargetingGA.ActionToRealiseAfterTargetting;
@@ -87,7 +114,7 @@ public class TargetSystem : Singleton<TargetSystem>
 
         if (CardviewTargetsProp != null)
         {
-            CardviewTargetsProp.SetValue(action, cardTargets);
+            CardviewTargetsProp.SetValue(action, cardViewTargets);
         }
         else
         {
@@ -109,27 +136,40 @@ public class TargetSystem : Singleton<TargetSystem>
         List<PermanentView> TampontargetsP = new List<PermanentView>();
         List<EnemySlotView> TampontargetsE = new List<EnemySlotView>();
 
+        //Redirection de cible vers core dans le cas d'une attaque enemy et pas de target
+        bool RedirectionActive = false;
+        if (actionner != null)
+        {
+            PermanentView TestIfPlayerPermanent = actionner.GetComponent<PermanentView>();
+            if (TestIfPlayerPermanent)
+            {
+                RedirectionActive = false;
+            }
+            else
+            {
+                RedirectionActive = true;
+            }              
+        }
+      
+
         switch (mode)
         {
             case TargetMode.Self:
-                PermanentView TestIfPlayerPermanent = actionner.GetComponent<PermanentView>();
-                if (TestIfPlayerPermanent)
+                if (actionner != null)
                 {
-                    if (actionner != null)
+                    PermanentView TestIfPlayerPermanent = actionner.GetComponent<PermanentView>();
+                    if (TestIfPlayerPermanent)
                     {
                         var self = actionner.GetComponent<PermanentView>();
                         if (self != null)
                             playerTargets.Add(self);
                     }
-                }
-                else
-                {
-                    if (actionner != null)
+                    else
                     {
                         var self = actionner.GetComponent<EnemySlotView>();
                         if (self != null)
                             enemyTargets.Add(self);
-                    }
+                    }              
                 }
                 break;
 
@@ -264,12 +304,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         playerTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (playerTargets.Count <= 0)
                     {
                         foreach (var Core in playerPermanents)
                             if (Core.IsCore && Core.Targetable) playerTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.ALL_Player_Shields:
@@ -280,12 +322,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         playerTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (playerTargets.Count <= 0)
                     {
                         foreach (var Core in playerPermanents)
                             if (Core.IsCore && Core.Targetable) playerTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.ALL_Player_Supports:
@@ -296,12 +340,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         playerTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (playerTargets.Count <= 0)
                     {
                         foreach (var Core in playerPermanents)
                             if (Core.IsCore && Core.Targetable) playerTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.ALL_Enemy_Weapons:
@@ -312,12 +358,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         enemyTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (enemyTargets.Count <= 0)
                     {
                         foreach (var Core in enemyPermanents)
                             if (Core.IsCore && Core.Targetable) enemyTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.ALL_Enemy_Shields:
@@ -328,12 +376,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         enemyTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (enemyTargets.Count <= 0)
                     {
                         foreach (var Core in enemyPermanents)
                             if (Core.IsCore && Core.Targetable) enemyTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.ALL_Enemy_Supports:
@@ -344,12 +394,14 @@ public class TargetSystem : Singleton<TargetSystem>
                     {
                         enemyTargets.Add(perm);
                     }
-
+                }
+                if (RedirectionActive)
+                {
                     if (enemyTargets.Count <= 0)
                     {
                         foreach (var Core in enemyPermanents)
                             if (Core.IsCore && Core.Targetable) enemyTargets.Add(Core);
-                    }
+                    }                    
                 }
                 break;
             case TargetMode.RDM_Player_Weapons:
@@ -520,14 +572,29 @@ public class TargetSystem : Singleton<TargetSystem>
         {
             if (Input.GetKeyDown(KeyCode.Space)) // Espace = confirmer
             {
-                TargetingActive = false;
-                foreach (EnemySlotView enemy in enemySlots)
+                if (TargetingUpTo)
                 {
-                    enemy.RemoveSelectEffect();
+                    TargetingActive = false;
+                    foreach (EnemySlotView enemy in enemySlots)
+                    {
+                        enemy.RemoveSelectEffect();
+                    }
+                    foreach (PermanentView permanent in permanents)
+                    {
+                        permanent.RemoveSelectEffect();
+                    }
                 }
-                foreach (PermanentView permanent in permanents)
+                else
                 {
-                    permanent.RemoveSelectEffect();
+                    TargetingActive = false;
+                    foreach (EnemySlotView enemy in enemySlots)
+                    {
+                        enemy.RemoveSelectEffect();
+                    }
+                    foreach (PermanentView permanent in permanents)
+                    {
+                        permanent.RemoveSelectEffect();
+                    }
                 }
             }
             if (Input.GetMouseButtonDown(0)) // 0 = clic gauche 1 = clic droit
@@ -535,7 +602,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 Debug.DrawRay(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward * 10f, Color.red, 1f);
                 if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit, 10f, TargetingLayerMask) && raycastHit.collider != null && raycastHit.transform.TryGetComponent(out EnemySlotView enemyView))
                 {
-                    if (enemyView.Targetable)
+                    if (enemyView.Targetable && PassesAllLimitations(CurrentLimitations, null, null, enemyView))
                     {
                         if (!enemySlots.Contains(enemyView))
                         {
@@ -559,7 +626,7 @@ public class TargetSystem : Singleton<TargetSystem>
                 }
                 else if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit2, 10f, TargetingLayerMask) && raycastHit2.collider != null && raycastHit2.transform.TryGetComponent(out PermanentView permanentView))
                 {
-                    if (permanentView.Targetable)
+                    if (permanentView.Targetable && PassesAllLimitations(CurrentLimitations, null, permanentView, null))
                     {
                         if (!permanents.Contains(permanentView))
                         {
@@ -587,7 +654,7 @@ public class TargetSystem : Singleton<TargetSystem>
         {
             if (Input.GetKeyDown(KeyCode.Space)) // Espace = confirmer
             {
-                if (TargetingNumber == 0)
+                if (TargetingUpTo)
                 {
                     CardTargetingActive = false;
                     foreach (CardView card in CardTargets)
@@ -595,28 +662,42 @@ public class TargetSystem : Singleton<TargetSystem>
                         card.RemoveSelectEffect();
                     }
                 }
+                else
+                {
+                    if (TargetingNumber == 0)
+                    {
+                        CardTargetingActive = false;
+                        foreach (CardView card in CardTargets)
+                        {
+                            card.RemoveSelectEffect();
+                        }
+                    }                    
+                }
             }
             if (Input.GetMouseButtonDown(0)) // 0 = clic gauche 1 = clic droit
             {
                 Debug.DrawRay(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward * 10f, Color.red, 1f);
                 if (Physics.Raycast(CursorGameobject.transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit raycastHit, 10f, CardviewTargetingLayerMask) && raycastHit.collider != null && raycastHit.transform.TryGetComponent(out CardView cardView))
                 {
-                    if (!CardTargets.Contains(cardView))
+                    if (PassesAllLimitations(CurrentLimitations, cardView.Card, null, null))
                     {
-                        if (TargetingNumber > 0)
+                        if (!CardTargets.Contains(cardView))
                         {
-                            CardTargets.Add(cardView);
-                            cardView.ActiveSelectEffect();
-                            TargetingNumber -= 1;
+                            if (TargetingNumber > 0)
+                            {
+                                CardTargets.Add(cardView);
+                                cardView.ActiveSelectEffect();
+                                TargetingNumber -= 1;
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (TargetingNumber < InitTargetingNumber)
+                        else
                         {
-                            CardTargets.Remove(cardView);
-                            cardView.RemoveSelectEffect();
-                            TargetingNumber += 1;
+                            if (TargetingNumber < InitTargetingNumber)
+                            {
+                                CardTargets.Remove(cardView);
+                                cardView.RemoveSelectEffect();
+                                TargetingNumber += 1;
+                            }
                         }
                     }
                 }
@@ -777,42 +858,125 @@ public class TargetSystem : Singleton<TargetSystem>
 
         return FinalAmount;
     }
-    
-public bool CheckTargetLimitation(TargetLimitationInfo info, CardView cardView = null, PermanentView permanent = null, EnemySlotView enemySlot = null)
-{
-    switch (info.targetLimitations)
+
+    public bool CheckTargetLimitation(TargetLimitationInfo info, Card Card = null, PermanentView permanent = null, EnemySlotView enemySlot = null)
     {
-        case TargetLimitations.NULL:
-            return true; // aucune contrainte
+        switch (info.targetLimitations)
+        {
+            case TargetLimitations.NULL:
+                return true; // aucune contrainte
 
 
+            case TargetLimitations.Only_Player_Permanent:
+                return permanent != null && CombatSystem.Instance.Player_Permanents.Contains(permanent);
 
-        case TargetLimitations.OnlyPlayerPermanent:
-            return permanent != null && CombatSystem.Instance.Player_Permanents.Contains(permanent);
+            case TargetLimitations.Only_Enemy_Permanent:
+                return enemySlot != null && CombatSystem.Instance.Enemy_Permanents.Contains(enemySlot);
 
-        case TargetLimitations.OnlyEnemyPermanent:
-            return enemySlot != null && CombatSystem.Instance.Enemy_Permanents.Contains(enemySlot);
+            case TargetLimitations.Only_Type_Permanent:
+                if (permanent != null)
+                    return permanent.permaTypes.Contains(info.PermaType);
+                if (enemySlot != null)
+                    return enemySlot.permaTypes.Contains(info.PermaType);
+                return false;
 
-        case TargetLimitations.OnlyTypePermanent:
-            if (permanent != null)
-                return permanent.permaTypes.Contains(info.PermaType);
-            if (enemySlot != null)
-                return enemySlot.permaTypes.Contains(info.PermaType);
-            return false;
+            case TargetLimitations.Permanent_HP:
+                if (permanent != null)
+                    return permanent.currentLife == info.IntValue;
+                if (enemySlot != null)
+                    return enemySlot.currentLife == info.IntValue;
+                return false;
+            case TargetLimitations.Permanent_HP_More_Than_Value:
+                if (permanent != null)
+                    return permanent.currentLife > info.IntValue;
+                if (enemySlot != null)
+                    return enemySlot.currentLife > info.IntValue;
+                return false;
+            case TargetLimitations.Permanent_HP_Less_Than_Value:
+                if (permanent != null)
+                    return permanent.currentLife < info.IntValue;
+                if (enemySlot != null)
+                    return enemySlot.currentLife < info.IntValue;
+                return false;
 
+            case TargetLimitations.Permanent_Endurance:
+                if (permanent != null)
+                    return permanent.Durability == info.IntValue;
+                return false;
+            case TargetLimitations.Permanent_Endurance_More_Than_Value:
+                if (permanent != null)
+                    return permanent.Durability > info.IntValue;
+                return false;
+            case TargetLimitations.Permanent_Endurance_Less_Than_Value:
+                if (permanent != null)
+                    return permanent.Durability < info.IntValue;
+                return false;
 
+            case TargetLimitations.Card_Cost_Value:
+                return Card != null && Card.cost == info.IntValue;
 
-        case TargetLimitations.CardCostValue:
-            return cardView != null && cardView.Card.cost == info.IntValue;
+            case TargetLimitations.Card_Cost_More_Than_Value:
+                return Card != null && Card.cost > info.IntValue;
 
-        case TargetLimitations.CardCostMoreThanValue:
-            return cardView != null && cardView.Card.cost > info.IntValue;
+            case TargetLimitations.Card_Cost_Less_Than_Value:
+                return Card != null && Card.cost < info.IntValue;
 
-        case TargetLimitations.CardCostLessThanValue:
-            return cardView != null && cardView.Card.cost < info.IntValue;
-
-        default:
-            return false;
+            default:
+                return false;
+        }
     }
-}
+
+    public bool PassesAllLimitations(List<TargetLimitationInfo> limitations, Card Card, PermanentView playerPerm, EnemySlotView enemy, bool checkEnoughtTarget = false)
+    {
+        if (limitations == null || limitations.Count == 0)
+            return true;
+
+        foreach (var limitation in limitations)
+        {
+            if (checkEnoughtTarget)
+            {
+                if (!limitation.MandatoryLimitation) continue;   
+            }
+            if (!CheckTargetLimitation(limitation, Card, playerPerm, enemy))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool limitationHasEnoughtTarget(List<TargetLimitationInfo> limitations, int EffectTargetNumber)
+    {
+        if (limitations == null || limitations.Count == 0)
+            return true; // pas de limitation = toujours jouable
+
+        List<PermanentView> playerPermanents = CombatSystem.Instance.Player_Permanents;
+        List<EnemySlotView> enemyPermanents = CombatSystem.Instance.Enemy_Permanents;
+        List<Card> allCards = CardSystem.Instance.hand; // optionnel si tu gères aussi les cartes
+
+        List<object> validTargets = new List<object>();
+
+        foreach (var p in playerPermanents)
+        {
+            if (PassesAllLimitations(limitations, null, p, null,true))
+                validTargets.Add(p);
+        }
+
+        foreach (var e in enemyPermanents)
+        {
+            if (PassesAllLimitations(limitations, null, null, e,true))
+                validTargets.Add(e);
+        }
+
+        foreach (var c in allCards)
+        {
+            if (PassesAllLimitations(limitations, c, null, null,true))
+                validTargets.Add(c);
+        }
+
+        Debug.Log("There is " + validTargets.Count + " valid cible");
+
+        // On regarde si il y a assez de cibles valide
+        return validTargets.Count >= EffectTargetNumber;
+    }
 }

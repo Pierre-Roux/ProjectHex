@@ -11,12 +11,18 @@ public class SacEffect : Effect
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public SacEffect() { }
 
-    public SacEffect(int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
+    public SacEffect(int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
     {
         targetMode = TargetMode;
         TestValue = testValue;
@@ -24,6 +30,7 @@ public class SacEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         Events = Event;
@@ -70,7 +77,7 @@ public class SacEffect : Effect
             {
                 SacGA sacGA = new(null, null);
                 if (AudioManager.Instance.IsValid(SFX)) { sacGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(sacGA, targetNumber, this,targetLimitations);
+                StartManualTargetingGA startManualTargetingGA = new(sacGA, targetNumber,TargetUpTo, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -101,7 +108,7 @@ public class SacEffect : Effect
                     SacEGA sacEGA = new(null, null);
                     sacEGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { sacEGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(sacEGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(sacEGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -136,7 +143,7 @@ public class SacEffect : Effect
                     SacPGA sacPGA = new(null, null);
                     sacPGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { sacPGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(sacPGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(sacPGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -192,6 +199,7 @@ public class SacEffect : Effect
             targetMode,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

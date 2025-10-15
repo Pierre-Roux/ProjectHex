@@ -32,14 +32,26 @@ public abstract class Effect
 
     [field: SerializeReference, SR] public Effect LinkedEffect;
 
+
+    [HideInInspector] public virtual List<TargetLimitationInfo> EffectTargetLimitations => null;
+    [HideInInspector] public virtual int EffectTargetNumber => 0;
+    [HideInInspector] public virtual bool EffectTargetUpTo => true;
     [HideInInspector] public GameObject Actionner;
     [HideInInspector] public Card CardActionner;
     [HideInInspector] public List<PermanentView> TargetForLinked_Player;
     [HideInInspector] public List<EnemySlotView> TargetForLinked_Enemy;
+    [HideInInspector] public List<Card> TargetForLinked_Card;
     [HideInInspector] public Effect ParentEffect;
 
     [HideInInspector] public bool BypassEntryCondition = false;
+    [HideInInspector] public string EffectID;
 
+    protected Effect()
+    {
+        // Génère un identifiant unique si non encore défini
+        if (string.IsNullOrEmpty(EffectID))
+            EffectID = System.Guid.NewGuid().ToString();
+    }
     public abstract GameAction GetGameAction();
 
     public virtual Effect Clone()

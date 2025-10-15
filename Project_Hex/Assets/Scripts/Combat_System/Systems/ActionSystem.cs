@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ActionSystem : Singleton<ActionSystem>
 {
-    private List<GameAction> reactions = null;
+    [SerializeField] private List<GameAction> reactions = null;
 
     public bool IsPerforming { get; private set; } = false;
 

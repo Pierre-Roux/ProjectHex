@@ -11,15 +11,22 @@ public class ShieldEffect : Effect
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public ShieldEffect() { }
 
-    public ShieldEffect(TargetMode TargetMode, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
+    public ShieldEffect(TargetMode TargetMode, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, EventReference sfx)
     {
         targetMode = TargetMode;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         Events = Event;
@@ -70,7 +77,7 @@ public class ShieldEffect : Effect
             {
                 ShieldGA shieldGA = new(null, null);
                 if (AudioManager.Instance.IsValid(SFX)) { shieldGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber, this,targetLimitations);
+                StartManualTargetingGA startManualTargetingGA = new(shieldGA, targetNumber,TargetUpTo, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -101,7 +108,7 @@ public class ShieldEffect : Effect
                     ShieldEnemyGA shieldEnemyGA = new(null, null);
                     shieldEnemyGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { shieldEnemyGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(shieldEnemyGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -135,7 +142,7 @@ public class ShieldEffect : Effect
                     ShieldPlayerGA shieldPlayerGA = new(null, null);
                     shieldPlayerGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { shieldPlayerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(shieldPlayerGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -190,6 +197,7 @@ public class ShieldEffect : Effect
             TestType,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

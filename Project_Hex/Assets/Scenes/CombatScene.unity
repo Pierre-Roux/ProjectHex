@@ -4575,10 +4575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 931274fba76d4db4a9f6453051a89344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 11400000, guid: 3d490958aaa08714cb61fba8c1ff5403, type: 2}
+  Player: {fileID: 11400000, guid: 235f1968b92f4364481730e3bb26565e, type: 2}
   PlayerCore: {fileID: 637965885}
-  EnemiesDataBase:
-  - {fileID: 5728494894741626448, guid: 8c6f90f68e3cad64093a6a1b8e1af2e7, type: 3}
   Interactable: 0
   Win: 0
   CurrentTurn: 0
@@ -5082,11 +5080,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   clickSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: -288112526
+      Data2: 1264354478
+      Data3: -1598118774
+      Data4: -459648317
+    Path: event:/Audio Manager/Click Sound
   VictoryMusic:
     Guid:
       Data1: 1179687985
@@ -5103,11 +5101,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   PlayCardSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: -1386080999
+      Data2: 1077091425
+      Data3: -1403620724
+      Data4: -1243886292
+    Path: event:/Audio Manager/Play Card
   DiscardCardSound:
     Guid:
       Data1: 1179687985
@@ -5117,11 +5115,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   DrawCardSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: -1600803259
+      Data2: 1270165136
+      Data3: 440442783
+      Data4: -150944410
+    Path: event:/Audio Manager/Draw Card Sound
   SummonPPermanentSound:
     Guid:
       Data1: 1179687985
@@ -5138,11 +5136,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   DieSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: 174167128
+      Data2: 1272963299
+      Data3: -2100728437
+      Data4: 950615394
+    Path: event:/Audio Manager/Die Sound
   HollowDieSound:
     Guid:
       Data1: 1179687985

@@ -15,12 +15,18 @@ public class GainHPEffect : Effect
     [SerializeField] public PermaTypes permaTypes;
 
     [Header("For Manual Target only")]
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public GainHPEffect() { }
 
-    public GainHPEffect(int gainAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
+    public GainHPEffect(int gainAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
     {
         GainAmount = gainAmount;
         targetMode = TargetMode;
@@ -29,6 +35,7 @@ public class GainHPEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
@@ -85,7 +92,7 @@ public class GainHPEffect : Effect
                 {
                     GainLifeGA gainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null);
                     if (AudioManager.Instance.IsValid(SFX)) { gainLifeGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(gainLifeGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(gainLifeGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else if (targetMode == TargetMode.EffectParent_Targets)
@@ -126,7 +133,7 @@ public class GainHPEffect : Effect
                         EnemyGainLifeGA enemyGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null);
                         enemyGainLifeGA.Actionner = Actionner;
                         if (AudioManager.Instance.IsValid(SFX)) { enemyGainLifeGA.SFX = SFX; }
-                        StartManualTargetingGA startManualTargetingGA = new(enemyGainLifeGA, targetNumber, this,targetLimitations);
+                        StartManualTargetingGA startManualTargetingGA = new(enemyGainLifeGA, targetNumber,TargetUpTo, this,targetLimitations);
                         return startManualTargetingGA;
                     }
                     else
@@ -171,7 +178,7 @@ public class GainHPEffect : Effect
                         PlayerGainLifeGA playerGainLifeGA = new(GainAmount, DynamicAmount, passive, permaTypes, null, null);
                         playerGainLifeGA.Actionner = Actionner;
                         if (AudioManager.Instance.IsValid(SFX)) { playerGainLifeGA.SFX = SFX; }
-                        StartManualTargetingGA startManualTargetingGA = new(playerGainLifeGA, targetNumber, this,targetLimitations);
+                        StartManualTargetingGA startManualTargetingGA = new(playerGainLifeGA, targetNumber,TargetUpTo, this,targetLimitations);
                         return startManualTargetingGA;
                     }
                     else
@@ -228,6 +235,7 @@ public class GainHPEffect : Effect
             targetMode,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

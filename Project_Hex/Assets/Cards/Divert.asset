@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: Divert
   m_EditorClassIdentifier: 
   <Title>k__BackingField: Divert
-  <Description>k__BackingField: All enemy lose 1 power for 2 turn
-  <cost>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 21300000, guid: c19246b2cd83c09409e2a3ca326c7582, type: 3}
-  <Money_Cost>k__BackingField: 50
+  <Description>k__BackingField: -2 power to all enemy until next turn
+  <cost>k__BackingField: 0
+  <Image>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
+  <Money_Cost>k__BackingField: 0
   <life>k__BackingField: 0
   <DecayCounter>k__BackingField: 0
   <Durability>k__BackingField: 0
   <MaxDurability>k__BackingField: 0
   <PermanentImage>k__BackingField: {fileID: 0}
-  <permanentType>k__BackingField: 0
+  <permanentArea>k__BackingField: 0
   UnShieldable: 0
   isInvoc: 0
   isArtillery: 0
   <IsSpell>k__BackingField: 1
   <Effects>k__BackingField:
-  - rid: 8456800604179398657
+  - rid: 3469642179070132225
   PlayCardSound:
     Guid:
       Data1: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8456800604179398657
+    - rid: 3469642179070132225
       type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 2
@@ -171,22 +171,29 @@ MonoBehaviour:
         Duration: 0
         DurationType: 0
         TriggerOnDurationEnd: 0
+        CancelOnDeath: 0
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
         LinkedEffect:
-          rid: 8456800604179398660
+          rid: 3469642179070132226
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        alterAmount: -1
+        BypassEntryCondition: 0
+        alterAmount: -2
         DynamicAmount: 0
-        targetMode: 16
+        targetMode: 24
         passive: 0
         permaTypes: 0
-        targetNumber: 0
-    - rid: 8456800604179398660
+        targetNumber: 1
+        targetLimitations: []
+    - rid: 3469642179070132226
       type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 2
-        Events: 3
+        Events: 2
         HollowEffect: 0
         SFX:
           Guid:
@@ -197,17 +204,24 @@ MonoBehaviour:
           Path: 
         Intent_Title: 
         number: 
-        Duration: 2
-        DurationType: 3
+        Duration: 1
+        DurationType: 2
         TriggerOnDurationEnd: 1
+        CancelOnDeath: 0
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
         LinkedEffect:
           rid: -2
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
-        alterAmount: 1
+        BypassEntryCondition: 0
+        alterAmount: 2
         DynamicAmount: 0
         targetMode: 25
         passive: 0
         permaTypes: 0
         targetNumber: 0
+        targetLimitations: []

@@ -141,21 +141,27 @@ public class CardSystem : Singleton<CardSystem>
             ActionSystem.Instance.AddReaction(triggerEventGA);      
         }
 
-        if (!AudioManager.Instance.IsValid(cardView.Card.DiscardCardSound))
+        if (cardView != null)
         {
-            RuntimeManager.PlayOneShot(AudioManager.Instance.DiscardCardSound);
-        }
-        else
-        {
-            RuntimeManager.PlayOneShot(cardView.Card.DiscardCardSound);
-        }
+            if (cardView.Card != null)
+            {
+                if (!AudioManager.Instance.IsValid(cardView.Card.DiscardCardSound))
+                {
+                    RuntimeManager.PlayOneShot(AudioManager.Instance.DiscardCardSound);
+                }
+                else
+                {
+                    RuntimeManager.PlayOneShot(cardView.Card.DiscardCardSound);
+                }
 
-        cardView.transform.DOScale(Vector3.zero, 0.15f);
-        Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
-        yield return tween.WaitForCompletion();
-        discardPile.Add(cardView.Card);
-        UpdatePiles();
-        Destroy(cardView.gameObject);
+                cardView.transform.DOScale(Vector3.zero, 0.15f);
+                Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
+                yield return tween.WaitForCompletion();
+                discardPile.Add(cardView.Card);
+                UpdatePiles();
+                Destroy(cardView.gameObject);
+            }            
+        }
     }
 
     public IEnumerator DestroyCard(CardView cardView)

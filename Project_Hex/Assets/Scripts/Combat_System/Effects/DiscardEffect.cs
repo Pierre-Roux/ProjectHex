@@ -10,7 +10,11 @@ public class DiscardEffect : Effect
     [SerializeField] public int DiscardAmount;
     [SerializeField] public DynamicAmount DynamicAmount;
     [SerializeField] public bool DiscardAll;
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
     
 
     private bool ConditionTested = false;
@@ -63,14 +67,14 @@ public class DiscardEffect : Effect
                 }
                 DiscardCardGA discardCardGA = new(new List<CardView>());
                 if (AudioManager.Instance.IsValid(SFX)) { discardCardGA.SFX = SFX; }
-                StartCardTargetingGA startCardTargetingGA = new(discardCardGA, DiscardAmount,targetLimitations);
+                StartCardTargetingGA startCardTargetingGA = new(discardCardGA, DiscardAmount,TargetUpTo,this,targetLimitations);
                 return startCardTargetingGA;
             }
         }
     }
     public DiscardEffect(){}
 
-    public DiscardEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll, EventReference sfx, bool conditionTested)
+    public DiscardEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll, EventReference sfx, bool conditionTested)
     {
         DiscardAmount = Amount;
         Events = Event;
@@ -84,6 +88,7 @@ public class DiscardEffect : Effect
         CardActionner = cardActionner;
         Intent_Title = intent_Title;
         targetLimitations = TargetLimitations;
+        TargetUpTo = targetUpTo;
         number = Number;
         Duration = duration;
         DurationType = durationType;
@@ -116,6 +121,7 @@ public class DiscardEffect : Effect
             TestDynamicAmount,
             TestType,
             targetLimitations,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

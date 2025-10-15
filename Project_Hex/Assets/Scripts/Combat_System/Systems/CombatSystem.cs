@@ -7,9 +7,9 @@ using FMODUnity;
 
 public class CombatSystem : Singleton<CombatSystem>
 {
-    [SerializeField] public PlayerData Player;
+    [HideInInspector] public PlayerData Player;
     [SerializeField] public PermanentView PlayerCore;
-    [SerializeField] private List<GameObject> EnemiesDataBase;
+    [HideInInspector] private List<GameObject> EnemiesDataBase;
 
     [HideInInspector] public bool Interactable;
     [HideInInspector] public bool Win;
@@ -123,6 +123,7 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         Win = false;
 
+        Player = DataBase.Instance.StartingPlayer;
         if (DataBase.Instance.DeckList.Count == 0)
         {
             DataBase.Instance.DeckList = new List<CardData>(Player.deckData);
@@ -130,6 +131,8 @@ public class CombatSystem : Singleton<CombatSystem>
         }
         CardSystem.Instance.Setup(DataBase.Instance.DeckList);
         PlayerCore.SetupCore(Player);
+
+        EnemiesDataBase = DataBase.Instance.EnemiesDataBase;
 
         int stage = 0;
         int targetTier = 0;

@@ -14,12 +14,19 @@ public class DealDamageEffect : Effect
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
+
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public DealDamageEffect() { }
 
-    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         damageAmount = DamageAmount;
         targetMode = TargetMode;
@@ -28,6 +35,7 @@ public class DealDamageEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         CardActionner = cardActionner;
@@ -77,8 +85,7 @@ public class DealDamageEffect : Effect
                 DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, null, null);
                 dealDamageGA.CardActionner = CardActionner;
                 if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, this,targetLimitations);
-                //startManualTargetingGA.CardActionner = CardActionner;
+                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber,TargetUpTo, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -109,7 +116,7 @@ public class DealDamageEffect : Effect
                     AttackPlayerGA attackPlayerGA = new(damageAmount, DynamicAmount, null, null);
                     attackPlayerGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { attackPlayerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(attackPlayerGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(attackPlayerGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -143,7 +150,7 @@ public class DealDamageEffect : Effect
                     AttackEnemyGA attackEnemyGA = new(damageAmount, DynamicAmount, null, null);
                     attackEnemyGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { attackEnemyGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(attackEnemyGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(attackEnemyGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -199,6 +206,7 @@ public class DealDamageEffect : Effect
             targetMode,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

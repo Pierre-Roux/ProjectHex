@@ -435,30 +435,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e9d40048476ee641a83f5e848b164f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GlobalCardList:
+  - {fileID: 11400000, guid: e7e250a99e3aed943a9f8533591c6ef7, type: 2}
+  - {fileID: 11400000, guid: 7f53412ae563866408aaf010335edd61, type: 2}
+  - {fileID: 11400000, guid: a8f00c84be9e23d479b25e1299ad1ab2, type: 2}
+  - {fileID: 11400000, guid: a2429e58f7b5b8b44ad7ec156c0efafe, type: 2}
+  - {fileID: 11400000, guid: a9b1e36c4687fd0419cb1236ee01d1a1, type: 2}
+  - {fileID: 11400000, guid: d70950d3e9a60a34aa4a7893bb49c62e, type: 2}
+  - {fileID: 11400000, guid: f0b2bd7601ec6594180f984a4d68a567, type: 2}
+  Money: 0
+  MaxMana: 3
+  StartingPlayer: {fileID: 11400000, guid: 235f1968b92f4364481730e3bb26565e, type: 2}
+  EnemiesDataBase:
+  - {fileID: 5728494894741626448, guid: e6f15e3a11f8f7b4389748c6e39fa172, type: 3}
   INITIALDeckList: []
   DeckList: []
-  GlobalCardList:
-  - {fileID: 11400000, guid: 91e8aa0ab1dcd10479e8620d35181d7d, type: 2}
-  - {fileID: 11400000, guid: cf3acf47130337448a2ed2675bb9f391, type: 2}
-  - {fileID: 11400000, guid: 497155a975955db4cb757558b8eb6126, type: 2}
-  - {fileID: 11400000, guid: c11cd7c7390c45b45bd950a0eb18e4de, type: 2}
-  - {fileID: 11400000, guid: 7550458e563058d46a7d516ab2aa505d, type: 2}
-  - {fileID: 11400000, guid: 6b59db6bf76a0274f8ff84a27a750dc5, type: 2}
-  - {fileID: 11400000, guid: 541420be6e8e5bb4194d22d83b202038, type: 2}
-  - {fileID: 11400000, guid: 6271dbb3883374148b7642de5439dc55, type: 2}
-  - {fileID: 11400000, guid: 907c1988ec6c11147a0b93126e8b6237, type: 2}
-  - {fileID: 11400000, guid: 98770f32f8c7be14db7db87d5853c135, type: 2}
-  - {fileID: 11400000, guid: db8c624ddd810c54a8262bc5b24893db, type: 2}
-  - {fileID: 11400000, guid: 2f80c6e8095577947b2b5db9d10c8679, type: 2}
-  - {fileID: 11400000, guid: 7fd7c62351d1dda46a238cf0ad36036c, type: 2}
-  - {fileID: 11400000, guid: 44da82ffed4c4924185e84a30f613a76, type: 2}
-  - {fileID: 11400000, guid: 6a1cfdbff6ba64941acacbf16450696c, type: 2}
-  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
-  - {fileID: 11400000, guid: 480f75bb756b03946b78282b7230eb97, type: 2}
-  - {fileID: 11400000, guid: b0ac02ba5a1c57e4d8efb2a5b33d705f, type: 2}
   CurrentStage: 0
-  Money: 0
-  MaxMana: 5
   IsElite: 0
   CoreLife: 0
 --- !u!1 &115397218
@@ -3638,11 +3630,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   clickSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: -288112526
+      Data2: 1264354478
+      Data3: -1598118774
+      Data4: -459648317
+    Path: event:/Audio Manager/Click Sound
   VictoryMusic:
     Guid:
       Data1: 0

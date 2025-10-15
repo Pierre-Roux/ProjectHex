@@ -9,48 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: InvocTest
+  m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
+  m_Name: Weapon 3
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Invoc
-  <Description>k__BackingField: Invoc X
-  <cost>k__BackingField: 0
-  <Image>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
-  <Money_Cost>k__BackingField: 100
-  <life>k__BackingField: 0
-  <DecayCounter>k__BackingField: 0
-  <Durability>k__BackingField: 0
-  <MaxDurability>k__BackingField: 0
-  <PermanentImage>k__BackingField: {fileID: 0}
-  <permanentArea>k__BackingField: 0
+  PermanentImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
+  PermanentLife: 4
+  IsCore: 0
+  IsInvoc: 0
   UnShieldable: 0
-  isInvoc: 0
-  isArtillery: 0
-  <IsSpell>k__BackingField: 1
-  <Effects>k__BackingField:
-  - rid: 6225437702094585856
-  PlayCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  DiscardCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  DrawCardSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  SummonPPermanentSound:
+  permanentArea: 1
+  DecayCounter: 0
+  <PossibleIntent>k__BackingField:
+  - rid: 3469642240805568518
+  RDMSequence: 1
+  <IntentSequence>k__BackingField:
+  - 
+  - 
+  - A
+  LoopingSequence: 0
+  SummonEPermanentSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -58,13 +35,6 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DieSound:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  HollowDieSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -153,11 +123,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 6225437702094585856
-      type: {class: InvocEffect, ns: , asm: Assembly-CSharp}
+    - rid: 3469642240805568518
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
-        actionnerType: 2
-        Events: 0
+        actionnerType: 1
+        Events: 1
         HollowEffect: 0
         SFX:
           Guid:
@@ -182,8 +152,8 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
-        amount: 2
+        damageAmount: 2
         DynamicAmount: 0
-        CardsToInvoc:
-        - {fileID: 11400000, guid: 6a1cfdbff6ba64941acacbf16450696c, type: 2}
-        EnemyToInvoc: []
+        targetMode: 1
+        targetNumber: 0
+        targetLimitations: []

@@ -561,6 +561,7 @@ MonoBehaviour:
   MasterBanks:
   - Master
   Banks:
+  - Audio Manager
   - Place Holder
   BanksToLoad: []
   LiveUpdatePort: 9264

@@ -13,12 +13,18 @@ public class HealEffect : Effect
     [SerializeField] public TargetMode targetMode;
 
     [Header("For Manual Target only")]
+    [SerializeField] private bool TargetUpTo;
+    public override bool EffectTargetUpTo => TargetUpTo;
+
     [SerializeField] private int targetNumber;
+    public override int EffectTargetNumber => targetNumber;
+
     [field: SerializeReference, SR] private List<TargetLimitationInfo> targetLimitations;
+    public override List<TargetLimitationInfo> EffectTargetLimitations => targetLimitations;
 
     public HealEffect() { }
 
-    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public HealEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         amount = Amount;
         targetMode = TargetMode;
@@ -27,6 +33,7 @@ public class HealEffect : Effect
         DynamicCondition = dynamicCondition;
         TestType = testType;
         targetNumber = TargetNumber;
+        TargetUpTo = targetUpTo;
         targetLimitations = TargetLimitations;
         actionnerType = ActionnerType;
         Events = Event;
@@ -74,7 +81,7 @@ public class HealEffect : Effect
             {
                 HealGA healGA = new(amount, DynamicAmount, null, null);
                 if (AudioManager.Instance.IsValid(SFX)) { healGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber, this,targetLimitations);
+                StartManualTargetingGA startManualTargetingGA = new(healGA, targetNumber,TargetUpTo, this,targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -105,7 +112,7 @@ public class HealEffect : Effect
                     HealEnemyGA healEnemyGA = new(amount, DynamicAmount, null, null);
                     healEnemyGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { healEnemyGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(healEnemyGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -140,7 +147,7 @@ public class HealEffect : Effect
                     HealPlayerGA healPlayerGA = new(amount, DynamicAmount, null, null);
                     healPlayerGA.Actionner = Actionner;
                     if (AudioManager.Instance.IsValid(SFX)) { healPlayerGA.SFX = SFX; }
-                    StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber, this,targetLimitations);
+                    StartManualTargetingGA startManualTargetingGA = new(healPlayerGA, targetNumber,TargetUpTo, this,targetLimitations);
                     return startManualTargetingGA;
                 }
                 else
@@ -197,6 +204,7 @@ public class HealEffect : Effect
             targetMode,
             targetLimitations,
             targetNumber,
+            TargetUpTo,
             actionnerType,
             Events,
             CancelOnDeath,

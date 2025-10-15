@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -140,6 +141,18 @@ public class CardView : MonoBehaviour
                     {
                         if (Physics.Raycast(transform.position + new Vector3(0, 0, -1), Vector3.forward, out RaycastHit hit, 10f, DropAreaLayer))
                         {
+                            foreach (var effect in Card.Effects)
+                            {
+                                if (effect?.EffectTargetLimitations != null && effect.EffectTargetLimitations.Count > 0)
+                                {
+                                    if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations,effect.EffectTargetNumber))
+                                    {
+                                        returnCardToHand();
+                                        return;
+                                    }
+                                }
+                            }
+
                             isDragging = false;
                             PlayCardGA playCardGA = new(Card);
                             playCardGA.CardActionner = Card;
@@ -181,6 +194,17 @@ public class CardView : MonoBehaviour
                                 }
                                 else
                                 {
+                                    foreach (var effect in Card.Effects)
+                                    {
+                                        if (effect?.EffectTargetLimitations != null && effect.EffectTargetLimitations.Count > 0)
+                                        {
+                                            if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations,effect.EffectTargetNumber))
+                                            {
+                                                returnCardToHand();
+                                                return;
+                                            }
+                                        }
+                                    }
                                     isDragging = false;
                                     SummonGA summonGA = new(Card);
                                     ActionSystem.Instance.Perform(summonGA);

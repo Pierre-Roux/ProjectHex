@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class DataBase : Singleton<DataBase>
 {
-    public List<CardData> INITIALDeckList;
-    public List<CardData> DeckList;
     public List<CardData> GlobalCardList;
     
-    public int CurrentStage;
     public int Money;
     public int MaxMana;
+    public PlayerData StartingPlayer;
+    public List<GameObject> EnemiesDataBase;
+
+    [HideInInspector] public List<CardData> INITIALDeckList;
+    [HideInInspector] public List<CardData> DeckList;
+    [HideInInspector] public int CurrentStage;
 
     //For fight
     public bool IsElite;

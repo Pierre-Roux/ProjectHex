@@ -1101,11 +1101,11 @@ MonoBehaviour:
     Path: event:/Place Holder/Place Holder Silence
   clickSound:
     Guid:
-      Data1: 1179687985
-      Data2: 1325015437
-      Data3: 1335451572
-      Data4: -1918472180
-    Path: event:/Place Holder/Place Holder Silence
+      Data1: -288112526
+      Data2: 1264354478
+      Data3: -1598118774
+      Data4: -459648317
+    Path: event:/Audio Manager/Click Sound
   VictoryMusic:
     Guid:
       Data1: 0

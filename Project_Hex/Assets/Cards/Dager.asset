@@ -10,26 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
-  m_Name: Sac and draw
+  m_Name: Dager
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Sac&Draw
-  <Description>k__BackingField: 
-  <cost>k__BackingField: 0
-  <Image>k__BackingField: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
+  <Title>k__BackingField: Dager
+  <Description>k__BackingField: Deal 5 on activate
+  <cost>k__BackingField: 2
+  <Image>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
   <Money_Cost>k__BackingField: 0
-  <life>k__BackingField: 0
+  <life>k__BackingField: 5
   <DecayCounter>k__BackingField: 0
-  <Durability>k__BackingField: 0
-  <MaxDurability>k__BackingField: 0
-  <PermanentImage>k__BackingField: {fileID: 0}
-  <permanentArea>k__BackingField: 0
+  <Durability>k__BackingField: 3
+  <MaxDurability>k__BackingField: 3
+  <PermanentImage>k__BackingField: {fileID: 21300000, guid: 922f538cbe40e2c44bb4f7ffcbd0abf0, type: 3}
+  <permanentArea>k__BackingField: 1
   UnShieldable: 0
   isInvoc: 0
   isArtillery: 0
-  <IsSpell>k__BackingField: 1
+  <IsSpell>k__BackingField: 0
   <Effects>k__BackingField:
-  - rid: 6225437702094585857
-  - rid: 6225437702094585858
+  - rid: 3469642179070132224
   PlayCardSound:
     Guid:
       Data1: 0
@@ -154,11 +153,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 6225437702094585857
-      type: {class: SacEffect, ns: , asm: Assembly-CSharp}
+    - rid: 3469642179070132224
+      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
       data:
-        actionnerType: 2
-        Events: 0
+        actionnerType: 0
+        Events: 13
         HollowEffect: 0
         SFX:
           Guid:
@@ -183,51 +182,8 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        damageAmount: 5
+        DynamicAmount: 0
         targetMode: 24
         targetNumber: 1
-        targetLimitations:
-        - rid: 6225437702094585865
-        - rid: 6225437702094585866
-    - rid: 6225437702094585858
-      type: {class: DrawCardsEffect, ns: , asm: Assembly-CSharp}
-      data:
-        actionnerType: 2
-        Events: 0
-        HollowEffect: 0
-        SFX:
-          Guid:
-            Data1: 0
-            Data2: 0
-            Data3: 0
-            Data4: 0
-          Path: 
-        Intent_Title: 
-        number: 
-        Duration: 0
-        DurationType: 0
-        TriggerOnDurationEnd: 0
-        CancelOnDeath: 0
-        DynamicCondition: 0
-        TestValue: 0
-        TestDynamicAmount: 0
-        TestType: 0
-        LinkedEffect:
-          rid: -2
-        Actionner: {fileID: 0}
-        TargetForLinked_Player: []
-        TargetForLinked_Enemy: []
-        BypassEntryCondition: 0
-        drawAmount: 3
-        DynamicAmount: 0
-    - rid: 6225437702094585865
-      type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
-      data:
-        targetLimitations: 1
-        PermaType: 0
-        IntValue: -1
-    - rid: 6225437702094585866
-      type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
-      data:
-        targetLimitations: 3
-        PermaType: 1
-        IntValue: -1
+        targetLimitations: []

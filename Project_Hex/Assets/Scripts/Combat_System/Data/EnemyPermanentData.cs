@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FMODUnity;
 using SerializeReferenceEditor;
@@ -7,6 +8,7 @@ using UnityEngine;
 public class EnemyPermanentData : ScriptableObject
 {
     [field: Header("Mandatory")]
+    [field: SerializeField] public String Title;
     [field: SerializeField] public Sprite PermanentImage;
     [field: SerializeField] public int PermanentLife;
     [field: SerializeField] public bool IsCore;

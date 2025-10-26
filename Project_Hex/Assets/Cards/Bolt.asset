@@ -36,6 +36,13 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  CannotPlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   DiscardCardSound:
     Guid:
       Data1: 0
@@ -44,6 +51,20 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HoverCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlaySpellSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -159,6 +180,7 @@ MonoBehaviour:
         actionnerType: 2
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -182,8 +204,10 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 059487f0-2887-4a60-a603-5047c2478711
         damageAmount: 3
         DynamicAmount: 0
         targetMode: 24
+        TargetUpTo: 0
         targetNumber: 1
         targetLimitations: []

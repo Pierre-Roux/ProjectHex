@@ -9,6 +9,7 @@ public class PermanentView : MonoBehaviour
     [SerializeField] SpriteRenderer PermanentSpriteRenderer;
     [SerializeField] TMP_Text HealthText;
     [SerializeField] TMP_Text StaminaText;
+    [SerializeField] TMP_Text NameText;
     [SerializeField] public GameObject ShieldVisual;
     [SerializeField] public bool UnShieldable;
 
@@ -64,6 +65,7 @@ public class PermanentView : MonoBehaviour
         permanentArea = cardReference.data.permanentArea;
         UnShieldable = cardReference.UnShieldable;
         DecayCounter = cardReference.DecayCounter;
+        UpdateNameText(cardReference.Title);
 
         // Gère les types
         permaTypes.Clear();
@@ -136,6 +138,11 @@ public class PermanentView : MonoBehaviour
     {
         StaminaText.text = Durability.ToString() + "/" + MaxDurability.ToString();
     }*/
+
+    public void UpdateNameText(string name)
+    {
+        NameText.text = name;
+    }
 
     public void UpdateHollowVisual()
     {

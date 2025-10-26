@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
   m_Name: Weapon 2
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: bb7b6ce2f1a61144083daba5680fbcfe, type: 3}
+  Title: Weapon
+  PermanentImage: {fileID: 21300000, guid: bb73985b8d22ae043aff5705febaf6de, type: 3}
   PermanentLife: 7
   IsCore: 0
   IsInvoc: 0
@@ -126,6 +127,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -149,6 +151,7 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 054402dc-9e3d-4edf-a831-1fe5c0276f8f
         damageAmount: 5
         DynamicAmount: 0
         targetMode: 6

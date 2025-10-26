@@ -36,6 +36,13 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  CannotPlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   DiscardCardSound:
     Guid:
       Data1: 0
@@ -44,6 +51,20 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HoverCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlaySpellSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -159,6 +180,7 @@ MonoBehaviour:
         actionnerType: 0
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -172,23 +194,32 @@ MonoBehaviour:
         DurationType: 0
         TriggerOnDurationEnd: 0
         CancelOnDeath: 0
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
         LinkedEffect:
           rid: 8456800761348882432
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
+        BypassEntryCondition: 0
+        EffectID: b1288875-16bc-4e5f-aa8d-a3e03c91d855
         alterAmount: -3
         DynamicAmount: 0
         targetMode: 16
         passive: 1
         permaTypes: 4
+        TargetUpTo: 0
         targetNumber: 0
+        targetLimitations: []
     - rid: 8456800761348882432
       type: {class: AlterPowerEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 0
         Events: 8
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -202,14 +233,22 @@ MonoBehaviour:
         DurationType: 0
         TriggerOnDurationEnd: 0
         CancelOnDeath: 0
+        DynamicCondition: 0
+        TestValue: 0
+        TestDynamicAmount: 0
+        TestType: 0
         LinkedEffect:
           rid: -2
         Actionner: {fileID: 0}
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
+        BypassEntryCondition: 0
+        EffectID: fb881e47-6553-402b-a4be-180221e31641
         alterAmount: 3
         DynamicAmount: 0
         targetMode: 16
         passive: 1
         permaTypes: 4
+        TargetUpTo: 0
         targetNumber: 0
+        targetLimitations: []

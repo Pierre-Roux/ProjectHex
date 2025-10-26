@@ -11,6 +11,7 @@ public class EnemySlotView : MonoBehaviour
     [HideInInspector] public EnemyPermanentData PermanentData;
     [SerializeField] public TMP_Text LifeText;
     [SerializeField] public TMP_Text IntentText;
+    [SerializeField] TMP_Text NameText;
     [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] public GameObject ShieldVisual;
     [SerializeField] public bool UnShieldable;
@@ -70,6 +71,8 @@ public class EnemySlotView : MonoBehaviour
         IntentSequence = PermanentData.IntentSequence;
         LoopingSequence = PermanentData.LoopingSequence;
         DecayCounter = PermanentData.DecayCounter;
+        UpdateNameText(PermanentData.Title);
+
 
         if (PermanentData.IsInvoc) permaTypes.Add(PermaTypes.Invoc);
         if (PermanentData.DecayCounter > 0) permaTypes.Add(PermaTypes.Decay);
@@ -104,6 +107,10 @@ public class EnemySlotView : MonoBehaviour
     public void SetPosition(Vector3 pos)
     {
         InitialPosition = pos;
+    }
+    public void UpdateNameText(string name)
+    {
+        NameText.text = name;
     }
 
     public void UpdateLifeText()

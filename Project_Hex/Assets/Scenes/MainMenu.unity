@@ -590,9 +590,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f0b2bd7601ec6594180f984a4d68a567, type: 2}
   Money: 0
   MaxMana: 3
-  StartingPlayer: {fileID: 11400000, guid: 3d490958aaa08714cb61fba8c1ff5403, type: 2}
+  StartingPlayer: {fileID: 11400000, guid: 235f1968b92f4364481730e3bb26565e, type: 2}
   EnemiesDataBase:
-  - {fileID: 5728494894741626448, guid: 8c6f90f68e3cad64093a6a1b8e1af2e7, type: 3}
+  - {fileID: 5728494894741626448, guid: e6f15e3a11f8f7b4389748c6e39fa172, type: 3}
   INITIALDeckList: []
   DeckList: []
   CurrentStage: 0

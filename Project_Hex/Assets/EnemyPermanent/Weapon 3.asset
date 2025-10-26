@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
   m_Name: Weapon 3
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
+  Title: Weapon
+  PermanentImage: {fileID: 21300000, guid: 0a06cb942a6a99f429ab41907712d410, type: 3}
   PermanentLife: 4
   IsCore: 0
   IsInvoc: 0
@@ -127,6 +128,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -163,6 +165,7 @@ MonoBehaviour:
         actionnerType: 0
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0

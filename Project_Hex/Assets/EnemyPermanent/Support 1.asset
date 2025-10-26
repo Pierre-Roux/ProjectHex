@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
   m_Name: Support 1
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: 6e62f4595d41c4a40b3f894d584f89a0, type: 3}
+  Title: Support
+  PermanentImage: {fileID: 21300000, guid: 88d9081bc9478c145aff347c037381cb, type: 3}
   PermanentLife: 4
   IsCore: 0
   IsInvoc: 0
@@ -127,6 +128,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -150,11 +152,13 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: fc21386a-dbe3-4e7d-aa06-15570737e399
         alterAmount: 1
         DynamicAmount: 0
         targetMode: 16
         passive: 1
         permaTypes: 0
+        TargetUpTo: 0
         targetNumber: 0
         targetLimitations: []
     - rid: 3469642240805568516
@@ -163,6 +167,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 11
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -186,10 +191,12 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 93bc1322-94c7-40ea-baa6-25c1d3edfd64
         alterAmount: -1
         DynamicAmount: 0
         targetMode: 16
         passive: 1
         permaTypes: 0
+        TargetUpTo: 0
         targetNumber: 0
         targetLimitations: []

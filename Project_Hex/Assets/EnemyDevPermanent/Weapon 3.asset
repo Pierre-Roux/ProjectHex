@@ -129,6 +129,7 @@ MonoBehaviour:
         actionnerType: 2
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -162,6 +163,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -199,6 +201,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -236,6 +239,7 @@ MonoBehaviour:
         actionnerType: 2
         Events: 1
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -269,6 +273,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -304,6 +309,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0

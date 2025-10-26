@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7673c6f485dfa54c802241195118466, type: 3}
   m_Name: Shield 1
   m_EditorClassIdentifier: 
-  PermanentImage: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
+  Title: Shield
+  PermanentImage: {fileID: 21300000, guid: 5608e7b1611ec334280ccbaca9cfc61a, type: 3}
   PermanentLife: 5
   IsCore: 0
   IsInvoc: 0
@@ -126,6 +127,7 @@ MonoBehaviour:
         actionnerType: 1
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -149,6 +151,8 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 059e181a-000b-4aab-a309-765d4750857f
         targetMode: 14
+        TargetUpTo: 0
         targetNumber: 0
         targetLimitations: []

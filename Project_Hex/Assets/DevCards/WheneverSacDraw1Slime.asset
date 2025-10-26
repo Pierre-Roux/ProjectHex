@@ -180,6 +180,7 @@ MonoBehaviour:
         actionnerType: 0
         Events: 20
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0

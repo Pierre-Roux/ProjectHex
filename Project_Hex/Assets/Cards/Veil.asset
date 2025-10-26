@@ -21,7 +21,7 @@ MonoBehaviour:
   <DecayCounter>k__BackingField: 0
   <Durability>k__BackingField: 3
   <MaxDurability>k__BackingField: 3
-  <PermanentImage>k__BackingField: {fileID: 21300000, guid: bb7b6ce2f1a61144083daba5680fbcfe, type: 3}
+  <PermanentImage>k__BackingField: {fileID: 21300000, guid: def737b7c5ef4c34f9135b7590d24c5f, type: 3}
   <permanentArea>k__BackingField: 2
   UnShieldable: 1
   isInvoc: 0
@@ -36,6 +36,13 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  CannotPlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   DiscardCardSound:
     Guid:
       Data1: 0
@@ -44,6 +51,20 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HoverCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlaySpellSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -159,6 +180,7 @@ MonoBehaviour:
         actionnerType: 0
         Events: 0
         HollowEffect: 0
+        MultiHit: 0
         SFX:
           Guid:
             Data1: 0
@@ -182,6 +204,8 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: adc89aa1-9aa5-450c-b6a0-381b020647d5
         targetMode: 4
+        TargetUpTo: 0
         targetNumber: 0
         targetLimitations: []

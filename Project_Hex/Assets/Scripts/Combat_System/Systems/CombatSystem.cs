@@ -204,23 +204,28 @@ public class CombatSystem : Singleton<CombatSystem>
             if (enemySlotView.PossibleIntent == null) continue;
             foreach (Effect effect in enemySlotView.PossibleIntent)
             {
-                Effect clonedEffect = effect.Clone();
-                while (clonedEffect != null)
+                int MultiHit = effect.MultiHit;
+                if (MultiHit < 1) MultiHit = 1;
+                for (int i = 0; i < MultiHit; i++)
                 {
-                    if (clonedEffect.Events != Events.EnemyTurn &&
-                        clonedEffect.Events != Events.Instant
-                        )
+                    Effect clonedEffect = effect.Clone();
+                    while (clonedEffect != null)
                     {
-                        GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
-                    }
+                        if (clonedEffect.Events != Events.EnemyTurn &&
+                            clonedEffect.Events != Events.Instant
+                            )
+                        {
+                            GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                        }
 
-                    if (clonedEffect.LinkedEffect != null)
-                    {
-                        clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                        if (clonedEffect.LinkedEffect != null)
+                        {
+                            clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                        }
+                        clonedEffect.Actionner = enemySlotView.gameObject;
+                        clonedEffect = clonedEffect.LinkedEffect;
+
                     }
-                    clonedEffect.Actionner = enemySlotView.gameObject;
-                    clonedEffect = clonedEffect.LinkedEffect;
-                    
                 }
             }
         }
@@ -246,6 +251,9 @@ public class CombatSystem : Singleton<CombatSystem>
                     ActionSystem.Instance.AddReaction(loseShieldGA);
 
                     TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,diePermanentGA.PermanentView, null);
+                    ActionSystem.Instance.AddReaction(triggerEventGA);
+
+                    triggerEventGA = new(Events.WhenPermaExaust,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerEventGA);
 
                     TriggerEventGA triggerPermanentEventGA = new(Events.OnDestroy,null,diePermanentGA.PermanentView,null);
@@ -278,7 +286,7 @@ public class CombatSystem : Singleton<CombatSystem>
 
                     TriggerEventGA triggerEventGA = new(Events.WhenPermaDie,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerEventGA);
-
+                    
                     TriggerEventGA triggerPermanentEventGA = new(Events.OnDeath,null,diePermanentGA.PermanentView,null);
                     ActionSystem.Instance.AddReaction(triggerPermanentEventGA);
 

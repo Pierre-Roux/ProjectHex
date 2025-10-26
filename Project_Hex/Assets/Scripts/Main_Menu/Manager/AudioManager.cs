@@ -11,8 +11,11 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] public EventReference DefeatMusic;
 
     [SerializeField] public EventReference PlayCardSound;
+    [SerializeField] public EventReference CannotPlayCardSound;
     [SerializeField] public EventReference DiscardCardSound;
     [SerializeField] public EventReference DrawCardSound;
+    [SerializeField] public EventReference HoverCardSound;
+    [SerializeField] public EventReference PlaySpellSound;
     [SerializeField] public EventReference SummonPPermanentSound;
     [SerializeField] public EventReference SummonEPermanentSound;
     [SerializeField] public EventReference DieSound;

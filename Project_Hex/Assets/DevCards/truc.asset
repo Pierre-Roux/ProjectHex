@@ -28,8 +28,15 @@ MonoBehaviour:
   isArtillery: 0
   <IsSpell>k__BackingField: 1
   <Effects>k__BackingField:
-  - rid: 3469642240805568522
+  - rid: 3469642534141820935
   PlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  CannotPlayCardSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -44,6 +51,20 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HoverCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlaySpellSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -153,8 +174,8 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 3469642240805568522
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+    - rid: 3469642534141820935
+      type: {class: SacEffect, ns: , asm: Assembly-CSharp}
       data:
         actionnerType: 2
         Events: 0
@@ -182,26 +203,24 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
-        EffectID: c4b7a969-4a24-4de4-9716-91756491fea8
-        damageAmount: 1
-        DynamicAmount: 0
+        EffectID: 52e091d3-89d9-4adf-981d-92845f7991e9
         targetMode: 24
-        TargetUpTo: 1
-        targetNumber: 2
+        TargetUpTo: 0
+        targetNumber: 1
         targetLimitations:
-        - rid: 3469642240805568523
-        - rid: 3469642240805568524
-    - rid: 3469642240805568523
+        - rid: 3469642534141820936
+        - rid: 3469642534141820937
+    - rid: 3469642534141820936
       type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
       data:
-        targetLimitations: 2
+        targetLimitations: 1
         PermaType: 0
         IntValue: -1
         MandatoryLimitation: 1
-    - rid: 3469642240805568524
+    - rid: 3469642534141820937
       type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
       data:
-        targetLimitations: 5
-        PermaType: 0
-        IntValue: 5
+        targetLimitations: 3
+        PermaType: 1
+        IntValue: -1
         MandatoryLimitation: 1

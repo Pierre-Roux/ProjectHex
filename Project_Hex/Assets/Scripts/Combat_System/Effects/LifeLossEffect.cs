@@ -25,9 +25,10 @@ public class LifeLossEffect : Effect
 
     public LifeLossEffect() { }
 
-    public LifeLossEffect(int lifeLossAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public LifeLossEffect(int lifeLossAmount, int multiHit, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         LifeLossAmount = lifeLossAmount;
+        MultiHit = multiHit;
         targetMode = TargetMode;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -193,6 +194,7 @@ public class LifeLossEffect : Effect
 
         return new LifeLossEffect(
             LifeLossAmount,
+            MultiHit,
             TestValue,
             DynamicCondition,
             TestDynamicAmount,

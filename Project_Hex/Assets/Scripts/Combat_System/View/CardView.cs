@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using FMODUnity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,8 @@ public class CardView : MonoBehaviour
     [HideInInspector] public Card Card { get; private set; }
 
     [HideInInspector] public bool IsScryCard;
+    [HideInInspector] public bool IsChoiceCard;
+    [HideInInspector] public Effect EffectHolder;
 
     public void Setup(Card card)
     {
@@ -76,6 +79,14 @@ public class CardView : MonoBehaviour
             Wrapper.SetActive(false);
             Vector3 pos = new(transform.position.x, transform.position.y, 0);
             CardViewHover.Instance.Show(this, pos);
+            if (!AudioManager.Instance.IsValid(Card.HoverCardSound))
+            {
+                RuntimeManager.PlayOneShot(AudioManager.Instance.HoverCardSound);
+            }
+            else
+            {
+                RuntimeManager.PlayOneShot(Card.HoverCardSound);
+            }
         }
     }
 
@@ -93,15 +104,22 @@ public class CardView : MonoBehaviour
     {
         if (!IsReward)
         {
-            if (!IsScryCard)
+            if (IsChoiceCard)
             {
-                if (ActionSystem.Instance.IsPerforming) return;
-                if (!CombatSystem.Instance.Interactable) return;
+                CardSystem.Instance.EffectChoosed = EffectHolder;
             }
-            isDragging = true;
-            transform.rotation = Quaternion.identity;
-            CardViewHover.Instance.Hide();
-            Wrapper.SetActive(true);
+            else
+            {
+                if (!IsScryCard)
+                {
+                    if (ActionSystem.Instance.IsPerforming) return;
+                    if (!CombatSystem.Instance.Interactable) return;
+                }
+                isDragging = true;
+                transform.rotation = Quaternion.identity;
+                CardViewHover.Instance.Hide();
+                Wrapper.SetActive(true);                
+            }
         }
     }
 
@@ -145,9 +163,10 @@ public class CardView : MonoBehaviour
                             {
                                 if (effect?.EffectTargetLimitations != null && effect.EffectTargetLimitations.Count > 0)
                                 {
-                                    if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations,effect.EffectTargetNumber))
+                                    if (effect.MultiHit < 1) effect.MultiHit = 1;
+                                    if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations, effect.EffectTargetNumber, effect.MultiHit))
                                     {
-                                        returnCardToHand();
+                                        returnCardToHand(true);
                                         return;
                                     }
                                 }
@@ -190,7 +209,7 @@ public class CardView : MonoBehaviour
                                 if (childCount >= CombatSystem.Instance.MaxPermPlayer)
                                 {
                                     // LimitReached
-                                    returnCardToHand();
+                                    returnCardToHand(true);
                                 }
                                 else
                                 {
@@ -198,9 +217,10 @@ public class CardView : MonoBehaviour
                                     {
                                         if (effect?.EffectTargetLimitations != null && effect.EffectTargetLimitations.Count > 0)
                                         {
-                                            if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations,effect.EffectTargetNumber))
+                                            if (effect.MultiHit < 1) effect.MultiHit = 1;
+                                            if (!TargetSystem.Instance.limitationHasEnoughtTarget(effect.EffectTargetLimitations, effect.EffectTargetNumber,effect.MultiHit))
                                             {
-                                                returnCardToHand();
+                                                returnCardToHand(true);
                                                 return;
                                             }
                                         }
@@ -220,17 +240,28 @@ public class CardView : MonoBehaviour
                 }
                 else
                 {
-                    returnCardToHand();
+                    returnCardToHand(true);
                 }
             }
         }
     }
 
-    public void returnCardToHand()
+    public void returnCardToHand(bool ErrorSound = false)
     {
         isDragging = false;
         transform.DOMove(OriginalPos, 0.25f).SetEase(Ease.InOutBack);
         transform.DORotate(OriginalRotation.eulerAngles, 0.25f).SetEase(Ease.OutCubic);
+        if (ErrorSound)
+        {
+            if (!AudioManager.Instance.IsValid(Card.CannotPlayCardSound))
+            {
+                RuntimeManager.PlayOneShot(AudioManager.Instance.CannotPlayCardSound);
+            }
+            else
+            {
+                RuntimeManager.PlayOneShot(Card.CannotPlayCardSound);
+            }            
+        }
     }
 
     void Update()

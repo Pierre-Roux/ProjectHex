@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d085891afe8800f40a7640c0f75f8972, type: 3}
   m_Name: Sac and draw
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Sac&Draw
+  <Title>k__BackingField: Sac
   <Description>k__BackingField: 
   <cost>k__BackingField: 0
   <Image>k__BackingField: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
@@ -29,8 +29,14 @@ MonoBehaviour:
   <IsSpell>k__BackingField: 1
   <Effects>k__BackingField:
   - rid: 6225437702094585857
-  - rid: 6225437702094585858
   PlayCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  CannotPlayCardSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -45,6 +51,20 @@ MonoBehaviour:
       Data4: 0
     Path: 
   DrawCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  HoverCardSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  PlaySpellSound:
     Guid:
       Data1: 0
       Data2: 0
@@ -154,12 +174,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 3469642240805568512
-      type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
-      data:
-        targetLimitations: 4
-        PermaType: 0
-        IntValue: 2
     - rid: 6225437702094585857
       type: {class: SacEffect, ns: , asm: Assembly-CSharp}
       data:
@@ -189,45 +203,16 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 5ba868d7-6435-4583-8a73-48975384f1d1
         targetMode: 24
+        TargetUpTo: 0
         targetNumber: 1
         targetLimitations:
         - rid: 6225437702094585865
-        - rid: 3469642240805568512
-    - rid: 6225437702094585858
-      type: {class: DrawCardsEffect, ns: , asm: Assembly-CSharp}
-      data:
-        actionnerType: 2
-        Events: 0
-        HollowEffect: 0
-        SFX:
-          Guid:
-            Data1: 0
-            Data2: 0
-            Data3: 0
-            Data4: 0
-          Path: 
-        Intent_Title: 
-        number: 
-        Duration: 0
-        DurationType: 0
-        TriggerOnDurationEnd: 0
-        CancelOnDeath: 0
-        DynamicCondition: 0
-        TestValue: 0
-        TestDynamicAmount: 0
-        TestType: 0
-        LinkedEffect:
-          rid: -2
-        Actionner: {fileID: 0}
-        TargetForLinked_Player: []
-        TargetForLinked_Enemy: []
-        BypassEntryCondition: 0
-        drawAmount: 3
-        DynamicAmount: 0
     - rid: 6225437702094585865
       type: {class: TargetLimitationInfo, ns: , asm: Assembly-CSharp}
       data:
         targetLimitations: 1
         PermaType: 0
         IntValue: -1
+        MandatoryLimitation: 1

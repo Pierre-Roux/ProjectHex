@@ -74,9 +74,10 @@ public class DiscardEffect : Effect
     }
     public DiscardEffect(){}
 
-    public DiscardEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll, EventReference sfx, bool conditionTested)
+    public DiscardEffect(int Amount, int multiHit, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, List<TargetLimitationInfo> TargetLimitations, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, bool discardAll, EventReference sfx, bool conditionTested)
     {
         DiscardAmount = Amount;
+        MultiHit = multiHit;
         Events = Event;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -116,6 +117,7 @@ public class DiscardEffect : Effect
 
         return new DiscardEffect(
             DiscardAmount,
+            MultiHit,
             TestValue,
             DynamicCondition,
             TestDynamicAmount,

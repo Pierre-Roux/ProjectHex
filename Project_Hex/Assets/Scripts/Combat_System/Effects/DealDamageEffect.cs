@@ -26,9 +26,10 @@ public class DealDamageEffect : Effect
 
     public DealDamageEffect() { }
 
-    public DealDamageEffect(int DamageAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public DealDamageEffect(int DamageAmount, int multiHit, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         damageAmount = DamageAmount;
+        MultiHit = multiHit;
         targetMode = TargetMode;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -79,13 +80,12 @@ public class DealDamageEffect : Effect
 
         if (Actionner == null && actionnerType == ActionnerType.NONE)
         {
-
             if (targetMode == TargetMode.Manual)
             {
                 DealDamageGA dealDamageGA = new(damageAmount, DynamicAmount, null, null);
                 dealDamageGA.CardActionner = CardActionner;
                 if (AudioManager.Instance.IsValid(SFX)) { dealDamageGA.SFX = SFX; }
-                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber,TargetUpTo, this,targetLimitations);
+                StartManualTargetingGA startManualTargetingGA = new(dealDamageGA, targetNumber, TargetUpTo, this, targetLimitations);
                 return startManualTargetingGA;
             }
             else if (targetMode == TargetMode.EffectParent_Targets)
@@ -199,6 +199,7 @@ public class DealDamageEffect : Effect
 
         return new DealDamageEffect(
             damageAmount,
+            MultiHit,
             TestValue,
             DynamicCondition,
             TestDynamicAmount,

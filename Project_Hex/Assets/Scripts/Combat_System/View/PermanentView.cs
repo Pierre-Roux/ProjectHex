@@ -8,6 +8,7 @@ public class PermanentView : MonoBehaviour
 {
     [SerializeField] SpriteRenderer PermanentSpriteRenderer;
     [SerializeField] TMP_Text HealthText;
+    [SerializeField] TMP_Text StaminaText;
     [SerializeField] public GameObject ShieldVisual;
     [SerializeField] public bool UnShieldable;
 
@@ -81,19 +82,19 @@ public class PermanentView : MonoBehaviour
         }
 
         //Audio
-        if (cardReference.DieSound.Path != "") DieSound = cardReference.DieSound;
-        if (cardReference.HollowDieSound.Path != "") HollowDieSound = cardReference.HollowDieSound;
-        if (cardReference.BeingDamageSound.Path != "") BeingDamageSound = cardReference.BeingDamageSound;
-        if (cardReference.BeingHealSound.Path != "") BeingHealSound = cardReference.BeingHealSound;
-        if (cardReference.BeingShieldSound.Path != "") BeingShieldSound = cardReference.BeingShieldSound;
-        if (cardReference.LoseShieldSound.Path != "") LoseShieldSound = cardReference.LoseShieldSound;
-        if (cardReference.GainPowerSound.Path != "") GainPowerSound = cardReference.GainPowerSound;
-        if (cardReference.LosePowerSound.Path != "") LosePowerSound = cardReference.LosePowerSound;
-        if (cardReference.TakeLifeLossSound.Path != "") TakeLifeLossSound = cardReference.TakeLifeLossSound;
-        if (cardReference.BuffLifeSound.Path != "") BuffLifeSound = cardReference.BuffLifeSound;
-        if (cardReference.DebuffLifeSound.Path != "") DebuffLifeSound = cardReference.DebuffLifeSound;
-        if (cardReference.SelectedSound.Path != "") SelectedSound = cardReference.SelectedSound;
-        if (cardReference.UnSelectedSound.Path != "") UnSelectedSound = cardReference.UnSelectedSound;
+        if (AudioManager.Instance.IsValid(cardReference.DieSound)) DieSound = cardReference.DieSound;
+        if (AudioManager.Instance.IsValid(cardReference.HollowDieSound)) HollowDieSound = cardReference.HollowDieSound;
+        if (AudioManager.Instance.IsValid(cardReference.BeingDamageSound)) BeingDamageSound = cardReference.BeingDamageSound;
+        if (AudioManager.Instance.IsValid(cardReference.BeingHealSound)) BeingHealSound = cardReference.BeingHealSound;
+        if (AudioManager.Instance.IsValid(cardReference.BeingShieldSound)) BeingShieldSound = cardReference.BeingShieldSound;
+        if (AudioManager.Instance.IsValid(cardReference.LoseShieldSound)) LoseShieldSound = cardReference.LoseShieldSound;
+        if (AudioManager.Instance.IsValid(cardReference.GainPowerSound)) GainPowerSound = cardReference.GainPowerSound;
+        if (AudioManager.Instance.IsValid(cardReference.LosePowerSound)) LosePowerSound = cardReference.LosePowerSound;
+        if (AudioManager.Instance.IsValid(cardReference.TakeLifeLossSound)) TakeLifeLossSound = cardReference.TakeLifeLossSound;
+        if (AudioManager.Instance.IsValid(cardReference.BuffLifeSound)) BuffLifeSound = cardReference.BuffLifeSound;
+        if (AudioManager.Instance.IsValid(cardReference.DebuffLifeSound)) DebuffLifeSound = cardReference.DebuffLifeSound;
+        if (AudioManager.Instance.IsValid(cardReference.SelectedSound)) SelectedSound = cardReference.SelectedSound;
+        if (AudioManager.Instance.IsValid(cardReference.UnSelectedSound)) UnSelectedSound = cardReference.UnSelectedSound;
     }
 
     public void SetPosition(Vector3 pos)
@@ -113,6 +114,17 @@ public class PermanentView : MonoBehaviour
         UnShieldable = false;
         ShieldVisual.SetActive(false);
         UpdateLifeText();
+
+        if (AudioManager.Instance.IsValid(CoreData.DieSound)) DieSound = CoreData.DieSound;
+        if (AudioManager.Instance.IsValid(CoreData.BeingDamageSound)) BeingDamageSound = CoreData.BeingDamageSound;
+        if (AudioManager.Instance.IsValid(CoreData.BeingHealSound)) BeingHealSound = CoreData.BeingHealSound;
+        if (AudioManager.Instance.IsValid(CoreData.BeingShieldSound)) BeingShieldSound = CoreData.BeingShieldSound;
+        if (AudioManager.Instance.IsValid(CoreData.LoseShieldSound)) LoseShieldSound = CoreData.LoseShieldSound;
+        if (AudioManager.Instance.IsValid(CoreData.TakeLifeLossSound)) TakeLifeLossSound = CoreData.TakeLifeLossSound;
+        if (AudioManager.Instance.IsValid(CoreData.BuffLifeSound)) BuffLifeSound = CoreData.BuffLifeSound;
+        if (AudioManager.Instance.IsValid(CoreData.DebuffLifeSound)) DebuffLifeSound = CoreData.DebuffLifeSound;
+        if (AudioManager.Instance.IsValid(CoreData.SelectedSound)) SelectedSound = CoreData.SelectedSound;
+        if (AudioManager.Instance.IsValid(CoreData.UnSelectedSound)) UnSelectedSound = CoreData.UnSelectedSound;
     }
 
     public void UpdateLifeText()
@@ -120,11 +132,25 @@ public class PermanentView : MonoBehaviour
         HealthText.text = currentLife.ToString();
     }
 
+    /*public void UpdateStaminaText()
+    {
+        StaminaText.text = Durability.ToString() + "/" + MaxDurability.ToString();
+    }*/
+
     public void UpdateHollowVisual()
     {
-        Color c = PermanentSpriteRenderer.color;
-        c.a = 0.5f;
-        PermanentSpriteRenderer.color = c;        
+        if (permaTypes.Contains(PermaTypes.Hollow))
+        {
+            Color c = PermanentSpriteRenderer.color;
+            c.a = 0.5f;
+            PermanentSpriteRenderer.color = c;   
+        }
+        else
+        {
+            Color c = PermanentSpriteRenderer.color;
+            c.a = 1f;
+            PermanentSpriteRenderer.color = c;   
+        }
     }
     
     public int CalculateBonusPower(int baseAmount)
@@ -305,7 +331,7 @@ public class PermanentView : MonoBehaviour
     public void TakeAlterPower(int Amount)
     {
         if (IsDead) return;
-        
+
         if (Amount > 0)
         {
             RuntimeManager.PlayOneShot(GainPowerSound);
@@ -317,6 +343,57 @@ public class PermanentView : MonoBehaviour
         else { return; }
 
         BonusPower += Amount;
+        if (transform != null)
+        {
+            transform.DOShakePosition(0f, 0.1f);
+        }
+    }
+    
+    public void TakeAlterStamina(int Amount)
+    {
+        if (IsDead) return;
+
+        /*if (Amount > 0)
+        {
+            RuntimeManager.PlayOneShot(GainPowerSound);
+        }
+        else if (Amount < 0)
+        {
+            RuntimeManager.PlayOneShot(LosePowerSound);
+        }
+        else { return; }*/
+
+        if(Amount > 0)
+        {
+            TriggerEventGA triggerEventGA = new(Events.WhenPermaLossDurability,null,this,null);
+            ActionSystem.Instance.AddReaction(triggerEventGA);
+        }
+
+        Durability += Amount;
+        if (Durability < 0)
+        {
+            Durability = 0;
+        }
+        else if (Durability > MaxDurability)
+        {
+            Durability = MaxDurability;
+        }
+
+        if (!permaTypes.Contains(PermaTypes.Hollow) && Durability == 0)
+        {
+            permaTypes.Add(PermaTypes.Hollow);
+            UpdateHollowVisual();
+
+            TriggerEventGA triggerEventGA = new(Events.WhenPermaBecomeType,null,this,null);
+            ActionSystem.Instance.AddReaction(triggerEventGA);
+        }
+        else if (permaTypes.Contains(PermaTypes.Hollow) && Durability != 0)
+        {
+            
+            permaTypes.Remove(PermaTypes.Hollow);
+            UpdateHollowVisual();
+        }
+
         if (transform != null)
         {
             transform.DOShakePosition(0f, 0.1f);
@@ -381,10 +458,13 @@ public class PermanentView : MonoBehaviour
         RuntimeManager.PlayOneShot(SelectedSound);
     }
 
-    public void RemoveSelectEffect()
+    public void RemoveSelectEffect(bool SoundUp = true)
     {
         PermanentSpriteRenderer.color = Color.white;
-        RuntimeManager.PlayOneShot(UnSelectedSound);
+        if(SoundUp)
+        {
+            RuntimeManager.PlayOneShot(UnSelectedSound);
+        }
     }
 
 }

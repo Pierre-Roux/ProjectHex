@@ -14,9 +14,10 @@ public class InvocEffect : Effect
 
     public InvocEffect() { }
 
-    public InvocEffect(int Amount,List<CardData> cardsToInvoc,List<EnemyPermanentData> enemyToInvoc , int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public InvocEffect(int Amount, int multiHit, List<CardData> cardsToInvoc,List<EnemyPermanentData> enemyToInvoc , int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         amount = Amount;
+        MultiHit = multiHit;
         CardsToInvoc = cardsToInvoc;
         EnemyToInvoc = enemyToInvoc;
         TestValue = testValue;
@@ -111,6 +112,7 @@ public class InvocEffect : Effect
 
         return new InvocEffect(
             amount,
+            MultiHit,
             CardsToInvoc,
             EnemyToInvoc,
             TestValue,

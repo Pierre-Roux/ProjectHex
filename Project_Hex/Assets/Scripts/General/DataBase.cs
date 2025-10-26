@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 
 public class DataBase : Singleton<DataBase>
@@ -15,6 +17,12 @@ public class DataBase : Singleton<DataBase>
     [HideInInspector] public List<CardData> DeckList;
     [HideInInspector] public int CurrentStage;
 
+    //AudioSource
+    [HideInInspector] public StudioEventEmitter AudioSource;
+
+    //Option
+    [HideInInspector] public float MasterVolume;
+
     //For fight
     public bool IsElite;
     public int CoreLife;
@@ -23,5 +31,16 @@ public class DataBase : Singleton<DataBase>
     {
         base.Awake();
         DontDestroyOnLoad(this);
+        UpdateOptions();
+    }
+
+    public void UpdateOptions()
+    {
+        if(PlayerPrefs.HasKey("MasterVolume"))
+        {
+            MasterVolume = PlayerPrefs.GetFloat("MasterVolume");
+            Bus masterBus = RuntimeManager.GetBus("bus:/");
+            masterBus.setVolume(MasterVolume);            
+        }
     }
 }

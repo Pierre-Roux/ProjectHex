@@ -37,9 +37,10 @@ public class ManaGainEffect : Effect
     }
     public ManaGainEffect(){}
 
-    public ManaGainEffect(int Amount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
+    public ManaGainEffect(int Amount, int multiHit, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx)
     {
         GainAmount = Amount;
+        MultiHit = multiHit;
         Events = Event;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -75,6 +76,7 @@ public class ManaGainEffect : Effect
 
         return new ManaGainEffect(
             GainAmount,
+            MultiHit,
             TestValue,
             DynamicCondition,
             TestDynamicAmount,

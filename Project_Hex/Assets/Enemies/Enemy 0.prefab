@@ -94,8 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tier: 0
   EnemyPreset:
-  - {fileID: 11400000, guid: be776f2f33e54a94ebd9209480f6bc5c, type: 2}
-  - {fileID: 11400000, guid: 9aa1d3f8e959cf949a8cad43206ecf1b, type: 2}
+  - {fileID: 11400000, guid: 11605dfad6fec314d8729f0c08b05c02, type: 2}
   WeaponZone: {fileID: 3491431722004416334}
   ShieldZone: {fileID: 938283172723516546}
   SupportZone: {fileID: 351204710267823827}

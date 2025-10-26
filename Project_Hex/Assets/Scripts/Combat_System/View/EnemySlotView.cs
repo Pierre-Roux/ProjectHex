@@ -8,7 +8,7 @@ using UnityEngine;
 public class EnemySlotView : MonoBehaviour
 {
     [SerializeField] public List<Effect> PossibleIntent;
-    [SerializeField] public EnemyPermanentData PermanentData;
+    [HideInInspector] public EnemyPermanentData PermanentData;
     [SerializeField] public TMP_Text LifeText;
     [SerializeField] public TMP_Text IntentText;
     [SerializeField] public SpriteRenderer spriteRenderer;
@@ -84,18 +84,18 @@ public class EnemySlotView : MonoBehaviour
         }
 
         //Audio
-        if (PermanentData.DieSound.Path != "") DieSound = PermanentData.DieSound;
-        if (PermanentData.BeingDamageSound.Path != "") BeingDamageSound = PermanentData.BeingDamageSound;
-        if (PermanentData.BeingHealSound.Path != "") BeingHealSound = PermanentData.BeingHealSound;
-        if (PermanentData.BeingShieldSound.Path != "") BeingShieldSound = PermanentData.BeingShieldSound;
-        if (PermanentData.LoseShieldSound.Path != "") LoseShieldSound = PermanentData.LoseShieldSound;
-        if (PermanentData.GainPowerSound.Path != "") GainPowerSound = PermanentData.GainPowerSound;
-        if (PermanentData.LosePowerSound.Path != "") LosePowerSound = PermanentData.LosePowerSound;
-        if (PermanentData.TakeLifeLossSound.Path != "") TakeLifeLossSound = PermanentData.TakeLifeLossSound;
-        if (PermanentData.BuffLifeSound.Path != "") BuffLifeSound = PermanentData.BuffLifeSound;
-        if (PermanentData.DebuffLifeSound.Path != "") DebuffLifeSound = PermanentData.DebuffLifeSound;
-        if (PermanentData.SelectedSound.Path != "") SelectedSound = PermanentData.SelectedSound;
-        if (PermanentData.UnSelectedSound.Path != "") UnSelectedSound = PermanentData.UnSelectedSound;
+        if (AudioManager.Instance.IsValid(PermanentData.DieSound)) DieSound = PermanentData.DieSound;
+        if (AudioManager.Instance.IsValid(PermanentData.BeingDamageSound)) BeingDamageSound = PermanentData.BeingDamageSound;
+        if (AudioManager.Instance.IsValid(PermanentData.BeingHealSound)) BeingHealSound = PermanentData.BeingHealSound;
+        if (AudioManager.Instance.IsValid(PermanentData.BeingShieldSound)) BeingShieldSound = PermanentData.BeingShieldSound;
+        if (AudioManager.Instance.IsValid(PermanentData.LoseShieldSound)) LoseShieldSound = PermanentData.LoseShieldSound;
+        if (AudioManager.Instance.IsValid(PermanentData.GainPowerSound)) GainPowerSound = PermanentData.GainPowerSound;
+        if (AudioManager.Instance.IsValid(PermanentData.LosePowerSound)) LosePowerSound = PermanentData.LosePowerSound;
+        if (AudioManager.Instance.IsValid(PermanentData.TakeLifeLossSound)) TakeLifeLossSound = PermanentData.TakeLifeLossSound;
+        if (AudioManager.Instance.IsValid(PermanentData.BuffLifeSound)) BuffLifeSound = PermanentData.BuffLifeSound;
+        if (AudioManager.Instance.IsValid(PermanentData.DebuffLifeSound)) DebuffLifeSound = PermanentData.DebuffLifeSound;
+        if (AudioManager.Instance.IsValid(PermanentData.SelectedSound)) SelectedSound = PermanentData.SelectedSound;
+        if (AudioManager.Instance.IsValid(PermanentData.UnSelectedSound)) UnSelectedSound = PermanentData.UnSelectedSound;
 
         UpdateIntent();
         UpdateLifeText();
@@ -156,8 +156,21 @@ public class EnemySlotView : MonoBehaviour
         if (selectedEffect != null)
         {
             IntentAction = selectedEffect.Clone();
-            IntentAction.Actionner = this.gameObject;
-            UpdateIntentText(selectedEffect);
+            if (IntentAction is EffectGroup)
+            {
+                IntentAction.Actionner = this.gameObject;
+                EffectGroup group = (EffectGroup)IntentAction;
+                foreach (var Effect in group.EffectGroups)
+                {
+                    Effect.Actionner = this.gameObject;
+                }
+                UpdateIntentText(selectedEffect); 
+            }
+            else
+            {
+                IntentAction.Actionner = this.gameObject;
+                UpdateIntentText(selectedEffect);                
+            }
         }
         else
         {
@@ -473,9 +486,12 @@ public class EnemySlotView : MonoBehaviour
         RuntimeManager.PlayOneShot(SelectedSound);
     }
 
-    public void RemoveSelectEffect()
+    public void RemoveSelectEffect(bool SoundUp = true)
     {
         spriteRenderer.color = Color.white;
-        RuntimeManager.PlayOneShot(UnSelectedSound);
+        if (SoundUp)
+        {
+            RuntimeManager.PlayOneShot(UnSelectedSound);            
+        }
     }
 }

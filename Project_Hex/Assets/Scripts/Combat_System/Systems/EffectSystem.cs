@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EffectSystem : Singleton<EffectSystem>
 {
     public float AnimDelay = 0.25f;
+    //public GameObject EffectDisplayCardView;
 
     void OnEnable()
     {
@@ -18,12 +17,14 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.AttachPerformer<DecountPlayerDecayGA>(DecountDecayPlayerPerformer);
         ActionSystem.AttachPerformer<DecountEnemyDecayGA>(DecountDecayEnemyPerformer);
         ActionSystem.AttachPerformer<AlterPowerGA>(AlterPowerPerformer);
+        ActionSystem.AttachPerformer<AlterStaminaGA>(AlterStamPerformer);
         ActionSystem.AttachPerformer<LifeLossGA>(LifeLossPerformer);
         ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
         ActionSystem.AttachPerformer<GainLifeGA>(GainLifePerformer);
         ActionSystem.AttachPerformer<ScryGA>(ScryPerformer);
         ActionSystem.AttachPerformer<InvocGA>(InvocPerformer);
         ActionSystem.AttachPerformer<SacGA>(SacPerformer);
+        ActionSystem.AttachPerformer<LetChoiceGA>(PlayerChoicePerformer);
     }
 
     void OnDisable()
@@ -36,20 +37,27 @@ public class EffectSystem : Singleton<EffectSystem>
         ActionSystem.DetachPerformer<DecountPlayerDecayGA>();
         ActionSystem.DetachPerformer<DecountEnemyDecayGA>();
         ActionSystem.DetachPerformer<AlterPowerGA>();
+        ActionSystem.DetachPerformer<AlterStaminaGA>();
         ActionSystem.DetachPerformer<LifeLossGA>();
         ActionSystem.DetachPerformer<DiscardCardGA>();
         ActionSystem.DetachPerformer<GainLifeGA>();
         ActionSystem.DetachPerformer<ScryGA>();
         ActionSystem.DetachPerformer<InvocGA>();
         ActionSystem.DetachPerformer<SacGA>();
+        ActionSystem.DetachPerformer<LetChoiceGA>();
     }
 
 
     // Performers
     private IEnumerator PerformEffectPerformer(DoEffectGA doEffectGA)
     {
-        GameAction effectAction = doEffectGA.Effect.GetGameAction();
-        ActionSystem.Instance.AddReaction(effectAction);
+        int MultiHit = doEffectGA.Effect.MultiHit;
+        if (MultiHit < 1) MultiHit = 1;
+        for (int i = 0; i < MultiHit; i++)
+        {
+            GameAction effectAction = doEffectGA.Effect.GetGameAction();
+            ActionSystem.Instance.AddReaction(effectAction);
+        }
         yield return null;
     }
 
@@ -392,6 +400,46 @@ public class EffectSystem : Singleton<EffectSystem>
         }
     }
 
+    private IEnumerator AlterStamPerformer(AlterStaminaGA alterStaminaGA)
+    {
+        if (alterStaminaGA.DynamicAmount != DynamicAmount.NULL)
+        {
+            if (alterStaminaGA.Actionner == null)
+            {
+                alterStaminaGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterStaminaGA.DynamicAmount, null, null);
+            }
+            else if (alterStaminaGA.Actionner.GetComponent<PermanentView>() != null)
+            {
+                alterStaminaGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterStaminaGA.DynamicAmount, alterStaminaGA.Actionner.GetComponent<PermanentView>(), null);
+            }
+            else
+            {
+                alterStaminaGA.Amount = TargetSystem.Instance.GetDynamicAmount(alterStaminaGA.DynamicAmount, null, alterStaminaGA.Actionner.GetComponent<EnemySlotView>());
+            }
+        }
+        else
+        {
+            if (alterStaminaGA.playerTargets != null)
+            {
+                foreach (var target in alterStaminaGA.playerTargets)
+                {
+                    target.TakeAlterStamina(alterStaminaGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }
+            // Enemy pas de stamina //
+            /*
+            if (alterStaminaGA.enemyTargets != null)
+            {
+                foreach (var target in alterStaminaGA.enemyTargets)
+                {
+                    target.TakeAlterStamina(alterStaminaGA.Amount);
+                    yield return new WaitForSeconds(AnimDelay);
+                }
+            }*/
+        }
+    }
+
     private IEnumerator LifeLossPerformer(LifeLossGA lifeLossGA)
     {
         if (lifeLossGA.DynamicAmount != DynamicAmount.NULL)
@@ -629,7 +677,7 @@ public class EffectSystem : Singleton<EffectSystem>
         }
 
         yield return null;
-    }    
+    }
 
     private IEnumerator SacPerformer(SacGA sacGA)
     {
@@ -637,13 +685,13 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in sacGA.playerTargets)
             {
-                TriggerEventGA triggerEventGA = new(Events.WhenPermaSac,null,null,null);
+                TriggerEventGA triggerEventGA = new(Events.WhenPermaSac, null, target, null);
                 ActionSystem.Instance.AddReaction(triggerEventGA);
 
-                triggerEventGA = new(Events.OnSacrifice,null,target,null);
+                triggerEventGA = new(Events.OnSacrifice, null, target, null);
                 ActionSystem.Instance.AddReaction(triggerEventGA);
 
-                DiePermanentGA diePermanentGA = new(target.IsCore,target.Durability,target.CardReferenceArchive,target);
+                DiePermanentGA diePermanentGA = new(target.IsCore, target.Durability, target.CardReferenceArchive, target);
                 ActionSystem.Instance.AddReaction(diePermanentGA);
 
                 yield return new WaitForSeconds(AnimDelay);
@@ -654,10 +702,10 @@ public class EffectSystem : Singleton<EffectSystem>
         {
             foreach (var target in sacGA.enemyTargets)
             {
-                TriggerEventGA triggerEventGA = new(Events.WhenPermaSac,null,null,null);
+                TriggerEventGA triggerEventGA = new(Events.WhenPermaSac, null, null, target);
                 ActionSystem.Instance.AddReaction(triggerEventGA);
 
-                triggerEventGA = new(Events.OnSacrifice,null,null,target);
+                triggerEventGA = new(Events.OnSacrifice, null, null, target);
                 ActionSystem.Instance.AddReaction(triggerEventGA);
 
                 DieEnemySlotGA dieEnemySlotGA = new(target);
@@ -668,6 +716,30 @@ public class EffectSystem : Singleton<EffectSystem>
         }
 
         yield return null;
-    }     
+    } 
 
+    private IEnumerator PlayerChoicePerformer(LetChoiceGA letChoiceGA)
+    {
+        CardSystem.Instance.ShowChoicePanel(letChoiceGA.ChoicesEffects, letChoiceGA.CardVisual, letChoiceGA.Actionner);
+        CardSystem.Instance.EffectChoosed = null;
+
+        yield return new WaitUntil(() => CardSystem.Instance.EffectChoosed != null);
+
+        CardSystem.Instance.HideChoicePanel();
+
+        Effect EffectToManage = CardSystem.Instance.EffectChoosed;
+        int MultiHit = EffectToManage.MultiHit;
+        if (MultiHit < 1) MultiHit = 1;
+        for (int i = 0; i < MultiHit; i++)
+        {
+            if (EffectToManage.Events == Events.Instant)
+            {
+                ActionSystem.Instance.AddReaction(EffectToManage.GetGameAction());
+            }
+            else
+            {
+                GameEventSystem.Instance.AddEffectToEvent(EffectToManage);
+            }
+        }
+    }    
 }

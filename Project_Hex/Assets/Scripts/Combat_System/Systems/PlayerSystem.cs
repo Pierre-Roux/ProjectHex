@@ -12,6 +12,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
         ActionSystem.AttachPerformer<HealPlayerGA>(HealPlayerPerformer);
         ActionSystem.AttachPerformer<ShieldPlayerGA>(ShieldPlayerPerformer);
         ActionSystem.AttachPerformer<PlayerAlterPowerGA>(AlterPlayerPerformer);
+        ActionSystem.AttachPerformer<PlayerAlterStaminaGA>(AlterStamPlayerPerformer);
         ActionSystem.AttachPerformer<PlayerLifeLossGA>(LifeLossPlayerPerformer);
         ActionSystem.AttachPerformer<PlayerGainLifeGA>(GainHPEnemyPerformer);
         ActionSystem.AttachPerformer<InvocPGA>(InvocPPerformer);
@@ -21,6 +22,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
         ActionSystem.SubscribeReaction<HealPlayerGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<ShieldPlayerGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<PlayerAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<PlayerAlterStaminaGA>(BeforeAlterStamPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<PlayerLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<PlayerGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<InvocPGA>(BeforeInvocPPerformerPreReaction, ReactionTiming.PRE);
@@ -34,6 +36,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
         ActionSystem.DetachPerformer<HealPlayerGA>();
         ActionSystem.DetachPerformer<ShieldPlayerGA>();
         ActionSystem.DetachPerformer<PlayerAlterPowerGA>();
+        ActionSystem.DetachPerformer<PlayerAlterStaminaGA>();
         ActionSystem.DetachPerformer<PlayerLifeLossGA>();
         ActionSystem.DetachPerformer<PlayerGainLifeGA>();
         ActionSystem.DetachPerformer<InvocPGA>();
@@ -43,6 +46,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
         ActionSystem.UnsubscribeReaction<HealPlayerGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<ShieldPlayerGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<PlayerAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<PlayerAlterStaminaGA>(BeforeAlterStamPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<PlayerLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<PlayerGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<InvocPGA>(BeforeInvocPPerformerPreReaction, ReactionTiming.PRE);
@@ -115,7 +119,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
             {
                 ActionSystem.Instance.AddReaction(new DealDamageGA(attackEnemyGA.Damage, attackEnemyGA.DynamicAmount, null, attackEnemyGA.enemyTargets));
             }
-        }
+        }            
     }
 
     private IEnumerator HealPlayerPerformer(HealPlayerGA healPlayerGA)
@@ -208,6 +212,33 @@ public class PlayerSystem : Singleton<PlayerSystem>
                 if (playerAlterPowerGA.enemyTargets != null && playerAlterPowerGA.enemyTargets.Count > 0)
                     ActionSystem.Instance.AddReaction(new AlterPowerGA(playerAlterPowerGA.Amount, playerAlterPowerGA.DynamicAmount, playerAlterPowerGA.passive, playerAlterPowerGA.permaTypes, null, playerAlterPowerGA.enemyTargets));
             }
+        }
+    }
+
+    private IEnumerator AlterStamPlayerPerformer(PlayerAlterStaminaGA playerAlterStaminaGA)
+    {
+        if (playerAlterStaminaGA.Actionner != null)
+        {
+            PermanentView Attacker = playerAlterStaminaGA.Actionner.GetComponent<PermanentView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y + 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+
+            if (playerAlterStaminaGA.playerTargets != null && playerAlterStaminaGA.playerTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(playerAlterStaminaGA.Amount, playerAlterStaminaGA.DynamicAmount, playerAlterStaminaGA.permaTypes, playerAlterStaminaGA.playerTargets, null));
+
+            if (playerAlterStaminaGA.enemyTargets != null && playerAlterStaminaGA.enemyTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(playerAlterStaminaGA.Amount, playerAlterStaminaGA.DynamicAmount, playerAlterStaminaGA.permaTypes, null, playerAlterStaminaGA.enemyTargets));
+        }
+        // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort
+        else
+        {
+            if (playerAlterStaminaGA.playerTargets != null && playerAlterStaminaGA.playerTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(playerAlterStaminaGA.Amount, playerAlterStaminaGA.DynamicAmount, playerAlterStaminaGA.permaTypes, playerAlterStaminaGA.playerTargets, null));
+
+            if (playerAlterStaminaGA.enemyTargets != null && playerAlterStaminaGA.enemyTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(playerAlterStaminaGA.Amount, playerAlterStaminaGA.DynamicAmount, playerAlterStaminaGA.permaTypes, null, playerAlterStaminaGA.enemyTargets));
         }
     }
 
@@ -354,6 +385,15 @@ public class PlayerSystem : Singleton<PlayerSystem>
         if (playerAlterPowerGA.Actionner != null)
         {
             PermanentView Attacker = playerAlterPowerGA.Actionner.GetComponent<PermanentView>();
+            Attacker.SetPosition(Attacker.transform.position);
+        }
+    }
+
+    private void BeforeAlterStamPreReaction(PlayerAlterStaminaGA playerAlterStaminaGA)
+    {
+        if (playerAlterStaminaGA.Actionner != null)
+        {
+            PermanentView Attacker = playerAlterStaminaGA.Actionner.GetComponent<PermanentView>();
             Attacker.SetPosition(Attacker.transform.position);
         }
     }

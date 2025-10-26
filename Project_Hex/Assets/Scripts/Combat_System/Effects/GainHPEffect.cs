@@ -26,9 +26,10 @@ public class GainHPEffect : Effect
 
     public GainHPEffect() { }
 
-    public GainHPEffect(int gainAmount, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
+    public GainHPEffect(int gainAmount, int multiHit, int testValue,DynamicCondition dynamicCondition, DynamicAmount testDynamicAmount,PermaTypes testType, TargetMode TargetMode, List<TargetLimitationInfo> TargetLimitations, int TargetNumber, bool targetUpTo, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool Passive, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, PermaTypes PermaTypes, DynamicAmount dynamicAmount, EventReference sfx)
     {
         GainAmount = gainAmount;
+        MultiHit = multiHit;
         targetMode = TargetMode;
         TestValue = testValue;
         TestDynamicAmount = testDynamicAmount;
@@ -228,6 +229,7 @@ public class GainHPEffect : Effect
 
         return new GainHPEffect(
             GainAmount,
+            MultiHit,
             TestValue,
             DynamicCondition,
             TestDynamicAmount,

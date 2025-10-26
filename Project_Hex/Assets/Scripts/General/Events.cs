@@ -25,6 +25,8 @@ public enum Events
     WhenPermaSac,
     WhenPermaExaust,
     WhenPermaBecomeType,
+    WhenPermaETB,
+    WhenPermaLossDurability,
 
     //Card Event (ON DrawThis, onDiscardThis ...)
     Null,

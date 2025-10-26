@@ -28,11 +28,14 @@ public class CardData : ScriptableObject
     [field: Header("Spell")]
     [field: SerializeField] public bool IsSpell { get; private set; }
     [field: SerializeReference, SR] public List<Effect> Effects { get; private set; }
-    
+
     [field: Header("Audio")]
     [field: SerializeField] public EventReference PlayCardSound;
+    [field: SerializeField] public EventReference CannotPlayCardSound;
     [field: SerializeField] public EventReference DiscardCardSound;
     [field: SerializeField] public EventReference DrawCardSound;
+    [field: SerializeField] public EventReference HoverCardSound;
+    [field: SerializeField] public EventReference PlaySpellSound;
     [field: SerializeField] public EventReference SummonPPermanentSound;
     [field: SerializeField] public EventReference DieSound;
     [field: SerializeField] public EventReference HollowDieSound;

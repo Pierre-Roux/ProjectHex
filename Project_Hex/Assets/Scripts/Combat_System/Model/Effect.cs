@@ -11,6 +11,7 @@ public abstract class Effect
     [SerializeField] public ActionnerType actionnerType;
     [SerializeField] public Events Events;
     [SerializeField] public bool HollowEffect;
+    [SerializeField] public int MultiHit;
     [SerializeField] public EventReference SFX;
 
     [Header("Enemy_Only")]

@@ -15,6 +15,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<HealEnemyGA>(HealEnemyPerformer);
         ActionSystem.AttachPerformer<ShieldEnemyGA>(ShieldEnemyPerformer);
         ActionSystem.AttachPerformer<EnemyAlterPowerGA>(AlterEnemyPerformer);
+        ActionSystem.AttachPerformer<EnemyAlterStaminaGA>(AlterStamEnemyPerformer);
         ActionSystem.AttachPerformer<EnemyLifeLossGA>(LifeLossEnemyPerformer);
         ActionSystem.AttachPerformer<EnemyGainLifeGA>(GainHPEnemyPerformer);
         ActionSystem.AttachPerformer<InvocEGA>(InvocEPerformer);
@@ -26,6 +27,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.SubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<EnemyAlterStaminaGA>(BeforeAlterStamPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<InvocEGA>(BeforeInvocEPerformerPreReaction, ReactionTiming.PRE);
@@ -40,6 +42,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<HealEnemyGA>();
         ActionSystem.DetachPerformer<ShieldEnemyGA>();
         ActionSystem.DetachPerformer<EnemyAlterPowerGA>();
+        ActionSystem.DetachPerformer<EnemyAlterStaminaGA>();
         ActionSystem.DetachPerformer<EnemyLifeLossGA>();
         ActionSystem.DetachPerformer<EnemyGainLifeGA>();
         ActionSystem.DetachPerformer<InvocEGA>();
@@ -51,6 +54,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.UnsubscribeReaction<HealEnemyGA>(BeforeHealPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<ShieldEnemyGA>(BeforeShieldPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyAlterPowerGA>(BeforeAlterPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<EnemyAlterStaminaGA>(BeforeAlterStamPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyLifeLossGA>(BeforeLifeLossPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyGainLifeGA>(BeforeGainHPPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<InvocEGA>(BeforeInvocEPerformerPreReaction, ReactionTiming.PRE);
@@ -78,12 +82,38 @@ public class EnemySystem : Singleton<EnemySystem>
             if (enemySlotView == null || !CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
                 continue;
 
-            // Exécuter action
-            GameAction action = intent.GetGameAction();
-            yield return StartCoroutine(ActionSystem.Instance.RunAction(action));
+            if (intent is EffectGroup)
+            {
+                EffectGroup group = (EffectGroup)intent;
+                foreach (var effect in group.EffectGroups)
+                {
+                    int MultiHit = effect.MultiHit;
+                    if (MultiHit < 1) MultiHit = 1;
+                    for (int i = 0; i < MultiHit; i++)
+                    {
+                        // Exécuter action
+                        GameAction action = effect.GetGameAction();
+                        yield return StartCoroutine(ActionSystem.Instance.RunAction(action));                        
+                    }
+                }
 
-            if (CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
-                enemySlotView.UpdateIntent();
+                if (CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
+                    enemySlotView.UpdateIntent();  
+            }
+            else
+            {
+                int MultiHit = intent.MultiHit;
+                if (MultiHit < 1) MultiHit = 1;
+                for (int i = 0; i < MultiHit; i++)
+                {
+                    // Exécuter action
+                    GameAction action = intent.GetGameAction();
+                    yield return StartCoroutine(ActionSystem.Instance.RunAction(action));
+                }
+
+                if (CombatSystem.Instance.Enemy_Permanents.Contains(enemySlotView))
+                    enemySlotView.UpdateIntent();                
+            }
         }
 
         EndEnemyTurnGA endEnemyTurnGA = new();
@@ -149,7 +179,7 @@ public class EnemySystem : Singleton<EnemySystem>
             {
                 ActionSystem.Instance.AddReaction(new DealDamageGA(attackPlayerGA.Damage, attackPlayerGA.DynamicAmount, null, attackPlayerGA.enemyTargets));
             }
-        }
+        }            
     }
 
     private IEnumerator HealEnemyPerformer(HealEnemyGA healEnemyGA)
@@ -242,6 +272,34 @@ public class EnemySystem : Singleton<EnemySystem>
                 if (enemyAlterPowerGA.enemyTargets != null && enemyAlterPowerGA.enemyTargets.Count > 0)
                     ActionSystem.Instance.AddReaction(new AlterPowerGA(enemyAlterPowerGA.Amount, enemyAlterPowerGA.DynamicAmount, enemyAlterPowerGA.passive, enemyAlterPowerGA.permaTypes, null, enemyAlterPowerGA.enemyTargets));
             }
+        }
+    }
+
+    private IEnumerator AlterStamEnemyPerformer(EnemyAlterStaminaGA enemyAlterStaminaGA)
+    {
+        if (enemyAlterStaminaGA.Actionner != null)
+        {
+            EnemySlotView Attacker = enemyAlterStaminaGA.Actionner.GetComponent<EnemySlotView>();
+
+            Tween tween = Attacker.transform.DOMoveY(Attacker.transform.position.y + 1f, 0.25f);
+            yield return tween.WaitForCompletion();
+            Attacker.transform.DOMoveY(Attacker.InitialPosition.y, 0.35f);
+
+            if (enemyAlterStaminaGA.playerTargets != null && enemyAlterStaminaGA.playerTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(enemyAlterStaminaGA.Amount, enemyAlterStaminaGA.DynamicAmount, enemyAlterStaminaGA.permaTypes, enemyAlterStaminaGA.playerTargets, null));
+
+            if (enemyAlterStaminaGA.enemyTargets != null && enemyAlterStaminaGA.enemyTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(enemyAlterStaminaGA.Amount, enemyAlterStaminaGA.DynamicAmount, enemyAlterStaminaGA.permaTypes, null, enemyAlterStaminaGA.enemyTargets));
+            
+        }
+        // dans le cas ou il n'y a pas de d'actionner c'est que c'est une attaque non directe mais du a un effet spécifique qui n'est pas cancel en cas de mort
+        else
+        {
+            if (enemyAlterStaminaGA.playerTargets != null && enemyAlterStaminaGA.playerTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(enemyAlterStaminaGA.Amount, enemyAlterStaminaGA.DynamicAmount, enemyAlterStaminaGA.permaTypes, enemyAlterStaminaGA.playerTargets, null));
+
+            if (enemyAlterStaminaGA.enemyTargets != null && enemyAlterStaminaGA.enemyTargets.Count > 0)
+                ActionSystem.Instance.AddReaction(new AlterStaminaGA(enemyAlterStaminaGA.Amount, enemyAlterStaminaGA.DynamicAmount, enemyAlterStaminaGA.permaTypes, null, enemyAlterStaminaGA.enemyTargets));
         }
     }
 
@@ -441,6 +499,15 @@ public class EnemySystem : Singleton<EnemySystem>
         if (enemyAlterPowerGA.Actionner != null)
         {
             EnemySlotView Attacker = enemyAlterPowerGA.Actionner.GetComponent<EnemySlotView>();
+            Attacker.SetPosition(Attacker.transform.position);
+        }
+    }
+
+    private void BeforeAlterStamPreReaction(EnemyAlterStaminaGA enemyAlterStaminaGA)
+    {
+        if (enemyAlterStaminaGA.Actionner != null)
+        {
+            EnemySlotView Attacker = enemyAlterStaminaGA.Actionner.GetComponent<EnemySlotView>();
             Attacker.SetPosition(Attacker.transform.position);
         }
     }

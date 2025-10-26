@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Divert
   m_EditorClassIdentifier: 
   <Title>k__BackingField: Divert
-  <Description>k__BackingField: -2 power to all enemy until next turn
+  <Description>k__BackingField: -2 power to 1 enemy until next turn
   <cost>k__BackingField: 0
   <Image>k__BackingField: {fileID: 21300000, guid: 96f4f6521c088f54fb7ca8d50c29b516, type: 3}
   <Money_Cost>k__BackingField: 0
@@ -182,11 +182,13 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 863ec25d-1fc7-43ac-8fa6-41902b7e731d
         alterAmount: -2
         DynamicAmount: 0
         targetMode: 24
         passive: 0
         permaTypes: 0
+        TargetUpTo: 0
         targetNumber: 1
         targetLimitations: []
     - rid: 3469642179070132226
@@ -218,10 +220,12 @@ MonoBehaviour:
         TargetForLinked_Player: []
         TargetForLinked_Enemy: []
         BypassEntryCondition: 0
+        EffectID: 05489a35-0584-4dbd-a803-c7ce885c7610
         alterAmount: 2
         DynamicAmount: 0
         targetMode: 25
         passive: 0
         permaTypes: 0
+        TargetUpTo: 0
         targetNumber: 0
         targetLimitations: []

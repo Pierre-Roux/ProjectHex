@@ -18,9 +18,13 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] public GameObject ScryPanel;
     [SerializeField] public GameObject ScryPanelContent;
 
+    [SerializeField] public GameObject ChoicePanel;
+    [SerializeField] public GameObject ChoicePanelContent;
+
     [SerializeField] public ScrollRect ScryScrollRect;
 
     [HideInInspector] public List<CardView> ScryCardViews;
+    [HideInInspector] public Effect EffectChoosed;
     
     public List<Card> drawPile = new();
     public List<Card> discardPile = new();
@@ -178,6 +182,9 @@ public class CardSystem : Singleton<CardSystem>
         TriggerEventGA triggerEventGA = new(Events.OnPlayCard);
         ActionSystem.Instance.AddReaction(triggerEventGA);
 
+        triggerEventGA = new(Events.OnPlaySpell);
+        ActionSystem.Instance.AddReaction(triggerEventGA);
+
         if (!AudioManager.Instance.IsValid(playCardGA.Card.PlayCardSound))
         {
             RuntimeManager.PlayOneShot(AudioManager.Instance.PlayCardSound);
@@ -185,6 +192,15 @@ public class CardSystem : Singleton<CardSystem>
         else
         {
             RuntimeManager.PlayOneShot(playCardGA.Card.PlayCardSound);
+        }
+
+        if (!AudioManager.Instance.IsValid(playCardGA.Card.PlaySpellSound))
+        {
+            RuntimeManager.PlayOneShot(AudioManager.Instance.PlaySpellSound);
+        }
+        else
+        {
+            RuntimeManager.PlayOneShot(playCardGA.Card.PlaySpellSound);
         }
 
         hand.Remove(playCardGA.Card);
@@ -196,39 +212,43 @@ public class CardSystem : Singleton<CardSystem>
 
         foreach (var effect in playCardGA.Card.Effects)
         {
-            // On clone l’effet de base pour éviter les références partagées
-            Effect clonedEffect = effect.Clone();
-            clonedEffect.Actionner = null;
-            clonedEffect.CardActionner = playCardGA.CardActionner;
-
-            while (clonedEffect != null)
+            int MultiHit = effect.MultiHit;
+            if (MultiHit < 1) MultiHit = 1;
+            for (int i = 0; i < MultiHit; i++)
             {
-                if (clonedEffect.Events == Events.Instant)
+                // On clone l’effet de base pour éviter les références partagées
+                Effect clonedEffect = effect.Clone();
+                clonedEffect.Actionner = null;
+                clonedEffect.CardActionner = playCardGA.CardActionner;
+
+                while (clonedEffect != null)
                 {
-                    // Exécution immédiate via GameAction
-                    ActionSystem.Instance.AddReaction(clonedEffect.GetGameAction());
-                }
-                else
-                {
-                    // Ajout aux Events (sauf cas spéciaux)
-                    if (clonedEffect.Events != Events.OnDeath &&
-                        clonedEffect.Events != Events.OnDestroy &&
-                        clonedEffect.Events != Events.OnDamaged &&
-                        clonedEffect.Events != Events.OnActivate &&
-                        clonedEffect.Events != Events.EnemyTurn)
+                    if (clonedEffect.Events == Events.Instant)
                     {
-                        GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                        ActionSystem.Instance.AddReaction(clonedEffect.GetGameAction());
                     }
-                }
+                    else
+                    {
+                        // Ajout aux Events (sauf cas spéciaux)
+                        if (clonedEffect.Events != Events.OnDeath &&
+                            clonedEffect.Events != Events.OnDestroy &&
+                            clonedEffect.Events != Events.OnDamaged &&
+                            clonedEffect.Events != Events.OnActivate &&
+                            clonedEffect.Events != Events.EnemyTurn)
+                        {
+                            GameEventSystem.Instance.AddEffectToEvent(clonedEffect);
+                        }
+                    }
 
-                // On lie le parent au linked effect (utile si la chaîne est clonée)
-                if (clonedEffect.LinkedEffect != null)
-                {
-                    clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
-                }
+                    // On lie le parent au linked effect (utile si la chaîne est clonée)
+                    if (clonedEffect.LinkedEffect != null)
+                    {
+                        clonedEffect.LinkedEffect.ParentEffect = clonedEffect;
+                    }
 
-                // Avancer dans la chaîne
-                clonedEffect = clonedEffect.LinkedEffect;
+                    // Avancer dans la chaîne
+                    clonedEffect = clonedEffect.LinkedEffect;
+                }                
             }
         }
     }
@@ -248,7 +268,20 @@ public class CardSystem : Singleton<CardSystem>
     public void HideScryPanel()
     {
         ScryPanel.SetActive(false);
-        CombatSystem.Instance.Interactable = true;          
+        CombatSystem.Instance.Interactable = true;
+    }
+
+    public void ShowChoicePanel(List<Effect> effects, Card cardVisual, GameObject actionner = null)
+    {
+        DisplayChoiceCards(effects,cardVisual,actionner);
+        ChoicePanel.SetActive(true);
+        CombatSystem.Instance.Interactable = false;
+    }
+    
+    public void HideChoicePanel()
+    {
+        ChoicePanel.SetActive(false);
+        CombatSystem.Instance.Interactable = true;
     }
 
     public void DisplayScryCards(List<Card> CardsToDisplay)
@@ -266,12 +299,34 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
+    public void DisplayChoiceCards(List<Effect> effectsToDisplay, Card cardVisual, GameObject Actionner)
+    {
+        CleanChoicePanel();
+        foreach (var effect in effectsToDisplay)
+        {
+            CardView cardView = CardViewCreator.Instance.CreateCardView(cardVisual, Vector3.zero, Quaternion.identity, ChoicePanelContent.transform);
+            cardView.IsChoiceCard = true;
+            cardView.EffectHolder = effect;
+            cardView.EffectHolder.Actionner = Actionner;
+            cardView.gameObject.GetComponent<SortingGroup>().sortingOrder = 5;
+            cardView.gameObject.GetComponent<SortingGroup>().sortingLayerName = "UI";
+            cardView.gameObject.transform.position.Set(cardView.gameObject.transform.position.x, cardView.gameObject.transform.position.y, 0);
+            cardView.transform.DOScale(60, 0.5f);
+        }
+    }
+
     public void CleanScryPanel()
     {
         foreach (Transform child in ScryPanelContent.transform)
             Destroy(child.gameObject);
 
         ScryCardViews.Clear();
+    }
+
+    public void CleanChoicePanel()
+    {
+        foreach (Transform child in ChoicePanelContent.transform)
+            Destroy(child.gameObject);
     }
 
     // REACTIONS

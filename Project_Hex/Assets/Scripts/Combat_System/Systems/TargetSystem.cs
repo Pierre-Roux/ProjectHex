@@ -577,23 +577,26 @@ public class TargetSystem : Singleton<TargetSystem>
                     TargetingActive = false;
                     foreach (EnemySlotView enemy in enemySlots)
                     {
-                        enemy.RemoveSelectEffect();
+                        enemy.RemoveSelectEffect(false);
                     }
                     foreach (PermanentView permanent in permanents)
                     {
-                        permanent.RemoveSelectEffect();
+                        permanent.RemoveSelectEffect(false);
                     }
                 }
                 else
                 {
-                    TargetingActive = false;
-                    foreach (EnemySlotView enemy in enemySlots)
+                    if (TargetingNumber == 0)
                     {
-                        enemy.RemoveSelectEffect();
-                    }
-                    foreach (PermanentView permanent in permanents)
-                    {
-                        permanent.RemoveSelectEffect();
+                        TargetingActive = false;
+                        foreach (EnemySlotView enemy in enemySlots)
+                        {
+                            enemy.RemoveSelectEffect(false);
+                        }
+                        foreach (PermanentView permanent in permanents)
+                        {
+                            permanent.RemoveSelectEffect(false);
+                        }                        
                     }
                 }
             }
@@ -945,7 +948,7 @@ public class TargetSystem : Singleton<TargetSystem>
         return true;
     }
 
-    public bool limitationHasEnoughtTarget(List<TargetLimitationInfo> limitations, int EffectTargetNumber)
+    public bool limitationHasEnoughtTarget(List<TargetLimitationInfo> limitations, int EffectTargetNumber, int MultiHit)
     {
         if (limitations == null || limitations.Count == 0)
             return true; // pas de limitation = toujours jouable
@@ -964,7 +967,7 @@ public class TargetSystem : Singleton<TargetSystem>
 
         foreach (var e in enemyPermanents)
         {
-            if (PassesAllLimitations(limitations, null, null, e,true))
+            if (PassesAllLimitations(limitations, null, null, e, true))
                 validTargets.Add(e);
         }
 
@@ -974,9 +977,9 @@ public class TargetSystem : Singleton<TargetSystem>
                 validTargets.Add(c);
         }
 
-        Debug.Log("There is " + validTargets.Count + " valid cible");
+        Debug.Log("There is " + validTargets.Count + " valid cible if mandatory limitation");
 
         // On regarde si il y a assez de cibles valide
-        return validTargets.Count >= EffectTargetNumber;
+        return (validTargets.Count * MultiHit) >= EffectTargetNumber;
     }
 }

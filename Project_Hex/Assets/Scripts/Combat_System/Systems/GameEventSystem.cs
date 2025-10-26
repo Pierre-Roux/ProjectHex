@@ -74,11 +74,13 @@ public class GameEventSystem : Singleton<GameEventSystem>
                     isActionnerMatch = effect.CardActionner == triggerEventGA.Card;
             }
 
-            // Cas 4 : Aucun actionner attendu (par ex. événements de carte globale)
+            // Cas 4 : Aucun actionner attendu (par exemple événements de carte globale)
             else
             {
                 isActionnerMatch = true;
             }
+
+            Debug.Log("ActionnerMatch : " + isActionnerMatch);
 
             if (triggerEventGA.gameEvent != Events.WhenPermaDie && isActionnerMatch)
             {
@@ -108,7 +110,14 @@ public class GameEventSystem : Singleton<GameEventSystem>
                 }
             }
 
-            if (triggerEventGA.gameEvent == Events.WhenPermaDie && !isActionnerMatch)
+            // Fonctionnement pour les Events Concernant d'autre déclancheur que lui même
+            if (triggerEventGA.gameEvent == Events.WhenPermaDie && !isActionnerMatch
+            || triggerEventGA.gameEvent == Events.WhenPermaExaust && !isActionnerMatch
+            || triggerEventGA.gameEvent == Events.WhenPermaBecomeType && !isActionnerMatch
+            || triggerEventGA.gameEvent == Events.WhenPermaSac && !isActionnerMatch
+            || triggerEventGA.gameEvent == Events.WhenPermaETB && !isActionnerMatch
+            || triggerEventGA.gameEvent == Events.WhenPermaLossDurability && !isActionnerMatch
+            )
             {
                 if (effect.DynamicCondition != DynamicCondition.NULL)
                 {

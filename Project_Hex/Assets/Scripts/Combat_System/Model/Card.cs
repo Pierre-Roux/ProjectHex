@@ -26,8 +26,11 @@ public class Card
 
     //Audio
     public EventReference PlayCardSound;
+    public EventReference CannotPlayCardSound;
     public EventReference DiscardCardSound;
     public EventReference DrawCardSound;
+    public EventReference HoverCardSound;
+    public EventReference PlaySpellSound;
     public EventReference SummonPPermanentSound;
     public EventReference BeingDamageSound;
     public EventReference DieSound;
@@ -61,22 +64,26 @@ public class Card
             MaxDurability = cardData.MaxDurability;
         }
 
-        if (cardData.PlayCardSound.Path != "") PlayCardSound = cardData.PlayCardSound;
-        if (cardData.DiscardCardSound.Path != "") DiscardCardSound = cardData.DiscardCardSound;
-        if (cardData.DrawCardSound.Path != "") DrawCardSound = cardData.DrawCardSound;
-        if (cardData.SummonPPermanentSound.Path != "") SummonPPermanentSound = cardData.SummonPPermanentSound;
-        if (cardData.BeingDamageSound.Path != "") BeingDamageSound = cardData.BeingDamageSound;
-        if (cardData.DieSound.Path != "") DieSound = cardData.DieSound;
-        if (cardData.HollowDieSound.Path != "") HollowDieSound = cardData.HollowDieSound;
-        if (cardData.BeingHealSound.Path != "") BeingHealSound = cardData.BeingHealSound;
-        if (cardData.BeingShieldSound.Path != "") BeingShieldSound = cardData.BeingShieldSound;
-        if (cardData.LoseShieldSound.Path != "") LoseShieldSound = cardData.LoseShieldSound;
-        if (cardData.GainPowerSound.Path != "") GainPowerSound = cardData.GainPowerSound;
-        if (cardData.LosePowerSound.Path != "") LosePowerSound = cardData.LosePowerSound;
-        if (cardData.TakeLifeLossSound.Path != "") TakeLifeLossSound = cardData.TakeLifeLossSound;
-        if (cardData.BuffLifeSound.Path != "") BuffLifeSound = cardData.BuffLifeSound;
-        if (cardData.DebuffLifeSound.Path != "") DebuffLifeSound = cardData.DebuffLifeSound;
-        if (cardData.SelectedSound.Path != "") SelectedSound = cardData.SelectedSound;
-        if (cardData.UnSelectedSound.Path != "") UnSelectedSound = cardData.UnSelectedSound;
+        if (AudioManager.Instance.IsValid(cardData.PlayCardSound)) PlayCardSound = cardData.PlayCardSound;
+        if (AudioManager.Instance.IsValid(cardData.CannotPlayCardSound)) CannotPlayCardSound = cardData.CannotPlayCardSound;
+        if (AudioManager.Instance.IsValid(cardData.DiscardCardSound)) DiscardCardSound = cardData.DiscardCardSound;
+        if (AudioManager.Instance.IsValid(cardData.DrawCardSound)) DrawCardSound = cardData.DrawCardSound;
+        if (AudioManager.Instance.IsValid(cardData.HoverCardSound)) HoverCardSound = cardData.HoverCardSound;
+        if (AudioManager.Instance.IsValid(cardData.PlaySpellSound)) PlaySpellSound = cardData.PlaySpellSound;
+        if (AudioManager.Instance.IsValid(cardData.SummonPPermanentSound)) SummonPPermanentSound = cardData.SummonPPermanentSound;
+        if (AudioManager.Instance.IsValid(cardData.BeingDamageSound)) BeingDamageSound = cardData.BeingDamageSound;
+        
+        if (AudioManager.Instance.IsValid(cardData.DieSound)) DieSound = cardData.DieSound;
+        if (AudioManager.Instance.IsValid(cardData.HollowDieSound)) HollowDieSound = cardData.HollowDieSound;
+        if (AudioManager.Instance.IsValid(cardData.BeingHealSound)) BeingHealSound = cardData.BeingHealSound;
+        if (AudioManager.Instance.IsValid(cardData.BeingShieldSound)) BeingShieldSound = cardData.BeingShieldSound;
+        if (AudioManager.Instance.IsValid(cardData.LoseShieldSound)) LoseShieldSound = cardData.LoseShieldSound;
+        if (AudioManager.Instance.IsValid(cardData.GainPowerSound)) GainPowerSound = cardData.GainPowerSound;
+        if (AudioManager.Instance.IsValid(cardData.LosePowerSound)) LosePowerSound = cardData.LosePowerSound;
+        if (AudioManager.Instance.IsValid(cardData.TakeLifeLossSound)) TakeLifeLossSound = cardData.TakeLifeLossSound;
+        if (AudioManager.Instance.IsValid(cardData.BuffLifeSound)) BuffLifeSound = cardData.BuffLifeSound;
+        if (AudioManager.Instance.IsValid(cardData.DebuffLifeSound)) DebuffLifeSound = cardData.DebuffLifeSound;
+        if (AudioManager.Instance.IsValid(cardData.SelectedSound)) SelectedSound = cardData.SelectedSound;
+        if (AudioManager.Instance.IsValid(cardData.UnSelectedSound)) UnSelectedSound = cardData.UnSelectedSound;
     }
 }

@@ -13,21 +13,92 @@ MonoBehaviour:
   m_Name: Player TestDev
   m_EditorClassIdentifier: 
   Name: Player
-  CoreHealth: 10
-  StartingShield: 10
-  CoreImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
   deckData:
-  - {fileID: 11400000, guid: 2c22241c0b421fd4d9f343453290535b, type: 2}
-  - {fileID: 11400000, guid: 2c22241c0b421fd4d9f343453290535b, type: 2}
-  - {fileID: 11400000, guid: 2c22241c0b421fd4d9f343453290535b, type: 2}
-  - {fileID: 11400000, guid: 0cf461ea35b3cc048bcf28ef16189921, type: 2}
-  - {fileID: 11400000, guid: 0cf461ea35b3cc048bcf28ef16189921, type: 2}
-  - {fileID: 11400000, guid: db29ec9ef79b7264ebcc930097c8a153, type: 2}
-  - {fileID: 11400000, guid: 15faf1a181aa5a145948a8e102230f92, type: 2}
-  - {fileID: 11400000, guid: 15faf1a181aa5a145948a8e102230f92, type: 2}
-  - {fileID: 11400000, guid: 15faf1a181aa5a145948a8e102230f92, type: 2}
-  - {fileID: 11400000, guid: a2429e58f7b5b8b44ad7ec156c0efafe, type: 2}
-  - {fileID: 11400000, guid: a2429e58f7b5b8b44ad7ec156c0efafe, type: 2}
-  - {fileID: 11400000, guid: 5d914b40a6ae1f741b056e7db4ee5708, type: 2}
-  - {fileID: 11400000, guid: 19dde33b98a26ed46aac86ae969998c9, type: 2}
-  - {fileID: 11400000, guid: 19dde33b98a26ed46aac86ae969998c9, type: 2}
+  - {fileID: 11400000, guid: 1506d1f22f26c9344a2d7859e29da7cc, type: 2}
+  - {fileID: 11400000, guid: 31fb8199777e93d4ba7bb34de043d374, type: 2}
+  - {fileID: 11400000, guid: 1506d1f22f26c9344a2d7859e29da7cc, type: 2}
+  - {fileID: 11400000, guid: 31fb8199777e93d4ba7bb34de043d374, type: 2}
+  - {fileID: 11400000, guid: 0ae71f8a6924d9e44897496d15924c41, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: 315f9b8cb341c0742b6f7fede300372d, type: 2}
+  - {fileID: 11400000, guid: b0c9da542207a9746913268f32aba44d, type: 2}
+  - {fileID: 11400000, guid: b0c9da542207a9746913268f32aba44d, type: 2}
+  - {fileID: 11400000, guid: b0c9da542207a9746913268f32aba44d, type: 2}
+  - {fileID: 11400000, guid: 0378fa698910624488dfbc058ef17de8, type: 2}
+  - {fileID: 11400000, guid: 0378fa698910624488dfbc058ef17de8, type: 2}
+  - {fileID: 11400000, guid: 45de683859320894aa54b659f2a69386, type: 2}
+  - {fileID: 11400000, guid: 45de683859320894aa54b659f2a69386, type: 2}
+  - {fileID: 11400000, guid: a257fe84576ff0947afc0e20c6947266, type: 2}
+  - {fileID: 11400000, guid: a257fe84576ff0947afc0e20c6947266, type: 2}
+  CoreHealth: 50
+  CoreImage: {fileID: 21300000, guid: 59d0bd81ea81fad45b386c2584911f05, type: 3}
+  DieSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BeingDamageSound:
+    Guid:
+      Data1: -1553389401
+      Data2: 1270679182
+      Data3: 1556566658
+      Data4: -654338292
+    Path: event:/Place Holder/Place Holder Short Sound
+  BeingHealSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BeingShieldSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  LoseShieldSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  TakeLifeLossSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  BuffLifeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  DebuffLifeSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  SelectedSound:
+    Guid:
+      Data1: 905812866
+      Data2: 1213785481
+      Data3: -1396295283
+      Data4: 717533454
+    Path: event:/Audio Manager/Selection
+  UnSelectedSound:
+    Guid:
+      Data1: -1261828738
+      Data2: 1246447463
+      Data3: -960289106
+      Data4: -1360623957
+    Path: event:/Audio Manager/Unselection

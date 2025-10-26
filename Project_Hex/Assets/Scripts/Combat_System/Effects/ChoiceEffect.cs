@@ -7,18 +7,50 @@ using UnityEngine;
 
 public class ChoiceEffect : Effect
 {
+    [Header ("For player choice")]
+    [SerializeField] bool PlayerChoice;
+    [field: SerializeReference, SR] public List<Effect> EffectsForPlayerChoice;
+
+    [Header ("For non player choice")]
     [field: SerializeReference, SR] public Effect EffectOnTrue;
     [field: SerializeReference, SR] public Effect EffectOnFalse;
 
     public override GameAction GetGameAction()
     {
-        TestConditionGA testConditionGA = new(DynamicCondition, EffectOnTrue, EffectOnFalse, TestValue, TestDynamicAmount);
-        return testConditionGA;
+        if (PlayerChoice)
+        {
+            if (Actionner != null)
+            {
+                if (Actionner.GetComponent<PermanentView>() != null)
+                {
+                    LetChoiceGA letChoiceGA = new(EffectsForPlayerChoice, Actionner.GetComponent<PermanentView>().CardReferenceArchive, Actionner);
+                    return letChoiceGA;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if (CardActionner != null)
+            {
+                LetChoiceGA letChoiceGA = new(EffectsForPlayerChoice, CardActionner);
+                return letChoiceGA;
+            }
+            else
+            {
+                return null;
+            }      
+        }
+        else
+        {
+            TestConditionGA testConditionGA = new(DynamicCondition, EffectOnTrue, EffectOnFalse, TestValue, TestDynamicAmount);
+            return testConditionGA;
+        }        
     }
 
     public ChoiceEffect() { }
 
-    public ChoiceEffect(int value,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx, DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse)
+    public ChoiceEffect(int value,PermaTypes testType, ActionnerType ActionnerType, Events Event, bool cancelOnDeath, GameObject actionner, Card cardActionner, String intent_Title, String Number, int duration, Events durationType, bool triggerOnDurationEnd, Effect linkedEffect, List<PermanentView> targetForLinked_Player, List<EnemySlotView> targetForLinked_Enemy, DynamicAmount dynamicAmount, EventReference sfx, DynamicCondition dynamicCondition, Effect effectOnTrue, Effect effectOnFalse, bool playerChoice, List<Effect> effectsForPlayerChoice)
     {
         Events = Event;
         TestValue = value;
@@ -40,6 +72,8 @@ public class ChoiceEffect : Effect
         DynamicCondition = dynamicCondition;
         EffectOnTrue = effectOnTrue;
         EffectOnFalse = effectOnFalse;
+        PlayerChoice = playerChoice;
+        EffectsForPlayerChoice = effectsForPlayerChoice;
         SFX = sfx;
     }
 
@@ -54,6 +88,12 @@ public class ChoiceEffect : Effect
             : null;
 
         Effect clonedLinked = LinkedEffect != null ? LinkedEffect.Clone() : null;
+
+        List<Effect> ClonedChoiceEffects = new List<Effect>();
+        foreach (Effect effect in EffectsForPlayerChoice)
+        {
+            ClonedChoiceEffects.Add(effect.Clone()); 
+        }
 
         return new ChoiceEffect(
             TestValue,
@@ -75,7 +115,9 @@ public class ChoiceEffect : Effect
             SFX,
             DynamicCondition,
             EffectOnTrue,
-            EffectOnFalse
+            EffectOnFalse,
+            PlayerChoice,
+            ClonedChoiceEffects
         );
     }
 }

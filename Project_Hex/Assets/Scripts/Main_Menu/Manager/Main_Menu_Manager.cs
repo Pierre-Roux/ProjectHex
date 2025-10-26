@@ -2,6 +2,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Main_Menu_Manager : MonoBehaviour
 {
@@ -13,7 +14,12 @@ public class Main_Menu_Manager : MonoBehaviour
     [SerializeField] public TMP_Text ProgressionSave_Text2;
     [SerializeField] public TMP_Text ProgressionSave_Text3;
 
+    [SerializeField] public Slider MasterVolumeSlider;
+
     private int Index_Save_To_Delete;
+
+    //Option
+    private float MasterVolumeFloat;
 
     public void OpenProfileWindow()
     {
@@ -28,11 +34,13 @@ public class Main_Menu_Manager : MonoBehaviour
 
     public void OpenOptionWindow()
     {
+        UpdateOption();
         OptionCanvas.SetActive(true);
     }
 
     public void CloseOptionWindow()
     {
+        DataBase.Instance.UpdateOptions();
         OptionCanvas.SetActive(false);
     }
 
@@ -125,8 +133,33 @@ public class Main_Menu_Manager : MonoBehaviour
     public void RestoreLoadedData()
     {
         DataBase.Instance.CurrentStage = SaveHolder.Instance.saveFile.CurrentStage;
-        DataBase.Instance.DeckList= SaveHolder.Instance.saveFile.DeckList;
-        DataBase.Instance.Money= SaveHolder.Instance.saveFile.Money;
+        DataBase.Instance.DeckList = SaveHolder.Instance.saveFile.DeckList;
+        DataBase.Instance.Money = SaveHolder.Instance.saveFile.Money;
         DataBase.Instance.CoreLife = SaveHolder.Instance.saveFile.CoreLife;
+    }
+
+    public void SetOptions()
+    {
+        PlayerPrefs.SetFloat("MasterVolume", MasterVolumeFloat);
+        DataBase.Instance.UpdateOptions();
+    }
+    
+    public void UpdateOption()
+    {
+        if (PlayerPrefs.HasKey("MasterVolume"))
+        {
+            MasterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume");
+        }
+        else
+        {
+            MasterVolumeSlider.value = 1f;
+            PlayerPrefs.SetFloat("MasterVolume", 1f);
+        }
+    }
+
+    public void SetMasterVolume()
+    {
+        MasterVolumeFloat = MasterVolumeSlider.value;
+        DataBase.Instance.MasterVolume = MasterVolumeFloat;
     }
 }
